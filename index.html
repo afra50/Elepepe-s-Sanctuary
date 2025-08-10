@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <!-- ===== Meta ===== -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Ratta — Pomóż naszym ogonkom</title>
+    <meta
+      name="description"
+      content="Zbiórki na leczenie, karmę i domy tymczasowe dla szczurów. Dołącz do pomocy."
+    />
+
+    <!-- ===== Design tokens (nowa paleta) ===== -->
+    <style>
+      :root {
+        --bg: #ede0d4; /* jasny brąz tło bazowe */
+        --primary: #4b8a6e; /* główny akcent */
+        --accent: #f29ca3; /* dodatkowy akcent/CTA */
+        --dark: #4e342e; /* tekst/nagłówki */
+        --line: #cccccc; /* neutralny podział (cienkie linie) */
+
+        --radius: 14px;
+        --container: max(68ch, min(1100px, 92vw));
+        --shadow: 0 10px 24px rgba(78, 52, 46, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial,
+          sans-serif;
+        background: var(--bg);
+        color: var(--dark);
+        line-height: 1.6;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+      a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+      a:hover {
+        opacity: 0.9;
+      }
+      .container {
+        width: var(--container);
+        margin-inline: auto;
+        padding-inline: 16px;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--bg);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 0;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        color: var(--dark);
+      }
+      .brand-badge {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--primary);
+        color: #fff;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        box-shadow: var(--shadow);
+      }
+      .menu {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+      .menu a {
+        font-weight: 700;
+        color: var(--dark);
+      }
+      .menu a:hover {
+        color: var(--primary);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1.1rem;
+        border: 0;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 800;
+      }
+      .btn--primary {
+        background: var(--primary);
+        color: #fff;
+      }
+      .btn--accent {
+        background: var(--accent);
+        color: var(--dark);
+      }
+      .btn--ghost {
+        background: transparent;
+        color: var(--dark);
+        border: 2px solid var(--dark);
+      }
+      .btn:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      section {
+        padding: clamp(40px, 6vw, 80px) 0;
+        border-bottom: 1px solid var(--line);
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0 0 0.5rem;
+        line-height: 1.2;
+        color: var(--dark);
+      }
+      h1 {
+        font-size: clamp(30px, 4.8vw, 54px);
+        font-weight: 900;
+      }
+      h2 {
+        font-size: clamp(22px, 3.2vw, 32px);
+        font-weight: 900;
+      }
+      .lead {
+        font-size: clamp(16px, 1.6vw, 19px);
+        opacity: 0.95;
+        max-width: 68ch;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+        align-items: center;
+      }
+      .hero-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+      .badge {
+        display: inline-block;
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        background: var(--accent);
+        color: var(--dark);
+        font-weight: 800;
+        font-size: 0.9rem;
+      }
+
+      .grid {
+        display: grid;
+        gap: 18px;
+      }
+      .grid--3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 18px;
+      }
+      .card__icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        background: var(--primary);
+        color: #fff;
+        margin-bottom: 0.6rem;
+      }
+
+      .goal {
+        display: grid;
+        gap: 8px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .bar {
+        height: 14px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .bar__fill {
+        height: 100%;
+        width: 0;
+        background: var(--primary);
+      }
+      .stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 800;
+        color: var(--dark);
+      }
+
+      footer {
+        padding: 24px 0;
+        color: var(--dark);
+      }
+      .foot-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      @media (max-width: 900px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .grid--3 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--dark);
+        font: inherit;
+      }
+      input:focus,
+      textarea:focus {
+        outline: 3px solid var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <a class="brand" href="#">
+          <span class="brand-badge">R</span>
+          <span>Ratta — pomoc dla szczurów</span>
+        </a>
+        <nav class="menu">
+          <a href="#dlaczego">Dlaczego</a>
+          <a href="#jak-pomoc">Jak pomóc</a>
+          <a href="#zbiorka">Zbiórka</a>
+          <a href="#kontakt">Kontakt</a>
+        </nav>
+        <a class="btn btn--accent" href="#zbiorka">Wesprzyj</a>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <div class="container hero">
+          <div>
+            <span class="badge"
+              >Nowa paleta: #EDE0D4 · #4B8A6E · #F29CA3 · #4E342E</span
+            >
+            <h1>Pomóż ogonkom żyć bez bólu.</h1>
+            <p class="lead">
+              Zbieramy na leczenie, karmę i domy tymczasowe dla porzuconych i
+              chorych szczurów. Każda złotówka zmienia ich codzienność.
+            </p>
+            <div
+              style="
+                display: flex;
+                gap: 0.6rem;
+                flex-wrap: wrap;
+                margin-top: 0.4rem;
+              "
+            >
+              <a class="btn btn--primary" href="#zbiorka">Wpłać teraz</a>
+              <a class="btn btn--ghost" href="#jak-pomoc">Inne formy pomocy</a>
+            </div>
+          </div>
+          <aside class="hero-card">
+            <h3 style="margin: 0 0 0.5rem">Na co zbieramy?</h3>
+            <ul style="margin: 0; padding-left: 18px">
+              <li>Antybiotyki, sterylizacje, zabiegi stomatologiczne</li>
+              <li>Specjalistyczna karma i materiały na klatki</li>
+              <li>Transport do weterynarzy i domów tymczasowych</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section id="dlaczego">
+        <div class="container">
+          <h2>Dlaczego to ważne?</h2>
+          <div class="grid grid--3" style="margin-top: 14px">
+            <article class="card">
+              <div class="card__icon">❤</div>
+              <h3>Małe ciała, wielkie koszty</h3>
+              <p>
+                Zabiegi i leki dla gryzoni są częste i kosztowne. Wsparcie
+                pokrywa realne rachunki wet.
+              </p>
+            </article>
+            <article class="card">
+              <div class="card__icon">🏠</div>
+              <h3>Domy tymczasowe</h3>
+              <p>
+                Zapewniamy bezpieczne klatki, ściółkę i karmę, aż do adopcji.
+              </p>
+            </article>
+            <article class="card">
+              <div class="card__icon">🩺</div>
+              <h3>Szybka diagnoza</h3>
+              <p>
+                Im szybciej trafiają do lekarza, tym większe szanse. Twoja
+                wpłata przyspiesza pomoc.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="jak-pomoc">
+        <div class="container">
+          <h2>Jak możesz pomóc</h2>
+          <div class="grid grid--3" style="margin-top: 14px">
+            <article class="card">
+              <h3>Wpłata jednorazowa</h3>
+              <p>Nawet 10–20 zł robi różnicę. Kliknij „Wpłać teraz”.</p>
+              <a class="btn btn--primary" href="#zbiorka">Wpłać</a>
+            </article>
+            <article class="card">
+              <h3>Stały przelew</h3>
+              <p>
+                Niewielka suma co miesiąc pozwala planować leczenie bez przerw.
+              </p>
+              <a class="btn btn--accent" href="#kontakt"
+                >Ustaw stałe wsparcie</a
+              >
+            </article>
+            <article class="card">
+              <h3>Dar rzeczowy</h3>
+              <p>
+                Karma, ściółka, transportery — napisz, podpowiemy co najbardziej
+                potrzebne.
+              </p>
+              <a class="btn btn--ghost" href="#kontakt">Napisz do nas</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="zbiorka">
+        <div class="container">
+          <h2>Aktualna zbiórka</h2>
+          <p class="lead">
+            Cel: 8 000 zł na leczenie i wyposażenie 5 klatek dla nowych
+            podopiecznych.
+          </p>
+          <div class="goal">
+            <div class="stat">
+              <span>Postęp zbiórki</span>
+              <span><strong id="amount">3 250</strong> / 8 000 zł</span>
+            </div>
+            <div class="bar">
+              <div class="bar__fill" id="bar" style="width: 0%"></div>
+            </div>
+            <div style="display: flex; gap: 0.6rem; flex-wrap: wrap">
+              <a class="btn btn--primary" href="#">Wpłać teraz</a>
+              <a class="btn btn--accent" href="#kontakt">Dane do przelewu</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="kontakt">
+        <div class="container">
+          <h2>Kontakt</h2>
+          <form class="card" style="max-width: 680px; display: grid; gap: 12px">
+            <label
+              >Imię
+              <input required name="name" type="text" placeholder="Jan" />
+            </label>
+            <label
+              >E-mail
+              <input
+                required
+                name="email"
+                type="email"
+                placeholder="jan@przyklad.pl"
+              />
+            </label>
+            <label
+              >Wiadomość
+              <textarea
+                required
+                name="message"
+                rows="5"
+                placeholder="Chcę pomóc…"
+              ></textarea>
+            </label>
+            <button class="btn btn--primary" type="submit">Wyślij</button>
+            <small>Odpowiadamy zwykle w 24 h.</small>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container foot-row">
+        <small>© 2025 Ratta</small>
+        <small
+          >Kolory: <code>#EDE0D4</code> · <code>#4B8A6E</code> ·
+          <code>#F29CA3</code> · <code>#4E342E</code></small
+        >
+      </div>
+    </footer>
+
+    <script>
+      const raised = 3250;
+      const goal = 8000;
+      const pct = Math.min(100, Math.round((raised / goal) * 100));
+      document.getElementById("bar").style.width = pct + "%";
+      document.querySelector("form")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        alert("Dzięki! To wersja demo – podłącz tu swój backend.");
+      });
+    </script>
+  </body>
+</html>
