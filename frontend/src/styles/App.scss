@@ -1,5 +1,43 @@
-// ========== IMPORT GOOGLE FONTS ==========
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Nunito:wght@400;600&family=Quicksand:wght@500;700&display=swap');
+/* ================== CZCIONKI ================== */
+/* ==== QUICKSAND ==== */
+@font-face {
+  font-family: 'Quicksand';
+  src: url('../../public/fonts/Quicksand/Quicksand-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+/* ==== NUNITO ==== */
+@font-face {
+  font-family: 'Nunito';
+  src: url('../../public/fonts/Nunito/Nunito-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('../../public/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+}
+
+/* ==== MERRIWEATHER ==== */
+@font-face {
+  font-family: 'Merriweather';
+  src: url('../../public/fonts/Merriweather/Merriweather-VariableFont_opsz\,wdth\,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  src: url('../../public/fonts/Merriweather/Merriweather-Italic-VariableFont_opsz\,wdth\,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+}
+
+
 
 // ========== IMPORTY ========== 
 @import "./variables";
