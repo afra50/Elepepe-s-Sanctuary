@@ -1,0 +1,11 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "projects": "Proyectos en curso",
+    "requestSupport": "Solicitar apoyo",
+    "successStories": "Historias de éxito",
+    "about": "Sobre nosotros",
+    "partnerships": "Colaboraciones",
+    "contact": "Contacto"
+  }
+}

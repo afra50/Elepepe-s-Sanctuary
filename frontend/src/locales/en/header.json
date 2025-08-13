@@ -1,0 +1,11 @@
+{
+  "nav": {
+    "home": "Home",
+    "projects": "Ongoing Projects",
+    "requestSupport": "Request Support",
+    "successStories": "Success Stories",
+    "about": "About Us",
+    "partnerships": "Partnerships",
+    "contact": "Contact"
+  }
+}

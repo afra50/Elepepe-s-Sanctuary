@@ -1,0 +1,11 @@
+{
+  "nav": {
+    "home": "Strona główna",
+    "projects": "Aktywne zbiórki",
+    "requestSupport": "Poproś o wsparcie",
+    "successStories": "Zakończone zbiórki",
+    "about": "O nas",
+    "partnerships": "Partnerzy",
+    "contact": "Kontakt"
+  }
+}
