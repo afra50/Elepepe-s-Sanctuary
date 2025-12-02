@@ -10,6 +10,9 @@ import esFooter from "./locales/es/footer.json";
 import enContact from "./locales/en/contact.json";
 import plContact from "./locales/pl/contact.json";
 import esContact from "./locales/es/contact.json";
+import plHome from "./locales/pl/home.json";
+import enHome from "./locales/en/home.json";
+import esHome from "./locales/es/home.json";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -17,16 +20,19 @@ i18n.use(initReactI18next).init({
       header: enHeader,
       footer: enFooter,
       contact: enContact,
+      home: enHome,
     },
     pl: {
       header: plHeader,
       footer: plFooter,
+      home: plHome,
       contact: plContact,
     },
     es: {
       header: esHeader,
       footer: esFooter,
       contact: esContact,
+      home: esHome,
     },
   },
   lng: "en",
