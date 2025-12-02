@@ -37,9 +37,7 @@ function Footer() {
           <div className="footer-column info-column">
             <h4>{t("columns.foundation")}</h4>
             <div className="foundation-data">
-              <p>
-                <strong>Elepepe's Sanctuary</strong>
-              </p>
+              <p>Elepepe's Sanctuary</p>
 
               <p>
                 <span className="label">{t("columns.labels.regNumber")} </span>
