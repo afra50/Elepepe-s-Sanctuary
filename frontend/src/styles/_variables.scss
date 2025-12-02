@@ -1,24 +1,24 @@
 // Kolory bazowe
-$color-primary: #4B8A6E;
-$color-secondary: #4E342E;
-$color-accent: #F29CA3;
-$color-background: #EDE0D4;
-$color-border: #CCCCCC;
-$color-white: #FFFFFF;
+$color-primary: #4b8a6e;
+$color-secondary: #4e342e;
+$color-accent: #f29ca3;
+$color-background: #ede0d4;
+$color-border: #cccccc;
+$color-white: #ffffff;
 
 // Odcienie pochodne (użyjemy ich do hoverów/cieni)
 $primary-600: darken($color-primary, 6%); // hover dla buttonów/linków
 $primary-700: darken($color-primary, 12%);
 $brown-700: darken($color-secondary, 10%);
-$bg-950: rgba(#000, .06); // cień / overlay
-$bg-glass: rgba(#EDE0D4, .7); // tło headera z lekką przezroczystością
+$bg-950: rgba(#000, 0.06); // cień / overlay
+$bg-glass: rgba(#ede0d4, 0.7); // tło headera z lekką przezroczystością
 
 // Czcionki
-$font-heading: 'Quicksand', sans-serif;
-$font-body: 'Nunito', sans-serif;
-$font-accent: 'Merriweather', serif;
+$font-heading: "Merriweather", serif;
+$font-body: "Nunito", sans-serif;
+$font-accent: "Caveat", sans-serif;
 
 // Promienie / cienie
-$radius-md: .5rem;
-$shadow-sm: 0 .25rem .75rem rgba(0, 0, 0, .06);
-$shadow-md: 0 .75rem 2rem rgba(0, 0, 0, .10);
+$radius-md: 0.5rem;
+$shadow-sm: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.06);
+$shadow-md: 0 0.75rem 2rem rgba(0, 0, 0, 0.1);
