@@ -40,6 +40,7 @@
 
 // ========== IMPORTY ==========
 @import "./variables";
+@import "./forms";
 
 @import "./components/header";
 @import "./components/footer";
@@ -48,6 +49,8 @@
 @import "./components/ui/progress_bar";
 
 @import "./pages/home_page";
+
+@import "./pages/contact_page";
 
 * {
   margin: 0;

@@ -9,9 +9,17 @@ $color-white: #ffffff;
 // Odcienie pochodne (użyjemy ich do hoverów/cieni)
 $primary-600: darken($color-primary, 6%); // hover dla buttonów/linków
 $primary-700: darken($color-primary, 12%);
+$primary-light: lighten($color-primary, 50%);
+
 $brown-700: darken($color-secondary, 10%);
+$secondary-muted: rgba($color-secondary, 0.8);
+
 $bg-950: rgba(#000, 0.06); // cień / overlay
 $bg-glass: rgba(#ede0d4, 0.7); // tło headera z lekką przezroczystością
+
+// Kolory dla stanów błędu w formularzach
+$color-error: #b00020;
+$color-error-soft: rgba($color-error, 0.15);
 
 // Czcionki
 $font-heading: "Merriweather", serif;

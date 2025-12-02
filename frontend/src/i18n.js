@@ -11,6 +11,8 @@ import plHome from "./locales/pl/home.json";
 import enHome from "./locales/en/home.json";
 import esHome from "./locales/es/home.json";
 
+import plContact from "./locales/pl/contact.json";
+
 i18n.use(initReactI18next).init({
   resources: {
     en: {
@@ -22,6 +24,7 @@ i18n.use(initReactI18next).init({
       header: plHeader,
       footer: plFooter,
       home: plHome,
+      contact: plContact,
     },
     es: {
       header: esHeader,
