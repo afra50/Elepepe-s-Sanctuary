@@ -1,0 +1,42 @@
+{
+  "title": "Contacto",
+  "intro": "¿Tienes alguna pregunta? Escríbenos.",
+  "sections": {
+    "contactInfo": {
+      "title": "Datos de contacto",
+      "labels": {
+        "phone": "Teléfono:",
+        "email": "Correo electrónico:"
+      }
+    },
+    "foundation": {
+      "title": "Detalles de la fundación",
+      "labels": {
+        "regNumber": "Nº Nacional:",
+        "address": "Dirección:",
+        "regDate": "Fecha de reg.:"
+      }
+    },
+    "form": {
+      "title": "Escríbenos",
+      "subtitle": "Intentaremos responder lo más rápido posible."
+    }
+  },
+  "form": {
+    "fields": {
+      "fullName": {
+        "label": "Nombre y apellido",
+        "placeholder": "P.ej. Juan Pérez"
+      },
+      "email": {
+        "label": "Dirección de correo electrónico",
+        "placeholder": "P.ej. anna@ejemplo.com"
+      },
+      "message": {
+        "label": "Mensaje",
+        "placeholder": "Déjanos saber cómo podemos ayudarte..."
+      }
+    },
+    "submit": "Enviar un mensaje"
+  }
+}

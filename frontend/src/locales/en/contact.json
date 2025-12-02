@@ -1,0 +1,42 @@
+{
+  "title": "Contact",
+  "intro": "Have any questions? Write to us.",
+  "sections": {
+    "contactInfo": {
+      "title": "Contact details",
+      "labels": {
+        "phone": "Phone:",
+        "email": "Email:"
+      }
+    },
+    "foundation": {
+      "title": "Foundation details",
+      "labels": {
+        "regNumber": "National Reg. No:",
+        "address": "Address:",
+        "regDate": "Reg. Date:"
+      }
+    },
+    "form": {
+      "title": "Write to us",
+      "subtitle": "We will try to respond as quickly as possible."
+    }
+  },
+  "form": {
+    "fields": {
+      "fullName": {
+        "label": "Name and surname",
+        "placeholder": "E.g. John Smith"
+      },
+      "email": {
+        "label": "Email address",
+        "placeholder": "E.g. john@example.com"
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Let us know how we can help..."
+      }
+    },
+    "submit": "Send a message"
+  }
+}
