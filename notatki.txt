@@ -9,6 +9,12 @@ FOOTER
 - clamp gdzies?
 - KRZYSIEK - logo i nazwa jako odnośnik na homepage, dodać link fo FB jako ikonę
 
+KONTAKT
+* walidacja
+* errory
+* loader
+* alerty
+
 NA KONIEC
 - regulamin
 - polityka
