@@ -1,0 +1,42 @@
+{
+  "title": "Kontakt",
+  "intro": "Masz jakieś pytania? Napisz do nas.",
+  "sections": {
+    "contactInfo": {
+      "title": "Dane kontaktowe",
+      "labels": {
+        "phone": "Telefon:",
+        "email": "E-mail:"
+      }
+    },
+    "foundation": {
+      "title": "Dane fundacji",
+      "labels": {
+        "regNumber": "Nr rejestru:",
+        "address": "Adres:",
+        "regDate": "Data rejestracji:"
+      }
+    },
+    "form": {
+      "title": "Napisz do nas",
+      "subtitle": "Postaramy się odpowiedzieć tak szybko, jak to możliwe."
+    }
+  },
+  "form": {
+    "fields": {
+      "fullName": {
+        "label": "Imię i nazwisko",
+        "placeholder": "Np. Anna Nowak"
+      },
+      "email": {
+        "label": "Adres e-mail",
+        "placeholder": "Np. anna@example.com"
+      },
+      "message": {
+        "label": "Wiadomość",
+        "placeholder": "Napisz, w czym możemy pomóc..."
+      }
+    },
+    "submit": "Wyślij wiadomość"
+  }
+}

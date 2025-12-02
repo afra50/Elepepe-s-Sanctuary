@@ -8,6 +8,8 @@ import enFooter from "./locales/en/footer.json";
 import plFooter from "./locales/pl/footer.json";
 import esFooter from "./locales/es/footer.json";
 
+import plContact from "./locales/pl/contact.json";
+
 i18n.use(initReactI18next).init({
   resources: {
     en: {
@@ -17,6 +19,7 @@ i18n.use(initReactI18next).init({
     pl: {
       header: plHeader,
       footer: plFooter,
+      contact: plContact,
     },
     es: {
       header: esHeader,

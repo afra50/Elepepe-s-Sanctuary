@@ -1,0 +1,89 @@
+/* === Wspólny wygląd pól formularzy === */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.4rem;
+
+  label {
+    font-family: $font-body;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: $color-secondary;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    border-radius: 0.45rem;
+    border: 1px solid $color-border;
+    padding: 0.7rem 0.85rem;
+    font-family: $font-body;
+    font-size: 0.95rem;
+    color: $color-secondary;
+    background-color: rgba($color-white, 0.96);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease,
+      background-color 0.15s ease;
+
+    &::placeholder {
+      color: rgba($color-secondary, 0.55);
+      font-size: 0.9rem;
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: $color-primary;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.18);
+      background-color: $color-white;
+    }
+  }
+
+  textarea {
+    resize: none;
+    min-height: 140px;
+  }
+
+  /* Na przyszłość – jeśli zechcesz walidację */
+  &.is-error {
+    input,
+    textarea {
+      border-color: $color-error;
+      box-shadow: 0 0 0 3px $color-error-soft;
+    }
+  }
+
+  .field-error {
+    font-size: 0.8rem;
+    color: $color-error;
+    margin-top: 0.2rem;
+  }
+
+  .field-hint {
+    font-size: 0.8rem;
+    color: rgba($color-secondary, 0.7);
+  }
+}
+
+/* Akcje formularza (np. przycisk submit) */
+.form-actions {
+  margin-top: 1.8rem;
+  display: flex;
+  justify-content: flex-end;
+
+  .btn {
+    min-width: 9rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-actions {
+    justify-content: stretch;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}

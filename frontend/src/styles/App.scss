@@ -45,11 +45,14 @@
 
 // ========== IMPORTY ==========
 @import "./variables";
+@import "./forms";
 
 @import "./components/header";
 @import "./components/footer";
 
 @import "./components/ui/button";
+
+@import "./pages/contact_page";
 
 * {
   margin: 0;
