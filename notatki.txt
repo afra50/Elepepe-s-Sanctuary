@@ -5,6 +5,10 @@
 - api.js
 - protected route komponent
 
+FOOTER
+- clamp gdzies?
+- KRZYSIEK - logo i nazwa jako odnośnik na homepage, dodać link fo FB jako ikonę
+
 NA KONIEC
 - regulamin
 - polityka

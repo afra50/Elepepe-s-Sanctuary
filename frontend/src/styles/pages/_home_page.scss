@@ -1,0 +1,358 @@
+.home-page {
+    background-color: $color-background;
+    min-height: 100vh;
+    padding-bottom: 4rem;
+    font-family: $font-body;
+    color: $color-secondary;
+
+    // --- GLOBALNE KLASY POMOCNICZE ---
+
+    // Kontener (taki jak w headerze)
+    .container {
+        max-width: 87.5rem; // 1400px
+        margin-inline: auto;
+        padding-inline: clamp(1rem, 3vw, 2rem);
+    }
+
+    .section-title {
+        color: $color-secondary;
+        font-size: clamp(1.75rem, 3vw, 2.25rem);
+        margin-bottom: 2rem;
+        font-weight: 800;
+        line-height: 1.2;
+
+        &.center {
+            text-align: center;
+        }
+    }
+
+    // --- 1. HERO SECTION ---
+    .hero {
+        padding-block: clamp(3rem, 5vw, 6rem);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+
+        &__content {
+            max-width: 600px;
+        }
+
+        &__badge {
+            font-family: $font-accent;
+            display: inline-block;
+            background-color: $color-accent;
+            color: $color-secondary;
+            padding: 0.5rem 1rem;
+            border-radius: $radius-md;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+        }
+
+        &__title {
+            color: $color-secondary;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            font-weight: 900;
+        }
+
+        &__subtitle {
+            font-size: 1.125rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            color: $brown-700;
+        }
+
+        &__actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        &__visual {
+            display: flex;
+            justify-content: center;
+
+            .hero-img-placeholder {
+                width: clamp(250px, 30vw, 400px);
+                height: auto;
+                border-radius: 50%;
+                border: 8px solid rgba($color-white, 0.5);
+                box-shadow: $shadow-md;
+            }
+        }
+    }
+
+    // --- 2. STORY SECTION (Elepepe) ---
+    .story-section {
+        background-color: $color-white;
+        padding-block: 5rem;
+        margin-block: 2rem;
+
+        // W tej sekcji kontener działa jako flexbox
+        .story-container {
+            @extend .container; // Dziedziczy style .container
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .story-image {
+            flex: 1;
+
+            .img-frame {
+                width: 100%;
+                height: 350px;
+                background-size: cover;
+                background-position: center;
+                border-radius: 1rem;
+                box-shadow: $shadow-md;
+                transform: rotate(-3deg); // Lekki obrót jak zdjęcie na stole
+                transition: transform 0.3s ease;
+
+                &:hover {
+                    transform: rotate(0deg);
+                }
+            }
+        }
+
+        .story-content {
+            flex: 1.2;
+
+            .story-text {
+                font-size: 1.1rem;
+                line-height: 1.8;
+                margin-bottom: 2rem;
+                color: $brown-700;
+            }
+
+            .story-mission {
+                position: relative;
+                padding-left: 1.5rem;
+                font-weight: 600;
+                color: $color-primary;
+                font-family: $font-accent;
+                font-size: 1.2rem;
+                line-height: 1.6;
+
+                &::before {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 4px;
+                    background-color: $color-accent; // Różowy pasek obok cytatu
+                    border-radius: 2px;
+                }
+            }
+        }
+    }
+
+    // --- 3. STEPS SECTION (Jak to działa) ---
+    .steps-section {
+        padding-block: 4rem;
+
+        .steps-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            position: relative;
+        }
+
+        .step-card {
+            flex: 1;
+            text-align: center;
+            background-color: rgba($color-white, 0.8);
+            padding: 2.5rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: $shadow-sm;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            z-index: 2; // Musi być nad linią łączącą
+
+            &:hover {
+                background-color: $color-white;
+                box-shadow: $shadow-md;
+            }
+
+            .step-number {
+                width: 3.5rem;
+                height: 3.5rem;
+                background-color: $color-primary;
+                color: $color-white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin: 0 auto 1.5rem;
+            }
+
+            h3 {
+                font-family: $font-heading;
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+                color: $color-secondary;
+            }
+
+            p {
+                font-size: 0.95rem;
+                line-height: 1.5;
+                color: $brown-700;
+            }
+        }
+
+        // Linia łącząca kroki (widoczna tylko na desktopie)
+        .step-connector {
+            flex: 0 0 10%;
+            height: 2px;
+            background-color: rgba($color-primary, 0.3);
+            margin-top: 4.25rem; // Pozycjonowanie względem kulek z numerami
+        }
+    }
+
+    // --- 4. URGENT PROJECTS SECTION ---
+    .urgent-projects {
+        background-color: $color-white;
+        padding-block: 4rem;
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: $color-white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: $shadow-sm;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow 0.3s ease;
+
+            &:hover {
+                box-shadow: $shadow-md;
+            }
+
+            &__image {
+                height: 220px;
+                background-size: cover;
+                background-position: center;
+            }
+
+            &__content {
+                padding: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+
+                h3 {
+                    font-size: 1.25rem;
+                    color: $color-secondary;
+                    margin-bottom: 1.25rem;
+                    line-height: 1.4;
+                }
+
+                .project-stats {
+                    margin-top: auto;
+                    margin-bottom: 1.5rem;
+
+                    .stat-row {
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 0.9rem;
+                        color: $brown-700;
+                        margin-bottom: 0.5rem;
+
+                        strong {
+                            color: $color-secondary;
+                            font-weight: 700;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// --- RESPONSYWNOŚĆ (MEDIA QUERIES) ---
+
+// Tablet (poniżej 992px)
+@media (max-width: 992px) {
+    .home-page {
+        .story-section {
+            .story-container {
+                flex-direction: column; // Układ pionowy: zdjęcie nad tekstem
+                gap: 2rem;
+                text-align: center; // Opcjonalnie wyśrodkowanie tekstu
+            }
+
+            .story-image {
+                width: 100%;
+                max-width: 500px; // Ograniczenie szerokości zdjęcia na tablecie
+
+                .img-frame {
+                    height: 300px;
+                    transform: none; // Reset obrotu
+                }
+            }
+
+            .story-mission {
+                text-align: left; // Cytat lepiej wygląda wyrównany do lewej (z paskiem)
+                margin-inline: auto;
+                max-width: 80%;
+            }
+        }
+    }
+}
+
+// Mobile (poniżej 768px)
+@media (max-width: 768px) {
+    .home-page {
+        .hero {
+            flex-direction: column;
+            text-align: center;
+            padding-top: 2rem;
+
+            &__content {
+                margin: 0 auto;
+            }
+
+            &__actions {
+                justify-content: center;
+            }
+
+            &__visual .hero-img-placeholder {
+                width: 200px;
+                border-width: 5px;
+            }
+        }
+
+        .steps-section {
+            .steps-grid {
+                flex-direction: column; // Kroki jeden pod drugim
+                gap: 2.5rem;
+            }
+
+            .step-connector {
+                display: none; // Ukrywamy linię łączącą na mobile
+            }
+
+            .step-card {
+                width: 100%;
+            }
+        }
+
+        // Zmniejszenie nagłówków na małym ekranie
+        .section-title {
+            font-size: 1.75rem;
+        }
+    }
+}

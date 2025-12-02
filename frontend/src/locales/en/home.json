@@ -1,0 +1,35 @@
+{
+  "hero": {
+    "badge": "Saving little lives when costs exceed the heart",
+    "title": "Support for your little ones' treatment.",
+    "subtitle": "A platform where rat and guinea pig owners receive help with veterinary costs. You request support, we help raise the funds.",
+    "ctaDonate": "See fundraisers",
+    "ctaRequest": "Request support"
+  },
+  "story": {
+    "title": "It all started with Elepepe",
+    "text": "The Foundation was born from the love for one rat – Elepepe. He taught his guardian that rodents are not just 'little animals in cages', but sentient beings capable of love and changing a human's life.",
+    "mission": "Elepepe's Sanctuary is a non-profit organisation. Its mission is to help rat and guinea pig owners with their veterinary expenses, when they cannot afford them and they will impact the animal's health."
+  },
+  "steps": {
+    "title": "How does it work?",
+    "step1": {
+      "title": "Request Support",
+      "desc": "Fill out the form, describe the medical history, and attach the cost estimate."
+    },
+    "step2": {
+      "title": "Verification",
+      "desc": "Our team reviews the request. If approved, we launch a fundraiser."
+    },
+    "step3": {
+      "title": "Fundraising & Payout",
+      "desc": "Donors contribute to the specific cause. We pay the veterinary bill directly."
+    }
+  },
+  "urgent": {
+    "title": "Little ones needing help right now",
+    "raised": "Raised:",
+    "goal": "Goal:",
+    "support": "Support"
+  }
+}
