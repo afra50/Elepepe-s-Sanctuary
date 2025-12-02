@@ -1,13 +1,14 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom"; // Dodano useNavigate
 import Button from "../components/ui/Button";
 import ProgressBar from "../components/ui/ProgressBar";
 
 function HomePage() {
   const { t } = useTranslation("home");
+  const navigate = useNavigate(); // Hook do nawigacji
 
-  // Mock danych - to będzie przychodziło z backendu (tylko status: approved)
+  // Mock danych
   const urgentProjects = [
     {
       id: 1,
@@ -32,9 +33,15 @@ function HomePage() {
     },
   ];
 
+  // Funkcja obsługująca przejście do płatności
+  const handleDonateClick = (e, projectId) => {
+    e.stopPropagation(); // Ważne: Zatrzymuje kliknięcie rodzica (karty)
+    navigate(`/donate/${projectId}`); // Przekierowanie do płatności
+  };
+
   return (
     <main className="home-page">
-      {/* 1. HERO SECTION - Skupienie na modelu platformy */}
+      {/* 1. HERO SECTION */}
       <section className="hero container">
         <div className="hero__content">
           <div className="hero__badge">{t("hero.badge")}</div>
@@ -42,14 +49,12 @@ function HomePage() {
           <p className="hero__subtitle">{t("hero.subtitle")}</p>
 
           <div className="hero__actions">
-            {/* Przycisk prowadzący do sekcji zbiórek (scroll) lub strony z listą */}
             <NavLink to="/projects">
               <Button variant="primary" size="lg" className="hero-btn">
                 {t("hero.ctaDonate")}
               </Button>
             </NavLink>
 
-            {/* Przycisk dla potrzebujących pomocy */}
             <NavLink to="/request-support">
               <Button variant="secondary" size="lg" className="hero-btn">
                 {t("hero.ctaRequest")}
@@ -58,16 +63,14 @@ function HomePage() {
           </div>
         </div>
         <div className="hero__visual">
-          {/* Tutaj pasuje grafika: np. zarys dłoni trzymającej szczurka lub logo */}
           <img src="/logo.jpg" alt="Elepepe" className="hero-img-placeholder" />
         </div>
       </section>
 
-      {/* 2. STORY SECTION - Serce fundacji (Elepepe) */}
+      {/* 2. STORY SECTION */}
       <section className="story-section">
         <div className="container story-container">
           <div className="story-image">
-            {/* Zdjęcie Elepepe (lub reprezentatywne) */}
             <div
               className="img-frame"
               style={{ backgroundImage: "url('/elepepe-photo.jpg')" }}
@@ -83,7 +86,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 3. HOW IT WORKS - Wyjaśnienie procesu (Platforma) */}
+      {/* 3. HOW IT WORKS */}
       <section className="steps-section container">
         <h2 className="section-title center">{t("steps.title")}</h2>
 
@@ -93,8 +96,7 @@ function HomePage() {
             <h3>{t("steps.step1.title")}</h3>
             <p>{t("steps.step1.desc")}</p>
           </div>
-          <div className="step-connector"></div>{" "}
-          {/* Linia łącząca na desktopie */}
+          <div className="step-connector"></div>
           <div className="step-card">
             <div className="step-number">2</div>
             <h3>{t("steps.step2.title")}</h3>
@@ -109,40 +111,56 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 4. URGENT PROJECTS - Wynik działania platformy */}
-      <section className="urgent-projects container">
-        <h2 className="section-title">{t("urgent.title")}</h2>
+      {/* 4. URGENT PROJECTS */}
+      <section className="urgent-projects">
+        <div className="container">
+          <h2 className="section-title">{t("urgent.title")}</h2>
 
-        <div className="projects-grid">
-          {urgentProjects.map((project) => (
-            <div key={project.id} className="project-card">
+          <div className="projects-grid">
+            {urgentProjects.map((project) => (
               <div
-                className="project-card__image"
-                style={{ backgroundImage: `url(${project.image})` }}
-              ></div>
-
-              <div className="project-card__content">
-                <h3>{project.title}</h3>
-
-                <div className="project-stats">
-                  <div className="stat-row">
-                    <span>
-                      {t("urgent.raised")}{" "}
-                      <strong>{project.current} PLN</strong>
-                    </span>
-                    <span>
-                      {t("urgent.goal")} <strong>{project.goal} PLN</strong>
-                    </span>
-                  </div>
-                  <ProgressBar current={project.current} goal={project.goal} />
+                key={project.id}
+                className="project-card"
+                onClick={() => navigate(`/projects/${project.id}`)} // Klik w kartę -> szczegóły
+              >
+                {/* Wrapper na zdjęcie potrzebny do efektu zoomu bez wychodzenia poza ramkę */}
+                <div className="project-card__img-wrapper">
+                  <div
+                    className="project-card__image"
+                    style={{ backgroundImage: `url(${project.image})` }}
+                  ></div>
                 </div>
 
-                <Button variant="primary" className="full-width">
-                  {t("urgent.support")}
-                </Button>
+                <div className="project-card__content">
+                  <h3>{project.title}</h3>
+
+                  <div className="project-stats">
+                    <div className="stat-row">
+                      <span>
+                        {t("urgent.raised")}{" "}
+                        <strong>{project.current} PLN</strong>
+                      </span>
+                      <span>
+                        {t("urgent.goal")} <strong>{project.goal} PLN</strong>
+                      </span>
+                    </div>
+                    <ProgressBar
+                      current={project.current}
+                      goal={project.goal}
+                    />
+                  </div>
+
+                  <Button
+                    variant="primary"
+                    className="full-width"
+                    onClick={(e) => handleDonateClick(e, project.id)} // Klik w przycisk -> płatność
+                  >
+                    {t("urgent.support")}
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
     </main>

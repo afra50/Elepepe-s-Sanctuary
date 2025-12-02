@@ -2,14 +2,14 @@
   "hero": {
     "badge": "Salvando pequeñas vidas cuando los costos superan al corazón",
     "title": "Apoyo en el tratamiento de tus colitas.",
-    "subtitle": "Una plataforma donde los dueños de ratas y cobayas reciben ayuda con los gastos veterinarios. Tú solicitas apoyo, nosotros ayudamos a recaudar los fondos.",
+    "subtitle": "Una plataforma donde los dueños de ratas y otros roedores reciben ayuda con los gastos veterinarios. Tú solicitas apoyo, la Fundación ayuda a recaudar los fondos.",
     "ctaDonate": "Ver recaudaciones",
     "ctaRequest": "Solicitar apoyo"
   },
   "story": {
     "title": "Todo comenzó con Elepepe",
     "text": "La fundación nació del amor por una rata: Elepepe. Él enseñó a su tutor que los roedores no son solo 'pequeños animales en jaulas', sino seres llenos de sentimientos, capaces de amar y cambiar la vida de una persona.",
-    "mission": "Nuestra misión es ayudar a los propietarios de ratas y cobayas con sus gastos veterinarios cuando no pueden afrontarlos y la salud del animal está en juego."
+    "mission": "Elepepe's Sanctuary es una organización sin fines de lucro unipersonal. Su misión es ayudar a los propietarios de ratas y otros roedores con sus gastos veterinarios cuando no pueden afrontarlos y la salud del animal está en juego."
   },
   "steps": {
     "title": "¿Cómo funciona Elepepe's Sanctuary?",
@@ -19,11 +19,11 @@
     },
     "step2": {
       "title": "Verificación",
-      "desc": "Nuestro equipo revisa la solicitud. Si cumple con la misión, lanzamos una recaudación."
+      "desc": "La Fundación revisa la solicitud. Si se aprueba, lanzamos una recaudación."
     },
     "step3": {
       "title": "Recaudación y Pago",
-      "desc": "Los donantes aportan a la causa. Al finalizar, pagamos la factura directamente al veterinario."
+      "desc": "Los donantes aportan a la causa. Al finalizar, la Fundación paga la factura directamente al veterinario."
     }
   },
   "urgent": {

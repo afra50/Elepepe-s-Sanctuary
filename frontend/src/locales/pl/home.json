@@ -1,33 +1,33 @@
 {
   "hero": {
-    "badge": "Ratujemy małe życia, gdy koszty przerastają serce",
-    "title": "Wsparcie w leczeniu Twoich ogonków.",
-    "subtitle": "Platforma, gdzie opiekunowie szczurów i świnek morskich otrzymują pomoc w pokryciu kosztów weterynaryjnych. Ty zgłaszasz potrzebę, my pomagamy zebrać środki.",
+    "badge": "Ratujemy małe życia, gdy koszty przerastają możliwości",
+    "title": "Wsparcie w leczeniu Twojego gryzonia.",
+    "subtitle": "Platforma, gdzie opiekunowie szczurów i innych gryzoni otrzymują pomoc w pokryciu kosztów weterynaryjnych. Ty zgłaszasz potrzebę, Fundacja pomaga zebrać środki.",
     "ctaDonate": "Zobacz zbiórki",
     "ctaRequest": "Zgłoś potrzebę"
   },
   "story": {
     "title": "Wszystko zaczęło się od Elepepe",
     "text": "Fundacja powstała z miłości do jednego szczura – Elepepe. To on nauczył swojego opiekuna, że gryzonie to nie tylko „małe zwierzątka w klatkach”, ale pełne uczuć istoty, które potrafią kochać i zmieniać życie człowieka.",
-    "mission": "Naszą misją jest pomoc właścicielom szczurów i świnek morskich w kosztach weterynaryjnych, kiedy nie mogą ich pokryć, a stawką jest zdrowie zwierzęcia."
+    "mission": "Elepepe's Sanctuary to jednoosobowa organizacja non-profit. Naszą misją jest pomoc właścicielom szczurów i innych gryzoni w pokryciu kosztów weterynaryjnych, kiedy nie mogą ich pokryć, a stawką jest zdrowie zwierzęcia."
   },
   "steps": {
     "title": "Jak działa Elepepe's Sanctuary?",
     "step1": {
       "title": "Zgłoś potrzebę",
-      "desc": "Wypełnij formularz, opisz historię choroby i załącz kosztorys leczenia."
+      "desc": "Wypełnij formularz, opisz historię choroby i załącz potrzebne dokumenty."
     },
     "step2": {
       "title": "Weryfikacja",
-      "desc": "Nasz zespół sprawdza zgłoszenie. Jeśli jest zgodne z misją, uruchamiamy zbiórkę."
+      "desc": "Fundacja weryfikuje zgłoszenie. Jeśli jest zgodne z misją, uruchamiamy zbiórkę."
     },
     "step3": {
       "title": "Zbiórka i Wypłata",
-      "desc": "Darczyńcy wpłacają na konkretny cel. Po zakończeniu opłacamy fakturę u weterynarza."
+      "desc": "Darczyńcy wpłacają na konkretny cel, a fundacja przesyła Ci środki."
     }
   },
   "urgent": {
-    "title": "Ogonki, które potrzebują pomocy teraz",
+    "title": "Maluchy w szczególnej potrzebie",
     "raised": "Zebrano:",
     "goal": "Cel:",
     "support": "Wesprzyj"
