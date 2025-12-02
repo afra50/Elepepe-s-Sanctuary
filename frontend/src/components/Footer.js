@@ -1,48 +1,94 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Footer() {
-	return (
-		<footer className="site-footer">
-			<div className="top-footer">
-				<div className="footer-column">
-					<h4 className="brand-name">Elepepe's Sanctuary</h4>
-					<img className="logo" alt="rat's face" src="/logo.jpg"></img>
-				</div>
-				<div className="footer-column">
-					<h4>Information</h4>
-					<ul>
-						<li className="menu-item">
-							<NavLink to="/about">About Us</NavLink>
-						</li>
-						<li className="menu-item">
-							<NavLink to="/partnerships">Partnerships</NavLink>
-						</li>
-						<li className="menu-item">
-							<NavLink to="/contact">Conctact</NavLink>
-						</li>
-					</ul>
-				</div>
-				<div className="footer-column">
-					<h4>Fundation Info</h4>
-					<p>Elepepe's Sanctuary</p>
-					<p>NIP</p>
-					<p>Adress</p>
-					<p>Phone</p>
-				</div>
-			</div>
-			<div className="bottom-footer">
-				<p>© 2025 fundacja zebrane. Wszelkie prawa zastrzeżone.</p>
-				<a href="/regulamin.pdf" target="_blank">
-					Regulamin
-				</a>
+  const { t } = useTranslation("footer");
+  const currentYear = new Date().getFullYear();
 
-				<a href="/polityka.pdf" target="_blank">
-					Polityka
-				</a>
-			</div>
-		</footer>
-	);
+  return (
+    <footer className="site-footer">
+      <div className="container">
+        <div className="top-footer">
+          <div className="footer-column brand-column">
+            <h4 className="brand-name">Elepepe's Sanctuary</h4>
+            <img
+              className="logo"
+              alt="Elepepe's Sanctuary Logo"
+              src="/logo-removebg.png"
+            />
+          </div>
+
+          <div className="footer-column">
+            <h4>{t("columns.info")}</h4>
+            <ul className="footer-menu">
+              <li className="menu-item">
+                <NavLink to="/about">{t("links.about")}</NavLink>
+              </li>
+              <li className="menu-item">
+                <NavLink to="/partnerships">{t("links.partnerships")}</NavLink>
+              </li>
+              <li className="menu-item">
+                <NavLink to="/contact">{t("links.contact")}</NavLink>
+              </li>
+            </ul>
+          </div>
+
+          <div className="footer-column info-column">
+            <h4>{t("columns.foundation")}</h4>
+            <div className="foundation-data">
+              <p>
+                <strong>Elepepe's Sanctuary</strong>
+              </p>
+
+              <p>
+                <span className="label">{t("columns.labels.regNumber")} </span>
+                631,974
+              </p>
+
+              <p>
+                <span className="label">{t("columns.labels.address")} </span>
+                <br />
+                Calle Ciudad Aljarafe Nº 24, Blq 24
+                <br />
+                Planta 2, Puerta 8<br />
+                41927 Mairena del Aljarafe (Sevilla)
+                <br />
+                España
+              </p>
+
+              <p>
+                <span className="label">{t("columns.labels.regDate")} </span>
+                06/11/2025
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bottom-footer">
+          <p>{t("bottom.rights", { year: currentYear })}</p>
+
+          <div className="links">
+            <a
+              href="/regulations.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("bottom.terms")}
+            </a>
+            <span className="separator">|</span>
+            <a
+              href="/privacy-policy.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("bottom.privacy")}
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 }
 
 export default Footer;

@@ -31,12 +31,11 @@
 		}
 
 		&__logo-img {
-			height: clamp(1.75rem, 5vw, 3rem);
+			height: clamp(1.75rem, 4vw, 5rem);
 			width: auto;
 			display: block;
 			object-fit: contain;
-			border-radius: 0.5rem;
-			box-shadow: 0 0 0 0.06rem rgba(0, 0, 0, 0.1);
+			border-radius: 50%;
 		}
 
 		&__toggle {
@@ -221,7 +220,7 @@
 				}
 			}
 
-			&__menu.is-open + .nav__lang {
+			&__menu.is-open+.nav__lang {
 				display: flex;
 			}
 		}

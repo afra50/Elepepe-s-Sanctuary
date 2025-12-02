@@ -1,3 +1,12 @@
-index.html + html lang
+- loader
+- confirm dialog
+- komponent na brak polaczenia z backednem
+- min vh sprawdzic 
+- api.js
+- protected route komponent
 
-tekst 
+NA KONIEC
+- regulamin
+- polityka
+- index.html + html lang - tak jak na zebrane
+- seo - robots + google search console + sitemap + og img

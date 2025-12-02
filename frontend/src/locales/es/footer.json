@@ -1,0 +1,21 @@
+{
+  "columns": {
+    "info": "Información",
+    "foundation": "Datos de la Fundación",
+    "labels": {
+      "regNumber": "Nº Nacional:",
+      "address": "Dirección:",
+      "regDate": "Fecha de reg.:"
+    }
+  },
+  "links": {
+    "about": "Sobre nosotros",
+    "partnerships": "Colaboraciones",
+    "contact": "Contacto"
+  },
+  "bottom": {
+    "rights": "© {{year}} Elepepe’s Sanctuary. Todos los derechos reservados.",
+    "terms": "Términos y condiciones",
+    "privacy": "Política de privacidad"
+  }
+}
