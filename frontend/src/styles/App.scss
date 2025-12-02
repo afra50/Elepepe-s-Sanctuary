@@ -1,63 +1,68 @@
 /* ================== CZCIONKI ================== */
 /* ==== QUICKSAND ==== */
 @font-face {
-  font-family: 'Quicksand';
-  src: url('../../public/fonts/Quicksand/Quicksand-VariableFont_wght.ttf') format('truetype');
-  font-weight: 100 900;
-  font-style: normal;
+	font-family: "Quicksand";
+	src: url("../../public/fonts/Quicksand/Quicksand-VariableFont_wght.ttf")
+		format("truetype");
+	font-weight: 100 900;
+	font-style: normal;
 }
 
 /* ==== NUNITO ==== */
 @font-face {
-  font-family: 'Nunito';
-  src: url('../../public/fonts/Nunito/Nunito-VariableFont_wght.ttf') format('truetype');
-  font-weight: 100 900;
-  font-style: normal;
+	font-family: "Nunito";
+	src: url("../../public/fonts/Nunito/Nunito-VariableFont_wght.ttf")
+		format("truetype");
+	font-weight: 100 900;
+	font-style: normal;
 }
 
 @font-face {
-  font-family: 'Nunito';
-  src: url('../../public/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf') format('truetype');
-  font-weight: 100 900;
-  font-style: italic;
+	font-family: "Nunito";
+	src: url("../../public/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf")
+		format("truetype");
+	font-weight: 100 900;
+	font-style: italic;
 }
 
 /* ==== MERRIWEATHER ==== */
 @font-face {
-  font-family: 'Merriweather';
-  src: url('../../public/fonts/Merriweather/Merriweather-VariableFont_opsz\,wdth\,wght.ttf') format('truetype');
-  font-weight: 100 900;
-  font-style: normal;
+	font-family: "Merriweather";
+	src: url("../../public/fonts/Merriweather/Merriweather-VariableFont_opsz\,wdth\,wght.ttf")
+		format("truetype");
+	font-weight: 100 900;
+	font-style: normal;
 }
 
 @font-face {
-  font-family: 'Merriweather';
-  src: url('../../public/fonts/Merriweather/Merriweather-Italic-VariableFont_opsz\,wdth\,wght.ttf') format('truetype');
-  font-weight: 100 900;
-  font-style: italic;
+	font-family: "Merriweather";
+	src: url("../../public/fonts/Merriweather/Merriweather-Italic-VariableFont_opsz\,wdth\,wght.ttf")
+		format("truetype");
+	font-weight: 100 900;
+	font-style: italic;
 }
 
-
-
-// ========== IMPORTY ========== 
+// ========== IMPORTY ==========
 @import "./variables";
 
 @import "./components/header";
+@import "./components/footer";
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
 h1,
 h2,
-h3 {
-    font-family: $font-heading;
+h3,
+h4 {
+	font-family: $font-heading;
 }
 
 p,
 a,
 li {
-    font-family: $font-body;
+	font-family: $font-body;
 }
