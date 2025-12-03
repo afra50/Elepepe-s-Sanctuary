@@ -4,6 +4,7 @@
 - min vh sprawdzic 
 - api.js
 - protected route komponent
+- scrolltotop
 
 FOOTER
 - clamp gdzies?
