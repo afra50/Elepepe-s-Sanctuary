@@ -4,14 +4,17 @@
 - min vh sprawdzic 
 - api.js
 - protected route komponent
-- 404
 
 KONTAKT
 * dopisek o polityce
 * loader
 
+LOGOWANIE
+- loader
+- podlaczyc api
+
 NA KONIEC
 - regulamin
-- polityka - languagedetector?
+- polityka - languagedetector?, formularz kontaktowy
 - index.html + html lang - tak jak na zebrane
 - seo - robots + google search console + sitemap + og img

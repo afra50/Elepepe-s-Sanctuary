@@ -1,0 +1,11 @@
+{
+  "title": "Panel de Administración",
+  "subtitle": "Inicia sesión para gestionar Elepepe",
+  "usernameLabel": "Nombre de usuario",
+  "usernamePlaceholder": "Introduce usuario...",
+  "passwordLabel": "Contraseña",
+  "passwordPlaceholder": "Introduce contraseña...",
+  "btnSubmit": "Iniciar sesión",
+  "btnLoading": "Iniciando sesión...",
+  "errorEmpty": "Introduce usuario y contraseña para continuar."
+}

@@ -14,6 +14,12 @@ import esContact from "./locales/es/contact.json";
 import plHome from "./locales/pl/home.json";
 import enHome from "./locales/en/home.json";
 import esHome from "./locales/es/home.json";
+import plNotFound from "./locales/pl/notFound.json";
+import enNotFound from "./locales/en/notFound.json";
+import esNotFound from "./locales/es/notFound.json";
+import plLogin from "./locales/pl/login.json";
+import enLogin from "./locales/en/login.json";
+import esLogin from "./locales/es/login.json";
 
 i18n
   // Wykrywa język użytkownika (z localStorage, przeglądarki itp.)
@@ -26,18 +32,24 @@ i18n
         footer: enFooter,
         contact: enContact,
         home: enHome,
+        notFound: enNotFound,
+        login: enLogin,
       },
       pl: {
         header: plHeader,
         footer: plFooter,
         home: plHome,
         contact: plContact,
+        notFound: plNotFound,
+        login: plLogin,
       },
       es: {
         header: esHeader,
         footer: esFooter,
         contact: esContact,
         home: esHome,
+        notFound: esNotFound,
+        login: esLogin,
       },
     },
     fallbackLng: "en", // Język zapasowy zostaje (używany, gdy detekcja zawiedzie)
