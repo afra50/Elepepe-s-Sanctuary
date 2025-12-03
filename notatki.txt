@@ -8,6 +8,12 @@
 FOOTER
 - clamp gdzies?
 
+KONTAKT
+* walidacja
+* errory
+* loader
+* alerty
+
 NA KONIEC
 - regulamin
 - polityka

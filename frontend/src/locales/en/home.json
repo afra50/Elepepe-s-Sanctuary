@@ -1,33 +1,33 @@
 {
   "hero": {
-    "badge": "Saving little lives when costs exceed the heart",
-    "title": "Support for your little ones' treatment.",
+    "badge": "Saving little lives when costs exceed your means",
+    "title": "Support for your rodent's treatment.",
     "subtitle": "A platform where owners of rats and other rodents receive help with veterinary costs. You request support, the Foundation helps raise the funds.",
-    "ctaDonate": "See fundraisers",
+    "ctaDonate": "See active fundraisers",
     "ctaRequest": "Request support"
   },
   "story": {
     "title": "It all started with Elepepe",
     "text": "The Foundation was born from the love for one rat – Elepepe. He taught his guardian that rodents are not just 'little animals in cages', but sentient beings capable of love and changing a human's life.",
-    "mission": "Elepepe's Sanctuary is a one-person non-profit organisation. Its mission is to help owners of rats and other rodents with their veterinary expenses when they cannot afford them and the animal's health is at stake."
+    "mission": "Elepepe's Sanctuary is a one-person non-profit organisation. Its mission is to help owners of rats and other rodents cover veterinary expenses when they cannot afford them and the animal's health is at stake."
   },
   "steps": {
-    "title": "How does it work?",
+    "title": "How does Elepepe's Sanctuary work?",
     "step1": {
       "title": "Request Support",
-      "desc": "Fill out the form, describe the medical history, and attach the cost estimate."
+      "desc": "Fill out the form, describe the medical history, and attach the necessary documents."
     },
     "step2": {
       "title": "Verification",
-      "desc": "The Foundation reviews the request. If approved, a fundraiser is launched."
+      "desc": "The Foundation verifies the request. If it aligns with our mission, we launch a fundraiser."
     },
     "step3": {
       "title": "Fundraising & Payout",
-      "desc": "Donors contribute to the specific cause. The Foundation pays the veterinary bill directly."
+      "desc": "Donors contribute to the specific cause, and the foundation transfers the funds to you."
     }
   },
   "urgent": {
-    "title": "Little ones needing help right now",
+    "title": "Little ones in special need",
     "raised": "Raised:",
     "goal": "Goal:",
     "support": "Support"
