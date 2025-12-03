@@ -11,7 +11,6 @@ FOOTER
 
 KONTAKT
 * dopisek o polityce
-* errory nie zmieniaja jezyka po zmianie jezyka?
 * loader
 
 NA KONIEC
