@@ -49,17 +49,6 @@
             align-items: center;
         }
 
-        .error-code {
-            font-family: $font-heading;
-            // Płynna wielkość czcionki: min 6rem, max 10rem
-            font-size: clamp(6rem, 15vw, 10rem);
-            font-weight: 800;
-            color: rgba($color-primary, 0.2); // Półprzezroczysty, w tle
-            line-height: 0.8;
-            margin-bottom: 3rem;
-            user-select: none;
-        }
-
         .error-title {
             font-family: $font-heading;
             // Płynna wielkość: min 1.8rem, max 3rem

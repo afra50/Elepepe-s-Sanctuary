@@ -22,7 +22,6 @@ const NotFoundPage = () => {
         </div>
 
         <div className="content-wrapper">
-          <h1 className="error-code">404</h1>
           <h2 className="error-title">Ojej! Taka strona nie istnieje</h2>
           <p className="error-desc">
             Wygląda na to, że ten link prowadzi donikąd. Nasz mały przyjaciel
