@@ -9,6 +9,7 @@ FOOTER
 - clamp gdzies?
 
 KONTAKT
+* dopisek o polityce
 * errory nie zmieniaja jezyka po zmianie jezyka?
 * loader
 
