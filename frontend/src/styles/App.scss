@@ -3,14 +3,16 @@
 /* ==== NUNITO ==== */
 @font-face {
   font-family: "Nunito";
-  src: url("../../public/fonts/Nunito/Nunito-VariableFont_wght.ttf") format("truetype");
+  src: url("../../public/fonts/Nunito/Nunito-VariableFont_wght.ttf")
+    format("truetype");
   font-weight: 100 900;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Nunito";
-  src: url("../../public/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf") format("truetype");
+  src: url("../../public/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf")
+    format("truetype");
   font-weight: 100 900;
   font-style: italic;
 }
@@ -18,14 +20,16 @@
 /* ==== MERRIWEATHER ==== */
 @font-face {
   font-family: "Merriweather";
-  src: url("../../public/fonts/Merriweather/Merriweather-VariableFont_opsz\,wdth\,wght.ttf") format("truetype");
+  src: url("../../public/fonts/Merriweather/Merriweather-VariableFont_opsz\,wdth\,wght.ttf")
+    format("truetype");
   font-weight: 100 900;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Merriweather";
-  src: url("../../public/fonts/Merriweather/Merriweather-Italic-VariableFont_opsz\,wdth\,wght.ttf") format("truetype");
+  src: url("../../public/fonts/Merriweather/Merriweather-Italic-VariableFont_opsz\,wdth\,wght.ttf")
+    format("truetype");
   font-weight: 100 900;
   font-style: italic;
 }
@@ -33,7 +37,8 @@
 /* ==== CAVEAT ==== */
 @font-face {
   font-family: "Caveat";
-  src: url("../../public/fonts/Caveat/Caveat-VariableFont_wght.ttf") format("truetype");
+  src: url("../../public/fonts/Caveat/Caveat-VariableFont_wght.ttf")
+    format("truetype");
   font-weight: 100 900;
   font-style: normal;
 }
@@ -46,6 +51,7 @@
 @import "./components/footer";
 
 @import "./components/ui/button";
+@import "./components/ui/alert";
 @import "./components/ui/progress_bar";
 
 @import "./pages/home_page";

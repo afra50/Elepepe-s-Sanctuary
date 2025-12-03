@@ -37,6 +37,28 @@
         "placeholder": "Napisz, w czym możemy pomóc..."
       }
     },
+    "errors": {
+      "fullName": {
+        "required": "Podaj imię i nazwisko.",
+        "min": "Imię i nazwisko musi mieć co najmniej 3 znaki.",
+        "max": "Imię i nazwisko może mieć maksymalnie {{max}} znaków."
+      },
+      "email": {
+        "required": "Podaj adres e-mail.",
+        "min": "Adres e-mail jest zbyt krótki.",
+        "max": "Adres e-mail może mieć maksymalnie {{max}} znaków.",
+        "format": "Podaj poprawny adres e-mail."
+      },
+      "message": {
+        "required": "Napisz wiadomość.",
+        "min": "Wiadomość jest zbyt krótka.",
+        "max": "Wiadomość może mieć maksymalnie {{max}} znaków."
+      }
+    },
+    "alerts": {
+      "validation": "Popraw zaznaczone pola formularza.",
+      "success": "Wiadomość została wysłana."
+    },
     "submit": "Wyślij wiadomość"
   }
 }

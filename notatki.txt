@@ -10,10 +10,8 @@ FOOTER
 - clamp gdzies?
 
 KONTAKT
-* walidacja
-* errory
+* errory nie zmieniaja jezyka po zmianie jezyka?
 * loader
-* alerty
 
 NA KONIEC
 - regulamin

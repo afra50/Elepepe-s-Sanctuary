@@ -30,12 +30,34 @@
       },
       "email": {
         "label": "Dirección de correo electrónico",
-        "placeholder": "P.ej. anna@ejemplo.com"
+        "placeholder": "P.ej. juan@ejemplo.com"
       },
       "message": {
         "label": "Mensaje",
         "placeholder": "Déjanos saber cómo podemos ayudarte..."
       }
+    },
+    "errors": {
+      "fullName": {
+        "required": "Proporcione su nombre y apellido.",
+        "min": "El nombre y apellido deben tener al menos 3 caracteres.",
+        "max": "El nombre y el apellido pueden tener un máximo de {{max}} caracteres."
+      },
+      "email": {
+        "required": "Proporcione su dirección de correo electrónico.",
+        "min": "La dirección de correo electrónico es demasiado corta.",
+        "max": "La dirección de correo electrónico puede tener un máximo de {{max}} caracteres.",
+        "format": "Proporcione una dirección de correo electrónico válida."
+      },
+      "message": {
+        "required": "Escribe un mensaje.",
+        "min": "El mensaje es demasiado corto.",
+        "max": "El mensaje puede tener un máximo de {{max}} caracteres."
+      }
+    },
+    "alerts": {
+      "validation": "Corrija los campos de formulario seleccionados.",
+      "success": "El mensaje ha sido enviado."
     },
     "submit": "Enviar un mensaje"
   }

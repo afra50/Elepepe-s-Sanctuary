@@ -1,12 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import ContactForm from "../components/forms/ContactForm";
+import Alert from "../components/ui/Alert";
 
 function ContactPage() {
   const { t } = useTranslation("contact");
+  const [alert, setAlert] = useState(null);
+
+  const handleShowAlert = (payload) => {
+    if (!payload) return;
+    setAlert(payload);
+  };
 
   return (
     <main className="page-contact">
+      {alert && (
+        <Alert
+          variant={alert.variant}
+          onClose={() => setAlert(null)}
+          autoClose={alert.autoClose ?? 5000}
+        >
+          {alert.message}
+        </Alert>
+      )}
+
       <div className="container">
         {/* Nagłówek strony */}
         <header className="page-header">
@@ -64,7 +81,7 @@ function ContactPage() {
             <h2>{t("sections.form.title")}</h2>
             <p className="contact-help-text">{t("sections.form.subtitle")}</p>
 
-            <ContactForm />
+            <ContactForm onShowAlert={handleShowAlert} />
           </div>
         </section>
       </div>
