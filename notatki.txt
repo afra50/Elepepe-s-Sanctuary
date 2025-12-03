@@ -7,6 +7,7 @@
 - 404
 
 KONTAKT
+* dopisek o polityce
 * loader
 
 NA KONIEC
