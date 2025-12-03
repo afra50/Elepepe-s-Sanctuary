@@ -1,0 +1,105 @@
+.alert-root {
+  position: fixed;
+  top: clamp(4.5rem, 9vh, 5.5rem); // lekko pod headerem
+  left: 0;
+  right: 0;
+  z-index: 2000;
+
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  pointer-events: none; // nie blokuje kliknięć w tło
+}
+
+.alert {
+  pointer-events: auto;
+
+  min-width: 260px;
+  max-width: min(90vw, 420px);
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+
+  background-color: $color-white;
+  box-shadow: $shadow-md;
+  border: 1px solid $color-border;
+
+  font-family: $font-body;
+  font-size: 0.95rem;
+  color: $color-secondary;
+
+  // drobna animacja pojawiania – tylko w osi Y
+  opacity: 0;
+  transform: translateY(-8px);
+  animation: alert-fade-in 0.22s ease-out forwards;
+}
+
+.alert__text {
+  flex: 1;
+}
+
+.alert__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.05rem;
+  line-height: 1;
+  padding: 0 0.15rem;
+
+  color: $secondary-muted;
+  transition: color 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    color: $color-secondary;
+    transform: scale(1.08);
+  }
+}
+
+/* ========= WARIANTY ========= */
+
+/* SUKCES – zielony */
+.alert--success {
+  border-color: rgba($color-primary, 0.6);
+  background-color: lighten($color-primary, 45%);
+  color: $color-secondary;
+}
+
+/* ERROR – czerwony */
+.alert--error {
+  border-color: rgba($color-error, 0.7);
+  background-color: lighten($color-error, 46%);
+  color: $color-secondary;
+}
+
+/* INFO – akcent (róż) */
+.alert--info {
+  border-color: rgba($color-accent, 0.7);
+  background-color: lighten($color-accent, 40%);
+  color: $color-secondary;
+}
+
+/* Telefon – trochę mniejsze */
+@media (max-width: 600px) {
+  .alert {
+    padding: 0.65rem 0.9rem;
+    max-width: 95vw;
+
+    font-size: 0.9rem;
+  }
+}
+
+@keyframes alert-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

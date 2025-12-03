@@ -37,6 +37,28 @@
         "placeholder": "Let us know how we can help..."
       }
     },
+    "errors": {
+      "fullName": {
+        "required": "Provide your name and surname.",
+        "min": "Name and surname must be at least 3 characters long.",
+        "max": "Name and surname can be a maximum of {{max}} characters long."
+      },
+      "email": {
+        "required": "Provide your email address.",
+        "min": "The email address is too short.",
+        "max": "The email address can be a maximum of {{max}} characters long.",
+        "format": "Provide a valid email address."
+      },
+      "message": {
+        "required": "Write a message.",
+        "min": "The message is too short.",
+        "max": "The message can be a maximum of {{max}} characters long."
+      }
+    },
+    "alerts": {
+      "validation": "Correct the selected form fields.",
+      "success": "The message has been sent."
+    },
     "submit": "Send a message"
   }
 }
