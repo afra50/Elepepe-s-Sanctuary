@@ -29,18 +29,25 @@
 				letter-spacing: 0.1rem;
 				color: $color-white;
 			}
+			svg {
+				font-size: 2rem;
+				color: $color-white;
+			}
 
 			&.brand-column {
 				align-items: center;
 
-				.logo {
-					width: 200px;
-					height: auto;
-				}
+				a {
+					text-decoration: none;
+					.logo {
+						width: 200px;
+						height: auto;
+					}
 
-				.brand-name {
-					font-size: 1.5rem;
-					margin-bottom: 2rem;
+					.brand-name {
+						font-size: 1.5rem;
+						margin-bottom: 2rem;
+					}
 				}
 			}
 
