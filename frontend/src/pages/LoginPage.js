@@ -1,19 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
 import Alert from "../components/ui/Alert";
+import Loader from "../components/ui/Loader";
 import { useTranslation } from "react-i18next";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  // W normalnym projekcie: const { t } = useTranslation("login");
   const { t } = useTranslation("login");
 
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
-
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,11 +23,8 @@ const LoginPage = () => {
     setError("");
     setIsLoading(true);
 
-    console.log("Próba logowania:", formData);
-
     setTimeout(() => {
       if (formData.username && formData.password) {
-        console.log("Zalogowano pomyślnie (symulacja)");
         navigate("/admin");
       } else {
         setError(t("errorEmpty"));
@@ -89,7 +82,15 @@ const LoginPage = () => {
                 size="md"
                 disabled={isLoading}
               >
-                {isLoading ? t("btnLoading") : t("btnSubmit")}
+                {isLoading ? (
+                  /* Używamy klasy zamiast stylów inline */
+                  <div className="btn-loading-content">
+                    <Loader size="sm" />
+                    <span>{t("btnLoading")}</span>
+                  </div>
+                ) : (
+                  t("btnSubmit")
+                )}
               </Button>
             </div>
           </form>

@@ -1,9 +1,12 @@
-- loader
+- paginacja
 - confirm dialog
 - komponent na brak polaczenia z backednem
 - min vh sprawdzic 
 - api.js
 - protected route komponent
+
+HOME
+- paginacja na zbiorkach
 
 KONTAKT
 * dopisek o polityce
@@ -12,6 +15,7 @@ KONTAKT
 LOGOWANIE
 - loader
 - podlaczyc api
+- trasa i dzieci objete protected route komponent
 
 NA KONIEC
 - regulamin
