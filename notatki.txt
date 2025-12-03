@@ -4,17 +4,13 @@
 - min vh sprawdzic 
 - api.js
 - protected route komponent
-- scrolltotop
-
-FOOTER
-- clamp gdzies?
+- 404
 
 KONTAKT
-* errory nie zmieniaja jezyka po zmianie jezyka?
 * loader
 
 NA KONIEC
 - regulamin
-- polityka
+- polityka - languagedetector?
 - index.html + html lang - tak jak na zebrane
 - seo - robots + google search console + sitemap + og img

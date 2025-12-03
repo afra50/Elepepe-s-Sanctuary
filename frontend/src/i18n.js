@@ -1,5 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import LanguageDetector from "i18next-browser-languagedetector"; // <--- 1. IMPORT
 
 import enHeader from "./locales/en/header.json";
 import plHeader from "./locales/pl/header.json";
@@ -14,30 +15,40 @@ import plHome from "./locales/pl/home.json";
 import enHome from "./locales/en/home.json";
 import esHome from "./locales/es/home.json";
 
-i18n.use(initReactI18next).init({
-  resources: {
-    en: {
-      header: enHeader,
-      footer: enFooter,
-      contact: enContact,
-      home: enHome,
+i18n
+  // Wykrywa język użytkownika (z localStorage, przeglądarki itp.)
+  .use(LanguageDetector) // <--- 2. UŻYCIE DETEKTORA
+  .use(initReactI18next)
+  .init({
+    resources: {
+      en: {
+        header: enHeader,
+        footer: enFooter,
+        contact: enContact,
+        home: enHome,
+      },
+      pl: {
+        header: plHeader,
+        footer: plFooter,
+        home: plHome,
+        contact: plContact,
+      },
+      es: {
+        header: esHeader,
+        footer: esFooter,
+        contact: esContact,
+        home: esHome,
+      },
     },
-    pl: {
-      header: plHeader,
-      footer: plFooter,
-      home: plHome,
-      contact: plContact,
+    fallbackLng: "en", // Język zapasowy zostaje (używany, gdy detekcja zawiedzie)
+
+    // Opcjonalnie: konfiguracja detekcji
+    detection: {
+      order: ["localStorage", "navigator"], // Najpierw sprawdź localStorage, potem język przeglądarki
+      caches: ["localStorage"], // Gdzie zapisywać wybór użytkownika
     },
-    es: {
-      header: esHeader,
-      footer: esFooter,
-      contact: esContact,
-      home: esHome,
-    },
-  },
-  lng: "en",
-  fallbackLng: "en",
-  interpolation: { escapeValue: false },
-});
+
+    interpolation: { escapeValue: false },
+  });
 
 export default i18n;
