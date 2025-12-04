@@ -1,0 +1,214 @@
+// src/styles/pages/request_support_page.scss
+.page-request-support {
+  padding-block: clamp(2.5rem, 5vw, 3.5rem);
+  background-color: $color-background;
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: $color-secondary;
+  }
+
+  p {
+    color: $secondary-muted;
+  }
+
+  .rs-container {
+    max-width: 60rem;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 2rem);
+  }
+
+  /* ===== HERO ===== */
+
+  .rs-hero {
+    margin-bottom: 2.2rem;
+
+    &__eyebrow {
+      display: inline-block;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      background-color: $color-accent;
+      color: $color-white;
+      font-size: 1.05rem;
+      font-family: $font-accent;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.9rem;
+    }
+
+    &__title {
+      font-size: clamp(2.1rem, 3.1vw, 2.8rem);
+      margin-bottom: 0.7rem;
+    }
+
+    &__intro {
+      font-size: 0.98rem;
+      line-height: 1.7;
+    }
+  }
+
+  /* ===== KARTA Z FORMULARZEM ===== */
+
+  .rs-card {
+    position: relative;
+    background-color: $color-white;
+    border-radius: 1.5rem;
+    padding: clamp(1.8rem, 3vw, 2.5rem);
+    box-shadow: $shadow-bg;
+    border: 1px solid rgba($color-border, 0.4);
+
+    /* zielony pasek na górze karty */
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 1.5rem;
+      right: 1.5rem;
+      height: 0.25rem;
+      border-radius: 999px;
+      background: linear-gradient(
+        90deg,
+        $color-primary,
+        lighten($color-primary, 14%)
+      );
+      transform: translateY(-50%);
+    }
+  }
+
+  .rs-card__header {
+    margin-bottom: 1.4rem;
+    border-bottom: 1px solid rgba($color-border, 0.7);
+    padding-bottom: 1rem;
+  }
+
+  .rs-card__title {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.35rem;
+  }
+
+  .rs-card__subtitle {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: rgba($color-secondary, 0.85);
+  }
+
+  /* ===== SEKCJE W FORMULARZU ===== */
+
+  .request-form {
+    margin-top: 0.8rem;
+  }
+
+  .request-section {
+    & + .request-section {
+      margin-top: 1.8rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba($color-border, 0.6);
+    }
+
+    h3 {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      font-size: 1rem;
+      margin-bottom: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: $brown-700;
+
+      padding-left: 1.2rem;
+
+      /* pionowy zielony pasek po lewej */
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0.24rem;
+        height: 1.35rem;
+        border-radius: 999px;
+        background: linear-gradient(
+          180deg,
+          $color-primary,
+          lighten($color-primary, 12%)
+        );
+      }
+    }
+  }
+
+  /* Wiersz kwota + waluta itd. */
+  .request-row {
+    display: flex;
+    gap: 1rem;
+
+    &--amount {
+      .form-field {
+        flex: 1;
+      }
+
+      .form-field:nth-child(2) {
+        max-width: 7.5rem;
+      }
+    }
+  }
+
+  /* Checkboxy */
+  .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-family: $font-body;
+    color: $color-secondary;
+
+    input[type="checkbox"] {
+      margin-top: 0.14rem;
+    }
+  }
+
+  .form-actions {
+    margin-top: 1.8rem;
+  }
+
+  /* ===== RESPONSYWNOŚĆ ===== */
+
+  @media (max-width: 768px) {
+    .rs-container {
+      max-width: 100%;
+    }
+
+    .rs-card {
+      padding-inline: 1.25rem;
+      padding-block: 1.25rem 1.8rem;
+      border-radius: 1.2rem;
+
+      &::before {
+        left: 1rem;
+        right: 1rem;
+      }
+    }
+
+    .rs-hero__title {
+      font-size: 2rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    padding-block: 2rem;
+
+    .request-row {
+      flex-direction: column;
+
+      &--amount {
+        .form-field:nth-child(2) {
+          max-width: none;
+        }
+      }
+    }
+  }
+}

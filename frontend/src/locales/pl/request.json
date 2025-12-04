@@ -1,0 +1,179 @@
+{
+  "hero": {
+    "eyebrow": "Zgłoś potrzebę swojego podopiecznego",
+    "title": "Poproś o wsparcie",
+    "intro": "Masz pod opieką szczura lub innego gryzonia, którego leczenie zaczyna przerastać Twój budżet? Wypełnij formularz – opisz sytuację, dołącz dokumenty, a my odezwiemy się z informacją o dalszych krokach."
+  },
+
+  "form": {
+    "header": {
+      "title": "Wypełnij formularz zgłoszeniowy",
+      "subtitle": "Im więcej szczegółów podasz (diagnoza, opis historii, koszty, załączniki), tym łatwiej będzie nam zweryfikować zgłoszenie."
+    },
+
+    "sections": {
+      "applicant": "Dane opiekuna",
+      "animal": "Dane zwierzaka",
+      "case": "Opis sytuacji i potrzeby",
+      "attachments": "Załączniki",
+      "payout": "Dane do wypłaty",
+      "consents": "Zgody i oświadczenia"
+    },
+
+    "fields": {
+      "optional": "opcjonalne",
+
+      "fullName": {
+        "label": "Imię i nazwisko",
+        "placeholder": "Np. Anna Kowalska"
+      },
+
+      "email": {
+        "label": "Adres e-mail",
+        "placeholder": "Np. anna@example.com"
+      },
+
+      "phone": {
+        "label": "Numer telefonu",
+        "placeholder": "Np. +48 600 000 000"
+      },
+
+      "country": {
+        "label": "Kraj",
+        "placeholder": "Np. Polska"
+      },
+
+      "city": {
+        "label": "Miasto",
+        "placeholder": "Np. Warszawa"
+      },
+
+      "species": {
+        "label": "Gatunek",
+        "placeholder": "Wybierz gatunek",
+        "options": {
+          "rat": "Szczur",
+          "guineaPig": "Świnka morska",
+          "other": "Inny gryzoń"
+        }
+      },
+
+      "animalName": {
+        "label": "Imię zwierzaka / zwierzaków",
+        "placeholder": "Np. Lusia i Benio"
+      },
+
+      "animalsCount": {
+        "label": "Liczba zwierząt objętych zgłoszeniem",
+        "placeholder": "Np. 1"
+      },
+
+      "age": {
+        "label": "Wiek",
+        "placeholder": "Np. ok. 1,5 roku"
+      },
+
+      "sex": {
+        "label": "Płeć",
+        "placeholder": "Wybierz płeć",
+        "options": {
+          "female": "Samica",
+          "male": "Samiec",
+          "unknown": "Nie wiem / różne"
+        }
+      },
+
+      "description": {
+        "label": "Treść zgłoszenia",
+        "placeholder": "Opisz proszę historię zwierzaka, diagnozę, dotychczasowe leczenie, plan zalecony przez lekarza oraz to, na co dokładnie potrzebne są środki."
+      },
+
+      "amount": {
+        "label": "Kwota potrzebna",
+        "placeholder": "Np. 2000.00"
+      },
+
+      "currency": {
+        "label": "Waluta"
+      },
+
+      "amountType": {
+        "label": "Kwota jest",
+        "options": {
+          "estimated": "szacunkowa (może się jeszcze zmienić)",
+          "exact": "dokładna (wynika z kosztorysu/faktur)"
+        }
+      },
+
+      "deadline": {
+        "label": "Do kiedy środki są potrzebne?"
+      },
+
+      "treatmentOngoing": {
+        "label": "Leczenie już trwa (są ponoszone koszty na bieżąco)."
+      },
+
+      "needsInstallments": {
+        "label": "Potrzebne są wypłaty w kilku etapach (np. przy dłuższym leczeniu)."
+      },
+
+      "otherFundraiserLink": {
+        "label": "Czy była już organizowana zbiórka gdzie indziej? (link)",
+        "placeholder": "Wklej link do zbiórki, jeśli taka istnieje"
+      },
+
+      "otherHelp": {
+        "label": "Czy ktoś inny już pomaga?",
+        "placeholder": "Np. prywatne zbiórki znajomych, wsparcie innych organizacji itp."
+      },
+
+      "petPhotos": {
+        "label": "Zdjęcia zwierzaka",
+        "hint": "Dodaj 1–5 wyraźnych zdjęć – pomogą przedstawić historię Twojego podopiecznego."
+      },
+
+      "documents": {
+        "label": "Dokumenty, paragony, faktury, wyniki badań",
+        "hint": "Załącz pliki potwierdzające koszty i diagnozę (PDF, zdjęcia paragonów, wypisów itp.)."
+      },
+
+      "payoutName": {
+        "label": "Imię i nazwisko właściciela konta",
+        "placeholder": "Tak jak na rachunku bankowym"
+      },
+
+      "payoutIban": {
+        "label": "Numer konta / IBAN",
+        "placeholder": "Np. PL00 0000 0000 0000 0000 0000 0000"
+      },
+
+      "payoutBankName": {
+        "label": "Nazwa banku",
+        "placeholder": "Np. Bank XYZ"
+      },
+
+      "payoutBankCountry": {
+        "label": "Kraj banku",
+        "placeholder": "Np. Polska"
+      },
+
+      "consentDataProcessing": {
+        "label": "Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zgłoszenia zgodnie z polityką prywatności fundacji."
+      },
+
+      "consentTruth": {
+        "label": "Oświadczam, że wszystkie podane informacje są zgodne z prawdą, a załączone dokumenty są autentyczne."
+      },
+
+      "consentPublicStory": {
+        "label": "Wyrażam zgodę na publikację historii mojego podopiecznego oraz przesłanych zdjęć w materiałach fundacji (strona internetowa, media społecznościowe) na potrzeby zbiórki."
+      }
+    },
+
+    "alerts": {
+      "success": "Zgłoszenie zostało wysłane. Skontaktujemy się z Tobą tak szybko, jak to możliwe."
+    },
+
+    "submit": "Wyślij zgłoszenie"
+  }
+}
