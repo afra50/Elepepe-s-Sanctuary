@@ -1,0 +1,11 @@
+{
+  "title": "Admin Panel",
+  "subtitle": "Log in to manage Elepepe",
+  "usernameLabel": "Username",
+  "usernamePlaceholder": "Enter username...",
+  "passwordLabel": "Password",
+  "passwordPlaceholder": "Enter password...",
+  "btnSubmit": "Log in",
+  "btnLoading": "Logging in...",
+  "errorEmpty": "Please enter username and password to continue."
+}
