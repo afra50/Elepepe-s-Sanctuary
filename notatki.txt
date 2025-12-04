@@ -16,8 +16,13 @@ LOGOWANIE
 - podlaczyc api
 - trasa i dzieci objete protected route komponent
 
+BACKEND
+- crony - jakie?
+- statyczne obrazki
+
 NA KONIEC
 - regulamin
 - polityka - languagedetector?, formularz kontaktowy
 - index.html + html lang - tak jak na zebrane
 - seo - robots + google search console + sitemap + og img
+- cron, wyl x-powered-by, ratelimiter, slow-down, logi (winston? logger?), helmet, cookies http only, samesite:strict, secure, jwt + jwt refresh, authmiddleware, compression, morgan, proxy, ssl
