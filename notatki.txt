@@ -13,7 +13,6 @@ KONTAKT
 * loader
 
 LOGOWANIE
-- loader
 - podlaczyc api
 - trasa i dzieci objete protected route komponent
 
