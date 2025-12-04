@@ -1,0 +1,72 @@
+.login-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-background;
+    padding: 1rem;
+
+    .login-card {
+        background-color: $color-white;
+        width: 100%;
+        max-width: 420px;
+        padding: 2.5rem;
+        border-radius: $radius-md;
+        box-shadow: $shadow-md; // Używamy cienia ze zmiennych
+        border: 1px solid rgba($color-border, 0.4);
+
+        // Animacja wejścia
+        animation: slideUp 0.5s ease-out;
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+
+            h1 {
+                font-family: $font-heading;
+                color: $color-secondary;
+                font-size: 1.8rem;
+                margin-bottom: 0.5rem;
+            }
+
+            p {
+                font-family: $font-body;
+                color: $secondary-muted;
+                font-size: 0.95rem;
+            }
+        }
+
+        .form-error-message {
+            background-color: $color-error-soft;
+            color: $color-error;
+            padding: 0.75rem;
+            border-radius: 0.4rem;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid rgba($color-error, 0.2);
+        }
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Responsywność dla bardzo małych ekranów
+@media (max-width: 480px) {
+    .login-page {
+        .login-card {
+            padding: 1.5rem;
+        }
+    }
+}

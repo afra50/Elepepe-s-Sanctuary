@@ -1,0 +1,103 @@
+.not-found-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    background-color: $color-background;
+    padding: clamp(1rem, 5vw, 3rem);
+
+    .not-found-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: clamp(1.5rem, 4vw, 4rem);
+        align-items: center;
+        max-width: 1200px;
+        width: 100%;
+
+        // Media query dla tabletów i desktopów -> zmiana na 2 kolumny
+        @media (min-width: 768px) {
+            grid-template-columns: 1fr 1fr;
+            text-align: left;
+        }
+
+        // Wyśrodkowanie na mobilkach
+        text-align: center;
+    }
+
+    .image-wrapper {
+        display: flex;
+        justify-content: center;
+
+        .rat-img {
+            // Obrazek skaluje się płynnie, ale nie przekracza 500px
+            width: 100%;
+            max-width: clamp(250px, 40vw, 500px);
+            height: auto;
+            // Opcjonalnie: lekki cień pod szczurkiem
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
+            animation: float 6s ease-in-out infinite;
+        }
+    }
+
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        // Na mobilkach wyśrodkowane elementy
+        @media (max-width: 767px) {
+            align-items: center;
+        }
+
+        .error-title {
+            font-family: $font-heading;
+            // Płynna wielkość: min 1.8rem, max 3rem
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            color: $color-secondary;
+            margin-top: -1rem; // Wsuwamy lekko na kod 404
+            margin-bottom: 1.5rem;
+            position: relative; // Żeby był nad kodem 404
+        }
+
+        .error-desc {
+            font-family: $font-body;
+            font-size: clamp(1rem, 1.2vw, 1.25rem);
+            color: $secondary-muted;
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap; // Żeby przyciski spadły pod siebie na bardzo małych ekranach
+            justify-content: center;
+
+            @media (min-width: 768px) {
+                justify-content: flex-start;
+            }
+
+            .btn-responsive {
+                // Button też może być lekko elastyczny
+                font-size: clamp(0.9rem, 1vw, 1.1rem);
+                padding: clamp(0.6rem, 1.5vw, 1rem) clamp(1.5rem, 3vw, 2.5rem);
+            }
+        }
+    }
+}
+
+// Delikatna animacja unoszenia szczurka
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}

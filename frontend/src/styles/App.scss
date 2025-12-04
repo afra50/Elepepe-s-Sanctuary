@@ -53,10 +53,14 @@
 @import "./components/ui/button";
 @import "./components/ui/alert";
 @import "./components/ui/progress_bar";
+@import "./components/ui/loader";
 
 @import "./pages/home_page";
+@import "./pages/not_found_page";
 @import "./pages/contact_page";
 @import "./pages/request_support_page";
+
+@import "./pages/login_page";
 
 * {
   margin: 0;

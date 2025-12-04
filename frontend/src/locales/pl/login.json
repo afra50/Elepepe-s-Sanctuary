@@ -1,0 +1,11 @@
+{
+  "title": "Panel Admina",
+  "subtitle": "Zaloguj się, aby zarządzać Elepepe",
+  "usernameLabel": "Nazwa użytkownika",
+  "usernamePlaceholder": "Wpisz login...",
+  "passwordLabel": "Hasło",
+  "passwordPlaceholder": "Wpisz hasło...",
+  "btnSubmit": "Zaloguj się",
+  "btnLoading": "Logowanie...",
+  "errorEmpty": "Wprowadź login i hasło, aby kontynuować."
+}
