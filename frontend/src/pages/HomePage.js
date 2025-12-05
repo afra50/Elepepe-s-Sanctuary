@@ -1,14 +1,14 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink, useNavigate } from "react-router-dom"; // Dodano useNavigate
+import { NavLink, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
 import ProgressBar from "../components/ui/ProgressBar";
+import Banner from "../components/Banner"; // <--- 1. IMPORT BANERA
 
 function HomePage() {
   const { t } = useTranslation("home");
-  const navigate = useNavigate(); // Hook do nawigacji
+  const navigate = useNavigate();
 
-  // Mock danych
   const urgentProjects = [
     {
       id: 1,
@@ -33,15 +33,13 @@ function HomePage() {
     },
   ];
 
-  // Funkcja obsługująca przejście do płatności
   const handleDonateClick = (e, projectId) => {
-    e.stopPropagation(); // Ważne: Zatrzymuje kliknięcie rodzica (karty)
-    navigate(`/donate/${projectId}`); // Przekierowanie do płatności
+    e.stopPropagation();
+    navigate(`/donate/${projectId}`);
   };
 
   return (
     <main className="home-page">
-      {/* 1. HERO SECTION */}
       <section className="hero container">
         <div className="hero__content">
           <div className="hero__badge">{t("hero.badge")}</div>
@@ -67,51 +65,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 2. STORY SECTION */}
-      <section className="story-section">
-        <div className="container story-container">
-          <div className="story-image">
-            <div
-              className="img-frame"
-              style={{ backgroundImage: "url('/elepepe-photo.jpg')" }}
-            ></div>
-          </div>
-          <div className="story-content">
-            <h2 className="section-title">{t("story.title")}</h2>
-            <p className="story-text">{t("story.text")}</p>
-            <blockquote className="story-mission">
-              {t("story.mission")}
-            </blockquote>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. HOW IT WORKS */}
-      <section className="steps-section container">
-        <h2 className="section-title center">{t("steps.title")}</h2>
-
-        <div className="steps-grid">
-          <div className="step-card">
-            <div className="step-number">1</div>
-            <h3>{t("steps.step1.title")}</h3>
-            <p>{t("steps.step1.desc")}</p>
-          </div>
-          <div className="step-connector"></div>
-          <div className="step-card">
-            <div className="step-number">2</div>
-            <h3>{t("steps.step2.title")}</h3>
-            <p>{t("steps.step2.desc")}</p>
-          </div>
-          <div className="step-connector"></div>
-          <div className="step-card">
-            <div className="step-number">3</div>
-            <h3>{t("steps.step3.title")}</h3>
-            <p>{t("steps.step3.desc")}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. URGENT PROJECTS */}
       <section className="urgent-projects">
         <div className="container">
           <h2 className="section-title">{t("urgent.title")}</h2>
@@ -121,9 +74,8 @@ function HomePage() {
               <div
                 key={project.id}
                 className="project-card"
-                onClick={() => navigate(`/projects/${project.id}`)} // Klik w kartę -> szczegóły
+                onClick={() => navigate(`/projects/${project.id}`)}
               >
-                {/* Wrapper na zdjęcie potrzebny do efektu zoomu bez wychodzenia poza ramkę */}
                 <div className="project-card__img-wrapper">
                   <div
                     className="project-card__image"
@@ -153,13 +105,63 @@ function HomePage() {
                   <Button
                     variant="primary"
                     className="full-width"
-                    onClick={(e) => handleDonateClick(e, project.id)} // Klik w przycisk -> płatność
+                    onClick={(e) => handleDonateClick(e, project.id)}
                   >
                     {t("urgent.support")}
                   </Button>
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <Banner
+        image="/banner-home.jpg"
+        title={t("banner.title")}
+        text={t("banner.text")}
+        ctaLabel={t("banner.cta")}
+        ctaLink="/success-stories"
+      />
+
+      <section className="steps-section container">
+        <h2 className="section-title center">{t("steps.title")}</h2>
+        <div className="steps-grid">
+          <div className="step-card">
+            <div className="step-number">1</div>
+            <h3>{t("steps.step1.title")}</h3>
+            <p>{t("steps.step1.desc")}</p>
+          </div>
+          <div className="step-connector"></div>
+          <div className="step-card">
+            <div className="step-number">2</div>
+            <h3>{t("steps.step2.title")}</h3>
+            <p>{t("steps.step2.desc")}</p>
+          </div>
+          <div className="step-connector"></div>
+          <div className="step-card">
+            <div className="step-number">3</div>
+            <h3>{t("steps.step3.title")}</h3>
+            <p>{t("steps.step3.desc")}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. STORY SECTION */}
+      <section className="story-section">
+        <div className="container story-container">
+          <div className="story-image">
+            <div
+              className="img-frame"
+              style={{ backgroundImage: "url('/elepepe-photo.jpg')" }}
+            ></div>
+          </div>
+          <div className="story-content">
+            <h2 className="section-title">{t("story.title")}</h2>
+            <p className="story-text">{t("story.text")}</p>
+            <blockquote className="story-mission">
+              {t("story.mission")}
+            </blockquote>
           </div>
         </div>
       </section>

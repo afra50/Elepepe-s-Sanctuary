@@ -31,5 +31,10 @@
     "raised": "Zebrano:",
     "goal": "Cel:",
     "support": "Wesprzyj"
+  },
+  "banner": {
+    "title": "Szczęśliwe zakończenia istnieją",
+    "text": "To dowód na to, że warto pomagać. Zobacz zbiórki, które sfinansowaliśmy w 100% i uratowaliśmy życie.",
+    "cta": "Zobacz sukcesy"
   }
 }
