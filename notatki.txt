@@ -11,6 +11,23 @@ HOME
 KONTAKT
 * dopisek o polityce
 * loader
+* alert error jak backend nawali?
+
+REQUEST
+* walidacja
+* alert error bo chyba w ogole nie ma
+* gatunek jako radio - szczur, świnka, inne - jakie?
+* plec - samiec/samica
+* wiek i płeć - pomyslec co jak dwa rozne zwierzaki? jaki typ pola?
+* liczba zwierząt + kwota- ładniejsze strzalki, mniejsze pole?
+* treść - większe textarea?
+* kwota szacunkowa czy dokładna - radio?
+* osobny komponent select - waluta
+* wybór daty osobny komponent
+* checkboxy osobny komponent
+* labele przy checkboxach nie uppercase, blisko kwadratow
+* wystylowac pole do wybierania plikow
+* jakies jeszcze zgody?
 
 LOGOWANIE
 - loader
