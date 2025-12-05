@@ -31,5 +31,10 @@
     "raised": "Recaudado:",
     "goal": "Meta:",
     "support": "Ayudar"
+  },
+  "banner": {
+    "title": "Los finales felices existen",
+    "text": "Esto demuestra que vale la pena ayudar a los demás. Vea las campañas de recaudación de fondos que hemos financiado completamente y que han salvado vidas.",
+    "cta": "Ver historias de éxito"
   }
 }

@@ -6,12 +6,14 @@
 - protected route komponent
 
 HOME
-- paginacja na zbiorkach
+- karuzela na najpilniejszych zbiorkach
 
 KONTAKT
-* dopisek o polityce
-* loader
-* alert error jak backend nawali?
+<<<<<<< HEAD
+- dopisek o polityce
+- loader
+- zmiana danych na prawdziwe - dwa telefony, mail
+- alert error jak backend nawali?
 
 REQUEST
 * walidacja
@@ -30,12 +32,16 @@ REQUEST
 * jakies jeszcze zgody?
 
 LOGOWANIE
-- loader
 - podlaczyc api
 - trasa i dzieci objete protected route komponent
 
+BACKEND
+- crony - jakie?
+- statyczne obrazki
+
 NA KONIEC
 - regulamin
-- polityka - languagedetector?, formularz kontaktowy
+- polityka - languagedetector?, formularz kontaktowy, fomularz zgloszenia
 - index.html + html lang - tak jak na zebrane
 - seo - robots + google search console + sitemap + og img
+- cron, wyl x-powered-by, ratelimiter, slow-down, logi (winston? logger?), helmet, cookies http only, samesite:strict, secure, jwt + jwt refresh, authmiddleware, compression, morgan, proxy, ssl

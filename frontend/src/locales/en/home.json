@@ -31,5 +31,10 @@
     "raised": "Raised:",
     "goal": "Goal:",
     "support": "Support"
+  },
+  "banner": {
+    "title": "Happy Endings Do Exist",
+    "text": "Proof that helping matters. See the fundraisers we fully funded, saving lives in the process.",
+    "cta": "View success stories"
   }
 }

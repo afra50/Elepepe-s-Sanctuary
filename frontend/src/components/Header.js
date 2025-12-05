@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react"; // Usunięto useEffect, nie jest potrzebny
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -6,14 +6,8 @@ function Header() {
   const { t, i18n } = useTranslation("header");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // (opcjonalnie) zapamiętaj język w localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem("lng");
-    if (saved && saved !== i18n.language) i18n.changeLanguage(saved);
-  }, [i18n]);
-  useEffect(() => {
-    localStorage.setItem("lng", i18n.language);
-  }, [i18n.language]);
+  // USUNIĘTO: Manualne useEffect do localStorage.
+  // i18next-browser-languagedetector w i18n.js robi to automatycznie.
 
   const flags = [
     { code: "en", src: "/flags/en.svg", alt: "English" },
@@ -22,6 +16,11 @@ function Header() {
   ];
 
   const changeLanguage = (lng) => i18n.changeLanguage(lng);
+
+  // KLUCZOWA ZMIANA:
+  // Używamy resolvedLanguage, a jeśli go nie ma (start aplikacji),
+  // używamy fallbacku 'en'. To zapobiega wyświetlaniu 3 flag.
+  const currentLang = i18n.resolvedLanguage || i18n.language || "en";
 
   return (
     <header className="site-header">
@@ -84,9 +83,10 @@ function Header() {
           </li>
         </ul>
 
+        {/* Zmieniono warunek filtrowania na currentLang */}
         <div className="nav__lang">
           {flags
-            .filter((f) => f.code !== i18n.language)
+            .filter((f) => f.code !== currentLang)
             .map((f) => (
               <button
                 key={f.code}
