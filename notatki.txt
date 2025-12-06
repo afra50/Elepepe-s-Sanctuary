@@ -8,9 +8,19 @@ HOME
 - karuzela na najpilniejszych zbiorkach
 
 KONTAKT
+<<<<<<< HEAD
 - dopisek o polityce
 - loader
 - zmiana danych na prawdziwe - dwa telefony, mail
+- alert error jak backend nawali?
+
+REQUEST
+* walidacja
+* alert error bo chyba w ogole nie ma
+* liczba zwierząt + kwota - ładniejsze strzalki, mniejsze pole?
+* treść - większe textarea?
+* wybór daty osobny komponent
+* wystylowac pole do wybierania plikow
 
 BACKEND
 - crony - jakie?
