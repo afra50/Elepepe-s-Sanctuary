@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../ui/Button";
+import RadioGroup from "../ui/RadioGroup";
+import Checkbox from "../ui/Checkbox";
 
 const initialForm = {
   // Dane zgłaszającego
@@ -12,9 +14,9 @@ const initialForm = {
 
   // Zwierzak
   species: "",
+  speciesOther: "", // << nowość – jeśli "inne"
   animalName: "",
   age: "",
-  sex: "",
   animalsCount: "",
 
   // Opis i sytuacja
@@ -47,6 +49,10 @@ function RequestSupportForm({ onShowAlert }) {
     petPhotos: [],
     documents: [],
   });
+
+  const setField = (name, value) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -162,25 +168,46 @@ function RequestSupportForm({ onShowAlert }) {
       <section className="request-section request-section--animal">
         <h3>{t("form.sections.animal")}</h3>
 
+        {/* Gatunek – radio */}
         <div className="form-field">
-          <label htmlFor="species">{t("form.fields.species.label")}</label>
-          <select
-            id="species"
+          <label>{t("form.fields.species.label")}</label>
+          <RadioGroup
             name="species"
             value={form.species}
-            onChange={handleChange}
-            required
-          >
-            <option value="">{t("form.fields.species.placeholder")}</option>
-            <option value="rat">{t("form.fields.species.options.rat")}</option>
-            <option value="guineaPig">
-              {t("form.fields.species.options.guineaPig")}
-            </option>
-            <option value="other">
-              {t("form.fields.species.options.other")}
-            </option>
-          </select>
+            onChange={(val) => setField("species", val)}
+            options={[
+              {
+                value: "rat",
+                label: t("form.fields.species.options.rat"),
+              },
+              {
+                value: "guineaPig",
+                label: t("form.fields.species.options.guineaPig"),
+              },
+              {
+                value: "other",
+                label: t("form.fields.species.options.other"),
+              },
+            ]}
+          />
         </div>
+
+        {/* Jeśli „inne” – pokaż pole „jakie?” */}
+        {form.species === "other" && (
+          <div className="form-field">
+            <label htmlFor="speciesOther">
+              {t("form.fields.speciesOther.label")}
+            </label>
+            <input
+              id="speciesOther"
+              name="speciesOther"
+              type="text"
+              value={form.speciesOther}
+              onChange={handleChange}
+              placeholder={t("form.fields.speciesOther.placeholder")}
+            />
+          </div>
+        )}
 
         <div className="form-field">
           <label htmlFor="animalName">
@@ -227,23 +254,6 @@ function RequestSupportForm({ onShowAlert }) {
             placeholder={t("form.fields.age.placeholder")}
           />
         </div>
-
-        <div className="form-field">
-          <label htmlFor="sex">
-            {t("form.fields.sex.label")}{" "}
-            <span className="field-hint">({t("form.fields.optional")})</span>
-          </label>
-          <select id="sex" name="sex" value={form.sex} onChange={handleChange}>
-            <option value="">{t("form.fields.sex.placeholder")}</option>
-            <option value="female">
-              {t("form.fields.sex.options.female")}
-            </option>
-            <option value="male">{t("form.fields.sex.options.male")}</option>
-            <option value="unknown">
-              {t("form.fields.sex.options.unknown")}
-            </option>
-          </select>
-        </div>
       </section>
 
       {/* === 3. Opis sytuacji i potrzeby === */}
@@ -282,37 +292,44 @@ function RequestSupportForm({ onShowAlert }) {
           </div>
 
           <div className="form-field">
-            <label htmlFor="currency">{t("form.fields.currency.label")}</label>
-            <select
-              id="currency"
+            <label>{t("form.fields.currency.label")}</label>
+            <RadioGroup
               name="currency"
               value={form.currency}
-              onChange={handleChange}
-              required
-            >
-              <option value="EUR">EUR</option>
-              <option value="PLN">PLN</option>
-            </select>
+              onChange={(val) => setField("currency", val)}
+              inline
+              options={[
+                {
+                  value: "EUR",
+                  label: t("form.fields.currency.options.eur"),
+                },
+                {
+                  value: "PLN",
+                  label: t("form.fields.currency.options.pln"),
+                },
+              ]}
+            />
           </div>
         </div>
 
         <div className="form-field">
-          <label htmlFor="amountType">
-            {t("form.fields.amountType.label")}
-          </label>
-          <select
-            id="amountType"
+          <label>{t("form.fields.amountType.label")}</label>
+          <RadioGroup
             name="amountType"
             value={form.amountType}
-            onChange={handleChange}
-          >
-            <option value="estimated">
-              {t("form.fields.amountType.options.estimated")}
-            </option>
-            <option value="exact">
-              {t("form.fields.amountType.options.exact")}
-            </option>
-          </select>
+            onChange={(val) => setField("amountType", val)}
+            inline
+            options={[
+              {
+                value: "estimated",
+                label: t("form.fields.amountType.options.estimated"),
+              },
+              {
+                value: "exact",
+                label: t("form.fields.amountType.options.exact"),
+              },
+            ]}
+          />
         </div>
 
         <div className="form-field">
@@ -328,27 +345,23 @@ function RequestSupportForm({ onShowAlert }) {
         </div>
 
         <div className="form-field">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              name="treatmentOngoing"
-              checked={form.treatmentOngoing}
-              onChange={handleChange}
-            />
+          <Checkbox
+            name="treatmentOngoing"
+            checked={form.treatmentOngoing}
+            onChange={(val) => setField("treatmentOngoing", val)}
+          >
             {t("form.fields.treatmentOngoing.label")}
-          </label>
+          </Checkbox>
         </div>
 
         <div className="form-field">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              name="needsInstallments"
-              checked={form.needsInstallments}
-              onChange={handleChange}
-            />
+          <Checkbox
+            name="needsInstallments"
+            checked={form.needsInstallments}
+            onChange={(val) => setField("needsInstallments", val)}
+          >
             {t("form.fields.needsInstallments.label")}
-          </label>
+          </Checkbox>
         </div>
 
         <div className="form-field">
@@ -479,41 +492,48 @@ function RequestSupportForm({ onShowAlert }) {
         <h3>{t("form.sections.consents")}</h3>
 
         <div className="form-field">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              name="consentDataProcessing"
-              checked={form.consentDataProcessing}
-              onChange={handleChange}
-              required
-            />
+          <Checkbox
+            name="consentDataProcessing"
+            checked={form.consentDataProcessing}
+            onChange={(value) =>
+              setForm((prev) => ({
+                ...prev,
+                consentDataProcessing: value,
+              }))
+            }
+          >
             {t("form.fields.consentDataProcessing.label")}
-          </label>
+          </Checkbox>
         </div>
 
         <div className="form-field">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              name="consentTruth"
-              checked={form.consentTruth}
-              onChange={handleChange}
-              required
-            />
+          <Checkbox
+            name="consentTruth"
+            checked={form.consentTruth}
+            onChange={(value) =>
+              setForm((prev) => ({
+                ...prev,
+                consentTruth: value,
+              }))
+            }
+          >
             {t("form.fields.consentTruth.label")}
-          </label>
+          </Checkbox>
         </div>
 
         <div className="form-field">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              name="consentPublicStory"
-              checked={form.consentPublicStory}
-              onChange={handleChange}
-            />
+          <Checkbox
+            name="consentPublicStory"
+            checked={form.consentPublicStory}
+            onChange={(value) =>
+              setForm((prev) => ({
+                ...prev,
+                consentPublicStory: value,
+              }))
+            }
+          >
             {t("form.fields.consentPublicStory.label")}
-          </label>
+          </Checkbox>
         </div>
       </section>
 

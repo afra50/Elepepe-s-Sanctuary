@@ -50,12 +50,16 @@
 
       "species": {
         "label": "Gatunek",
-        "placeholder": "Wybierz gatunek",
         "options": {
           "rat": "Szczur",
           "guineaPig": "Świnka morska",
           "other": "Inny gryzoń"
         }
+      },
+
+      "speciesOther": {
+        "label": "Podaj gatunek",
+        "placeholder": "Np. myszoskoczek"
       },
 
       "animalName": {
@@ -73,16 +77,6 @@
         "placeholder": "Np. ok. 1,5 roku"
       },
 
-      "sex": {
-        "label": "Płeć",
-        "placeholder": "Wybierz płeć",
-        "options": {
-          "female": "Samica",
-          "male": "Samiec",
-          "unknown": "Nie wiem / różne"
-        }
-      },
-
       "description": {
         "label": "Treść zgłoszenia",
         "placeholder": "Opisz proszę historię zwierzaka, diagnozę, dotychczasowe leczenie, plan zalecony przez lekarza oraz to, na co dokładnie potrzebne są środki."
@@ -94,14 +88,18 @@
       },
 
       "currency": {
-        "label": "Waluta"
+        "label": "Waluta",
+        "options": {
+          "eur": "EUR",
+          "pln": "PLN"
+        }
       },
 
       "amountType": {
         "label": "Kwota jest",
         "options": {
-          "estimated": "szacunkowa (może się jeszcze zmienić)",
-          "exact": "dokładna (wynika z kosztorysu/faktur)"
+          "estimated": "Szacunkowa (może się jeszcze zmienić)",
+          "exact": "Dokładna (wynika z rachunków)"
         }
       },
 
