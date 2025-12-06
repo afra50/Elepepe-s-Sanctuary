@@ -1,0 +1,98 @@
+.dashboard {
+    font-family: $font-body;
+    color: $color-secondary;
+
+    .dashboard-intro {
+        margin-bottom: 3rem;
+
+        .page-title {
+            font-family: $font-heading;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: $color-secondary;
+            font-weight: 800;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: $brown-700;
+            margin: 0;
+        }
+    }
+
+    // --- GRID KART Z OPISAMI ---
+    .description-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .description-card {
+        display: flex;
+        flex-direction: column;
+        background: $color-white;
+        padding: 2rem;
+        border-radius: $radius-md;
+        box-shadow: $shadow-sm;
+        border: 1px solid rgba($color-border, 0.4);
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        cursor: pointer;
+        height: 100%; // Równa wysokość
+
+        &:hover {
+            transform: translateY(-3px);
+            box-shadow: $shadow-md;
+            border-color: rgba($color-primary, 0.5);
+
+            .icon-wrapper {
+                background-color: $color-primary;
+                color: $color-white;
+            }
+
+            .card-title {
+                color: $color-primary;
+            }
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .icon-wrapper {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: rgba($color-primary, 0.1);
+            color: $color-primary;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease, color 0.2s ease;
+
+            .card-icon {
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+        .card-title {
+            margin: 0;
+            font-family: $font-heading;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: $color-secondary;
+            transition: color 0.2s ease;
+        }
+
+        .card-text {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: $brown-700;
+        }
+    }
+}

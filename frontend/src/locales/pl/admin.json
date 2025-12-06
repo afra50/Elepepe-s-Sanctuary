@@ -1,0 +1,20 @@
+{
+  "menu": {
+    "dashboard": "Start",
+    "requests": "Zgłoszenia",
+    "projects": "Zbiórki",
+    "donations": "Darowizny",
+    "foundationSupport": "Wpłaty własne",
+    "payouts": "Wypłaty",
+    "logout": "Wyloguj"
+  },
+  "dashboard": {
+    "title": "Panel Administracyjny",
+    "subtitle": "Wybierz sekcję, którą chcesz zarządzać:",
+    "requestsDesc": "Moderacja zgłoszeń od opiekunów. Przeglądaj, akceptuj lub odrzucaj nowe prośby o pomoc.",
+    "projectsDesc": "Zarządzanie aktywnymi zbiórkami. Edycja opisów, zdjęć oraz zmiana statusów projektów.",
+    "donationsDesc": "Pełna historia wpłat od darczyńców. Przeglądanie i wyszukiwanie transakcji.",
+    "foundationSupportDesc": "Rejestr wpłat własnych fundacji na rzecz zbiórek.",
+    "payoutsDesc": "Ewidencja przelewów wychodzących do beneficjentów."
+  }
+}

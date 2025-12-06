@@ -1,0 +1,20 @@
+{
+  "menu": {
+    "dashboard": "Inicio",
+    "requests": "Solicitudes",
+    "projects": "Recaudaciones",
+    "donations": "Donaciones",
+    "foundationSupport": "Fondos propios",
+    "payouts": "Pagos",
+    "logout": "Cerrar sesión"
+  },
+  "dashboard": {
+    "title": "Panel de Administración",
+    "subtitle": "Selecciona una sección para gestionar:",
+    "requestsDesc": "Moderación de solicitudes de los guardianes. Aprueba o rechaza nuevas peticiones de ayuda.",
+    "projectsDesc": "Gestión de recaudaciones activas. Edita descripciones, fotos y estados de los proyectos.",
+    "donationsDesc": "Historial completo de donaciones. Explora y busca transacciones.",
+    "foundationSupportDesc": "Registro de fondos propios de la fundación asignados directamente a las recaudaciones.",
+    "payoutsDesc": "Registro de transferencias salientes a beneficiarios."
+  }
+}

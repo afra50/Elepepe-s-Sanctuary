@@ -1,11 +1,15 @@
 {
-  "title": "Panel Admina",
-  "subtitle": "Zaloguj się, aby zarządzać Elepepe",
+  "title": "Panel Administratora",
+  "subtitle": "Zaloguj się, aby zarządzać treścią.",
   "usernameLabel": "Nazwa użytkownika",
-  "usernamePlaceholder": "Wpisz login...",
+  "usernamePlaceholder": "Wpisz nazwę użytkownika",
   "passwordLabel": "Hasło",
-  "passwordPlaceholder": "Wpisz hasło...",
+  "passwordPlaceholder": "Wpisz hasło",
   "btnSubmit": "Zaloguj się",
   "btnLoading": "Logowanie...",
-  "errorEmpty": "Wprowadź login i hasło, aby kontynuować."
+  "errorEmpty": "Proszę wypełnić wszystkie pola.",
+  "errorInvalidCredentials": "Nieprawidłowa nazwa użytkownika lub hasło.",
+  "errorServerError": "Błąd serwera. Spróbuj ponownie później.",
+  "errorSessionExpired": "Sesja wygasła. Zaloguj się ponownie.",
+  "errorDefault": "Wystąpił nieoczekiwany błąd."
 }

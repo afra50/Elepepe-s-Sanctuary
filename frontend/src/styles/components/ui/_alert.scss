@@ -15,7 +15,6 @@
 .alert {
   pointer-events: auto;
 
-  min-width: 260px;
   max-width: min(90vw, 420px);
 
   display: flex;
@@ -98,6 +97,7 @@
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

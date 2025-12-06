@@ -2,8 +2,7 @@
 - confirm dialog
 - komponent na brak polaczenia z backednem
 - min vh sprawdzic 
-- api.js
-- protected route komponent
+- TLUMACZENIA KAZDEJ ODPOWIEDZI Z BACKENDU
 
 HOME
 - karuzela na najpilniejszych zbiorkach
@@ -12,10 +11,6 @@ KONTAKT
 - dopisek o polityce
 - loader
 - zmiana danych na prawdziwe - dwa telefony, mail
-
-LOGOWANIE
-- podlaczyc api
-- trasa i dzieci objete protected route komponent
 
 BACKEND
 - crony - jakie?

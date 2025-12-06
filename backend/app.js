@@ -1,26 +1,25 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const authRoutes = require("./routes/authRoutes");
 
-// Initialize Express app
 const app = express();
 
 // Middleware
-app.use(cors()); // Enable CORS (allows requests from other ports like React)
-app.use(express.json()); // Parse JSON bodies
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(cookieParser());
 
-// Simple test route to check if server works
-app.get("/", (req, res) => {
-  res.status(200).json({
-    message: "Elepepe Backend is running correctly!",
-    status: "success",
-  });
-});
+// TRASY
+app.use("/api/auth", authRoutes);
 
-// Routes will be mounted here in the future
-// e.g., app.use('/api/animals', animalRoutes);
-
-// Error handling (404 - Not Found)
-app.use((req, res, next) => {
+// 404
+app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 

@@ -1,11 +1,15 @@
 {
   "title": "Admin Panel",
-  "subtitle": "Log in to manage Elepepe",
+  "subtitle": "Log in to manage content.",
   "usernameLabel": "Username",
-  "usernamePlaceholder": "Enter username...",
+  "usernamePlaceholder": "Enter username",
   "passwordLabel": "Password",
-  "passwordPlaceholder": "Enter password...",
-  "btnSubmit": "Log in",
+  "passwordPlaceholder": "Enter password",
+  "btnSubmit": "Log In",
   "btnLoading": "Logging in...",
-  "errorEmpty": "Please enter username and password to continue."
+  "errorEmpty": "Please fill in all fields.",
+  "errorInvalidCredentials": "Invalid username or password.",
+  "errorServerError": "Server error. Please try again later.",
+  "errorSessionExpired": "Session expired. Please log in again.",
+  "errorDefault": "An unexpected error occurred."
 }

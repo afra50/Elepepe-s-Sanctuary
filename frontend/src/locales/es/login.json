@@ -1,11 +1,15 @@
 {
   "title": "Panel de Administración",
-  "subtitle": "Inicia sesión para gestionar Elepepe",
+  "subtitle": "Inicia sesión para gestionar el contenido.",
   "usernameLabel": "Nombre de usuario",
-  "usernamePlaceholder": "Introduce usuario...",
+  "usernamePlaceholder": "Ingresa tu usuario",
   "passwordLabel": "Contraseña",
-  "passwordPlaceholder": "Introduce contraseña...",
+  "passwordPlaceholder": "Ingresa tu contraseña",
   "btnSubmit": "Iniciar sesión",
-  "btnLoading": "Iniciando sesión...",
-  "errorEmpty": "Introduce usuario y contraseña para continuar."
+  "btnLoading": "Iniciando...",
+  "errorEmpty": "Por favor, completa todos los campos.",
+  "errorInvalidCredentials": "Nombre de usuario o contraseña incorrectos.",
+  "errorServerError": "Error del servidor. Inténtalo de nuevo más tarde.",
+  "errorSessionExpired": "La sesión ha expirado. Por favor, inicia sesión de nuevo.",
+  "errorDefault": "Ocurrió un error inesperado."
 }

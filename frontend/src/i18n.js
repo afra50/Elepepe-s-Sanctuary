@@ -22,6 +22,10 @@ import enLogin from "./locales/en/login.json";
 import esLogin from "./locales/es/login.json";
 import plRequest from "./locales/pl/request.json";
 
+import plAdmin from "./locales/pl/admin.json";
+import enAdmin from "./locales/en/admin.json";
+import esAdmin from "./locales/es/admin.json";
+
 i18n
   // Wykrywa język użytkownika (z localStorage, przeglądarki itp.)
   .use(LanguageDetector) // <--- 2. UŻYCIE DETEKTORA
@@ -35,6 +39,7 @@ i18n
         home: enHome,
         notFound: enNotFound,
         login: enLogin,
+        admin: enAdmin,
       },
       pl: {
         header: plHeader,
@@ -44,6 +49,7 @@ i18n
         contact: plContact,
         notFound: plNotFound,
         login: plLogin,
+        admin: plAdmin,
       },
       es: {
         header: esHeader,
@@ -52,6 +58,7 @@ i18n
         home: esHome,
         notFound: esNotFound,
         login: esLogin,
+        admin: esAdmin,
       },
     },
     fallbackLng: "en", // Język zapasowy zostaje (używany, gdy detekcja zawiedzie)

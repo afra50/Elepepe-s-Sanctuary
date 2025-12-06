@@ -1,36 +1,73 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // Dodano useLocation
 import Button from "../components/ui/Button";
 import Alert from "../components/ui/Alert";
 import Loader from "../components/ui/Loader";
 import { useTranslation } from "react-i18next";
+import api from "../utils/api";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Pobranie lokalizacji, skąd użytkownik przyszedł
   const { t } = useTranslation("login");
 
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Sprawdzamy, czy użytkownik został przekierowany z innej podstrony
+  // Jeśli tak, po zalogowaniu wrócimy tam. Jeśli nie, idziemy do "/admin"
+  const from = location.state?.from?.pathname || "/admin";
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (!formData.username || !formData.password) {
+      setError(t("errorEmpty"));
+      return;
+    }
+
     setIsLoading(true);
 
-    setTimeout(() => {
-      if (formData.username && formData.password) {
-        navigate("/admin");
-      } else {
-        setError(t("errorEmpty"));
-        setIsLoading(false);
+    try {
+      await api.post("/auth/login", {
+        username: formData.username,
+        password: formData.password,
+      });
+
+      // Jeśli sukces, przekieruj do panelu (lub tam skąd przyszedł)
+      navigate(from, { replace: true });
+    } catch (err) {
+      console.error("Login error:", err);
+
+      // --- TŁUMACZENIE BŁĘDÓW ---
+      const backendError = err.response?.data?.error;
+      let errorMsgKey = "errorDefault"; // Domyślny klucz błędu
+
+      // Mapowanie komunikatów z backendu na klucze tłumaczeń
+      if (backendError === "Invalid credentials") {
+        errorMsgKey = "errorInvalidCredentials";
+      } else if (err.response?.status === 500) {
+        errorMsgKey = "errorServerError";
+      } else if (backendError === "Missing authorization token") {
+        errorMsgKey = "errorSessionExpired";
       }
-    }, 1000);
+
+      // Ustawienie przetłumaczonego komunikatu (lub fallback do tekstu z backendu)
+      setError(
+        t(errorMsgKey) !== errorMsgKey
+          ? t(errorMsgKey)
+          : backendError || t("errorDefault")
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -83,7 +120,6 @@ const LoginPage = () => {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  /* Używamy klasy zamiast stylów inline */
                   <div className="btn-loading-content">
                     <Loader size="sm" />
                     <span>{t("btnLoading")}</span>

@@ -58,6 +58,9 @@
 @import "./pages/login_page";
 @import "./pages/about_page";
 
+@import "./components/admin/admin_dashboard";
+@import "./components/admin/admin_layout";
+
 * {
 	margin: 0;
 	padding: 0;

@@ -1,0 +1,20 @@
+{
+  "menu": {
+    "dashboard": "Dashboard",
+    "requests": "Requests",
+    "projects": "Fundraisers",
+    "donations": "Donations",
+    "foundationSupport": "Internal Funds",
+    "payouts": "Payouts",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "title": "Administration Panel",
+    "subtitle": "Select a section to manage:",
+    "requestsDesc": "Moderation of incoming requests from guardians. Approve or reject new applications for support.",
+    "projectsDesc": "Manage active fundraisers. Edit descriptions, photos, and project statuses.",
+    "donationsDesc": "Full history of donations from supporters. Browse and search transactions.",
+    "foundationSupportDesc": "Registry of the foundation's internal funds allocated directly to fundraisers.",
+    "payoutsDesc": "Registry of outgoing transfers to beneficiaries."
+  }
+}
