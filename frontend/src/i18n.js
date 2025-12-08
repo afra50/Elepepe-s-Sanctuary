@@ -21,7 +21,8 @@ import plLogin from "./locales/pl/login.json";
 import enLogin from "./locales/en/login.json";
 import esLogin from "./locales/es/login.json";
 import plRequest from "./locales/pl/request.json";
-
+import enRequest from "./locales/en/request.json";
+import esRequest from "./locales/es/request.json";
 import plAdmin from "./locales/pl/admin.json";
 import enAdmin from "./locales/en/admin.json";
 import esAdmin from "./locales/es/admin.json";
@@ -35,6 +36,7 @@ i18n
       en: {
         header: enHeader,
         footer: enFooter,
+        request: enRequest,
         contact: enContact,
         home: enHome,
         notFound: enNotFound,
@@ -54,6 +56,7 @@ i18n
       es: {
         header: esHeader,
         footer: esFooter,
+        request: esRequest,
         contact: esContact,
         home: esHome,
         notFound: esNotFound,

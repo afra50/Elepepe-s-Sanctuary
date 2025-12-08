@@ -26,11 +26,11 @@
     "fields": {
       "fullName": {
         "label": "Name and surname",
-        "placeholder": "E.g. John Smith"
+        "placeholder": "e.g. John Smith"
       },
       "email": {
         "label": "Email address",
-        "placeholder": "E.g. john@example.com"
+        "placeholder": "e.g. john@example.com"
       },
       "message": {
         "label": "Message",

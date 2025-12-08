@@ -14,14 +14,7 @@ KONTAKT
 - alert error jak backend nawali?
 
 REQUEST
-* walidacja
-* alert error bo chyba w ogole nie ma
-* liczba zwierząt + kwota - ładniejsze strzalki, mniejsze pole?
-* treść - większe textarea?
-* wybór daty osobny komponent
-* wystylowac pole do wybierania plikow
-* polityka jako link
-* BIC/SWIFT + adres
+* alert error backend
 
 BACKEND
 - crony - jakie?: 1. usuwanie request i związanych plików po zakończeniu zbiórki, 2. usuwanie zbiórki po X latach

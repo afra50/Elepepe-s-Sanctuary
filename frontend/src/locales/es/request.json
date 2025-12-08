@@ -1,0 +1,358 @@
+{
+  "hero": {
+    "eyebrow": "Envía una solicitud para tu animal",
+    "title": "Pide apoyo",
+    "intro": "¿Cuidas de una rata u otro roedor y los costes del tratamiento empiezan a superar tu presupuesto? Rellena el formulario: describe la situación, adjunta los documentos y nos pondremos en contacto contigo con información sobre los siguientes pasos."
+  },
+
+  "form": {
+    "header": {
+      "title": "Rellena el formulario de solicitud de ayuda",
+      "subtitle": "Cuantos más detalles nos des (diagnóstico, historia, costes, adjuntos), más fácil será verificar tu solicitud."
+    },
+
+    "sections": {
+      "applicant": "Datos de la persona cuidadora",
+      "animal": "Datos del animal",
+      "case": "Situación y necesidades",
+      "attachments": "Archivos adjuntos",
+      "payout": "Datos para el pago",
+      "consents": "Consentimientos y declaraciones"
+    },
+
+    "fields": {
+      "optional": "opcional",
+
+      "fullName": {
+        "label": "Nombre y apellidos",
+        "placeholder": "p. ej. Juan Pérez"
+      },
+
+      "email": {
+        "label": "Correo electrónico",
+        "placeholder": "p. ej. juan@ejemplo.com"
+      },
+
+      "phone": {
+        "label": "Número de teléfono",
+        "placeholder": "p. ej. +34123456789"
+      },
+
+      "country": {
+        "label": "País",
+        "placeholder": "p. ej. España"
+      },
+
+      "city": {
+        "label": "Ciudad",
+        "placeholder": "p. ej. Madrid"
+      },
+
+      "species": {
+        "label": "Especie",
+        "options": {
+          "rat": "Rata",
+          "guineaPig": "Cobaya",
+          "other": "Otro roedor"
+        }
+      },
+
+      "speciesOther": {
+        "label": "Especifica la especie",
+        "placeholder": "p. ej. jerbo"
+      },
+
+      "animalName": {
+        "label": "Nombre(s) del/de los animal(es)",
+        "placeholder": "p. ej. Bella y Max"
+      },
+
+      "animalsCount": {
+        "label": "Número de animales incluidos en la solicitud",
+        "placeholder": "p. ej. 1"
+      },
+
+      "age": {
+        "label": "Edad",
+        "placeholder": "p. ej. aprox. 1,5 años"
+      },
+
+      "description": {
+        "label": "Detalles de la solicitud",
+        "placeholder": "Describe la historia de tu animal, el diagnóstico, el tratamiento realizado hasta ahora, el plan recomendado por la persona veterinaria y para qué exactamente se necesitan los fondos."
+      },
+
+      "amount": {
+        "label": "Importe solicitado",
+        "placeholder": "p. ej. 2000,00"
+      },
+
+      "currency": {
+        "label": "Moneda",
+        "options": {
+          "eur": "EUR",
+          "pln": "PLN"
+        }
+      },
+
+      "amountType": {
+        "label": "El importe es",
+        "options": {
+          "estimated": "Estimado (puede cambiar)",
+          "exact": "Exacto (basado en facturas/recibos)"
+        }
+      },
+
+      "deadline": {
+        "label": "¿Hasta cuándo se necesitan los fondos?",
+        "placeholder": "dd.mm.aaaa"
+      },
+
+      "treatmentOngoing": {
+        "label": "El tratamiento ya está en curso (se están generando costes actualmente)."
+      },
+
+      "needsInstallments": {
+        "label": "Se necesitan pagos en varios plazos (p. ej. para tratamientos de larga duración)."
+      },
+
+      "otherFundraiserLink": {
+        "label": "¿Ya se ha organizado una recaudación de fondos en otro lugar? (enlace)",
+        "placeholder": "Pega el enlace a la recaudación, si existe"
+      },
+
+      "otherHelp": {
+        "label": "¿Alguien más ya está ayudando?",
+        "placeholder": "p. ej. colectas privadas entre amistades, apoyo de otras organizaciones, etc."
+      },
+
+      "petPhotos": {
+        "label": "Fotos del animal",
+        "button": "Elegir fotos",
+        "hint": "Añade de 1 a 5 fotos claras: ayudarán a contar la historia de tu animal.",
+        "selected_one": "{{count}} foto seleccionada",
+        "selected_few": "{{count}} fotos seleccionadas",
+        "selected_many": "{{count}} fotos seleccionadas",
+        "selected_other": "{{count}} fotos seleccionadas",
+        "placeholder": "No se han seleccionado fotos"
+      },
+
+      "documents": {
+        "label": "Documentos, recibos, facturas, resultados de pruebas",
+        "button": "Elegir archivos",
+        "hint": "Adjunta archivos que confirmen los costes y el diagnóstico (PDF, fotos de recibos, informes médicos, etc.).",
+        "selected_one": "{{count}} archivo seleccionado",
+        "selected_few": "{{count}} archivos seleccionados",
+        "selected_many": "{{count}} archivos seleccionados",
+        "selected_other": "{{count}} archivos seleccionados",
+        "placeholder": "No se han seleccionado archivos",
+        "preview": "Vista previa",
+        "remove": "Eliminar"
+      },
+
+      "payoutName": {
+        "label": "Nombre de la persona titular de la cuenta",
+        "placeholder": "Exactamente como aparece en la cuenta bancaria"
+      },
+
+      "payoutIban": {
+        "label": "Número de cuenta / IBAN",
+        "placeholder": "p. ej. GB00 0000 0000 0000 0000 00"
+      },
+
+      "payoutSwift": {
+        "label": "BIC / SWIFT del banco",
+        "placeholder": "p. ej. ABCDGBPW"
+      },
+
+      "payoutBankName": {
+        "label": "Nombre del banco",
+        "placeholder": "p. ej. Banco XYZ"
+      },
+
+      "payoutBankCountry": {
+        "label": "País del banco",
+        "placeholder": "p. ej. Inglaterra"
+      },
+
+      "payoutAddress": {
+        "label": "Dirección de la persona titular de la cuenta",
+        "placeholder": "Calle, número, código postal, ciudad, país",
+        "hint": "Indica la dirección completa requerida para transferencias internacionales."
+      },
+
+      "consentDataProcessing": {
+        "label": "Doy mi consentimiento para el tratamiento de mis datos personales con el fin de gestionar esta solicitud, de acuerdo con la política de privacidad de la fundación."
+      },
+
+      "consentTruth": {
+        "label": "Declaro que toda la información proporcionada es verdadera y que los documentos adjuntos son auténticos."
+      },
+
+      "consentPublicStory": {
+        "label": "Doy mi consentimiento para la publicación de la historia de mi animal y de las fotos adjuntas en los materiales de la fundación (página web, redes sociales) para los fines de la recaudación de fondos."
+      }
+    },
+
+    "errors": {
+      "fullName": {
+        "required": "Introduce tu nombre y apellidos.",
+        "min": "El nombre y los apellidos deben tener al menos 3 caracteres.",
+        "max": "El nombre y los apellidos pueden tener como máximo {{max}} caracteres."
+      },
+
+      "email": {
+        "required": "Introduce tu correo electrónico.",
+        "min": "La dirección de correo es demasiado corta.",
+        "max": "La dirección de correo puede tener como máximo {{max}} caracteres.",
+        "format": "Introduce una dirección de correo válida."
+      },
+
+      "phone": {
+        "required": "Introduce tu número de teléfono.",
+        "digits": "El número de teléfono solo puede contener dígitos y, opcionalmente, un + al principio.",
+        "min": "El número de teléfono es demasiado corto.",
+        "max": "El número de teléfono puede tener como máximo {{max}} dígitos."
+      },
+
+      "country": {
+        "required": "Introduce el país.",
+        "min": "El nombre del país es demasiado corto.",
+        "max": "El nombre del país puede tener como máximo {{max}} caracteres."
+      },
+
+      "city": {
+        "min": "El nombre de la ciudad es demasiado corto.",
+        "max": "El nombre de la ciudad puede tener como máximo {{max}} caracteres."
+      },
+
+      "species": {
+        "required": "Selecciona la especie del animal."
+      },
+
+      "speciesOther": {
+        "required": "Especifica la especie del animal.",
+        "min": "El nombre de la especie es demasiado corto."
+      },
+
+      "animalName": {
+        "required": "Introduce el nombre o los nombres del/de los animal(es).",
+        "min": "El nombre es demasiado corto.",
+        "max": "El nombre puede tener como máximo {{max}} caracteres."
+      },
+
+      "animalsCount": {
+        "required": "Introduce el número de animales incluidos en la solicitud.",
+        "integer": "Introduce un número entero, sin comas.",
+        "min": "El número de animales debe ser al menos 1.",
+        "max": "El número de animales es demasiado alto."
+      },
+
+      "age": {
+        "max": "El campo de la edad puede tener como máximo {{max}} caracteres."
+      },
+
+      "description": {
+        "required": "Describe la situación y las necesidades.",
+        "min": "La descripción es demasiado corta: añade más detalles (mínimo 30 caracteres).",
+        "max": "La descripción puede tener como máximo {{max}} caracteres."
+      },
+
+      "amount": {
+        "required": "Introduce el importe que solicitas.",
+        "format": "Introduce un importe válido (dígitos, opcionalmente con dos decimales).",
+        "positive": "El importe debe ser mayor que cero."
+      },
+
+      "currency": {
+        "required": "Selecciona una moneda."
+      },
+
+      "amountType": {
+        "required": "Selecciona si el importe es estimado o exacto."
+      },
+
+      "deadline": {
+        "required": "Indica hasta cuándo se necesitan los fondos."
+      },
+
+      "otherFundraiserLink": {
+        "max": "El enlace a la recaudación puede tener como máximo {{max}} caracteres.",
+        "format": "Introduce una URL válida."
+      },
+
+      "otherHelp": {
+        "max": "Este campo puede tener como máximo {{max}} caracteres."
+      },
+
+      "payoutName": {
+        "required": "Introduce el nombre completo de la persona titular de la cuenta.",
+        "min": "El nombre de la persona titular es demasiado corto.",
+        "max": "El nombre de la persona titular puede tener como máximo {{max}} caracteres."
+      },
+
+      "payoutIban": {
+        "required": "Introduce el número de cuenta / IBAN.",
+        "min": "El IBAN es demasiado corto.",
+        "max": "El IBAN puede tener como máximo {{max}} caracteres.",
+        "format": "El IBAN solo puede contener letras y dígitos (sin caracteres especiales)."
+      },
+
+      "payoutSwift": {
+        "required": "Introduce el código BIC / SWIFT del banco.",
+        "format": "Introduce un código BIC / SWIFT válido (8 u 11 caracteres, letras y dígitos).",
+        "max": "El código BIC / SWIFT puede tener como máximo {{max}} caracteres."
+      },
+
+      "payoutBankName": {
+        "required": "Introduce el nombre del banco.",
+        "min": "El nombre del banco es demasiado corto.",
+        "max": "El nombre del banco puede tener como máximo {{max}} caracteres."
+      },
+
+      "payoutBankCountry": {
+        "required": "Introduce el país del banco.",
+        "min": "El nombre del país del banco es demasiado corto.",
+        "max": "El nombre del país del banco puede tener como máximo {{max}} caracteres."
+      },
+
+      "payoutAddress": {
+        "required": "Introduce la dirección de la persona titular de la cuenta.",
+        "min": "La dirección es demasiado corta.",
+        "max": "La dirección puede tener como máximo {{max}} caracteres."
+      },
+
+      "consentDataProcessing": {
+        "required": "Para enviar la solicitud debes aceptar el tratamiento de tus datos."
+      },
+
+      "consentTruth": {
+        "required": "Para enviar la solicitud debes confirmar que la información proporcionada es verdadera."
+      },
+
+      "consentPublicStory": {
+        "required": "Para enviar la solicitud debes aceptar la publicación de la historia de tu animal."
+      },
+
+      "attachments": {
+        "fileMax": "Cada archivo puede tener como máximo {{maxMb}} MB.",
+        "totalMax": "Puedes subir como máximo {{max}} archivos en total (fotos + documentos)."
+      },
+
+      "petPhotos": {
+        "required": "Añade al menos una foto del animal."
+      },
+
+      "documents": {
+        "required": "Añade al menos un documento que confirme los costes o el diagnóstico."
+      }
+    },
+
+    "alerts": {
+      "success": "Tu solicitud ha sido enviada. Nos pondremos en contacto contigo lo antes posible.",
+      "validation": "Revisa los campos marcados en rojo y corrige los errores indicados."
+    },
+
+    "submit": "Enviar solicitud"
+  }
+}
