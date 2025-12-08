@@ -8,25 +8,35 @@ const Joi = require("joi");
 
 // --- 2. Validation Schema ---
 const requestSchema = Joi.object({
+  applicantType: Joi.string()
+    .valid("person", "organization", "vetClinic")
+    .required()
+    .label("Applicant Type"),
+
   fullName: Joi.string().min(2).max(100).required().label("Full Name"),
   email: Joi.string().email().max(100).required().label("Email"),
   phone: Joi.string().max(20).required().label("Phone Number"),
   country: Joi.string().max(100).required().label("Country"),
   city: Joi.string().max(100).allow(null, "").label("City"),
+
   species: Joi.string().valid("rat", "guineaPig", "other").required(),
   speciesOther: Joi.string().max(100).allow(null, ""),
   animalName: Joi.string().max(100).required().label("Animal Name"),
   age: Joi.string().max(50).allow(null, "").label("Age"),
   animalsCount: Joi.number().integer().min(1).max(99).default(1),
+
   description: Joi.string().min(20).max(5000).required().label("Description"),
   amount: Joi.number().positive().max(1000000).required().label("Amount"),
   currency: Joi.string().valid("EUR", "PLN").required(),
   amountType: Joi.string().valid("estimated", "exact").required(),
   deadline: Joi.date().greater("now").required().label("Deadline"),
+
   treatmentOngoing: Joi.string().valid("true", "false").default("false"),
   needsInstallments: Joi.string().valid("true", "false").default("false"),
+
   otherFundraiserLink: Joi.string().uri().max(500).allow(null, ""),
   otherHelp: Joi.string().max(1000).allow(null, ""),
+
   payoutName: Joi.string().max(100).required().label("Payout Account Holder"),
   payoutIban: Joi.string().max(50).required().label("IBAN"),
   payoutBankName: Joi.string().max(100).required().label("Bank Name"),
@@ -36,6 +46,7 @@ const requestSchema = Joi.object({
     .max(255)
     .required()
     .label("Account Holder Address"),
+
   consentDataProcessing: Joi.string()
     .valid("true")
     .required()
@@ -48,6 +59,12 @@ const requestSchema = Joi.object({
     .valid("true")
     .required()
     .label("Public Story Consent"),
+
+  // Also ensure submissionLanguage is validated if it's sent
+  submissionLanguage: Joi.string()
+    .valid("pl", "en", "es")
+    .required()
+    .label("Submission Language"),
 }).unknown(true);
 
 const createRequest = async (req, res) => {
@@ -58,10 +75,9 @@ const createRequest = async (req, res) => {
 
   if (error) {
     const errorMessages = error.details.map((detail) => detail.message);
-    return res.status(400).json({
-      error: "Validation error",
-      details: errorMessages,
-    });
+    return res
+      .status(400)
+      .json({ error: "Validation error", details: errorMessages });
   }
 
   const connection = await db.getConnection();
@@ -69,8 +85,12 @@ const createRequest = async (req, res) => {
   try {
     await connection.beginTransaction();
 
-    // 1. Insert Request into DB
+    // 1. Prepare data for Model
     const requestData = {
+      // === NEW FIELD ===
+      applicantType: value.applicantType,
+
+      submissionLanguage: value.submissionLanguage,
       fullName: value.fullName,
       email: value.email,
       phone: value.phone,
@@ -101,12 +121,13 @@ const createRequest = async (req, res) => {
       consentPublicStory: 1,
     };
 
+    // 2. Call Model
     const newRequestId = await RequestModel.createRequest(
       connection,
       requestData
     );
 
-    // 2. Process Files
+    // 3. Process Files (No changes here, logic remains correct)
     if (req.files) {
       const allFiles = [
         ...(req.files.petPhotos || []),
@@ -117,8 +138,6 @@ const createRequest = async (req, res) => {
         throw new Error("Too many files. Maximum 20 attachments allowed.");
       }
 
-      // === CHANGE 1: Update Base Path to include 'requests' folder ===
-      // Path: backend/uploads/requests/{id}/...
       const baseUploadDir = path.join(
         __dirname,
         "..",
@@ -129,7 +148,6 @@ const createRequest = async (req, res) => {
       const photosDir = path.join(baseUploadDir, "photos");
       const docsDir = path.join(baseUploadDir, "documents");
 
-      // Create folders recursively
       await fs.mkdir(photosDir, { recursive: true });
       await fs.mkdir(docsDir, { recursive: true });
 
@@ -141,15 +159,13 @@ const createRequest = async (req, res) => {
         let filename = `${uuidv4()}`;
         let targetDir;
         let fileType;
-        let folderName; // Helper for DB path
+        let folderName;
 
-        // Determine target folder based on field name
         if (file.fieldname === "petPhotos") {
           targetDir = photosDir;
           fileType = "photo";
           folderName = "photos";
         } else {
-          // documents (receipts, etc.)
           targetDir = docsDir;
           fileType = "document";
           folderName = "documents";
@@ -157,22 +173,17 @@ const createRequest = async (req, res) => {
 
         let finalFilename;
 
-        // Process based on mimetype (Image vs PDF)
         if (file.mimetype.startsWith("image/")) {
           finalFilename = `${filename}.webp`;
-
           await sharp(file.buffer)
             .resize({ width: 1200, withoutEnlargement: true })
             .webp({ quality: 80 })
             .toFile(path.join(targetDir, finalFilename));
         } else {
-          // PDF or other docs -> save as is
           finalFilename = `${filename}${path.extname(file.originalname)}`;
           await fs.writeFile(path.join(targetDir, finalFilename), file.buffer);
         }
 
-        // === CHANGE 2: Update DB Path to include 'requests' ===
-        // Example: /uploads/requests/15/photos/abc.webp
         const relativePath = `/uploads/requests/${newRequestId}/${folderName}/${finalFilename}`;
 
         filesToInsert.push([
@@ -189,7 +200,6 @@ const createRequest = async (req, res) => {
     }
 
     await connection.commit();
-
     res.status(201).json({
       message: "Request submitted successfully",
       requestId: newRequestId,
@@ -199,13 +209,11 @@ const createRequest = async (req, res) => {
     console.error("Error creating request:", error);
     res.status(500).json({
       error: "Internal Server Error",
-      message: "Failed to save the request. Please try again later.",
+      message: "Failed to save the request.",
     });
   } finally {
     connection.release();
   }
 };
 
-module.exports = {
-  createRequest,
-};
+module.exports = { createRequest };

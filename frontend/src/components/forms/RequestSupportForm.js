@@ -4,6 +4,7 @@ import Button from "../ui/Button";
 import RadioGroup from "../ui/RadioGroup";
 import Checkbox from "../ui/Checkbox";
 import DatePickerField from "../ui/DatePickerField";
+import api from "../../utils/api";
 
 const initialForm = {
   // Dane zgłaszającego
@@ -70,7 +71,7 @@ const MAX_TOTAL_FILES = 20;
 const MAX_PET_PHOTOS = 5;
 
 function RequestSupportForm({ onShowAlert }) {
-  const { t } = useTranslation("request");
+  const { t, i18n } = useTranslation("request");
 
   const [form, setForm] = useState(initialForm);
   const [files, setFiles] = useState({
@@ -779,33 +780,88 @@ function RequestSupportForm({ onShowAlert }) {
     setTimeout(() => URL.revokeObjectURL(url), 10000);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setHasSubmitted(true);
 
+    // 1. Walidacja na froncie
     const validationErrors = validateForm(form, files);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
       onShowAlert?.({
         variant: "error",
-        message: t("form.alerts.validation"), // np. "Popraw zaznaczone pola."
+        message: t("form.alerts.validation"),
       });
       return;
     }
 
-    console.log("Request support form:", { form, files });
+    // 2. Przygotowanie FormData (bo wysyłamy pliki)
+    const formData = new FormData();
 
-    onShowAlert?.({
-      variant: "success",
-      message: t("form.alerts.success"),
+    // Dodaj pola tekstowe
+    Object.keys(form).forEach((key) => {
+      // Backend oczekuje stringów 'true'/'false' dla booleanów w FormData
+      // lub po prostu wartości. Dla bezpieczeństwa konwertujemy null na pusty string.
+      let value = form[key];
+      if (value === null || value === undefined) value = "";
+      formData.append(key, value);
     });
 
-    // reset
-    setForm(initialForm);
-    setFiles({ petPhotos: [], documents: [] });
-    setErrors({});
-    setHasSubmitted(false);
+    formData.append("submissionLanguage", i18n.language || "pl");
+
+    // Dodaj zdjęcia zwierzaka (petPhotos)
+    files.petPhotos.forEach((item) => {
+      formData.append("petPhotos", item.file);
+    });
+
+    // Dodaj dokumenty (documents)
+    files.documents.forEach((file) => {
+      formData.append("documents", file);
+    });
+
+    try {
+      // 3. Wysłanie do backendu
+      // api.js sam doda odpowiednie nagłówki dla FormData (multipart/form-data)
+      // ale dla pewności przy FormData warto usunąć domyślny Content-Type JSON
+      const response = await api.post("/requests", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("Response:", response.data);
+
+      // 4. Sukces
+      onShowAlert?.({
+        variant: "success",
+        message: t("form.alerts.success"),
+      });
+
+      // Reset formularza
+      setForm(initialForm);
+      setFiles({ petPhotos: [], documents: [] });
+      setErrors({});
+      setHasSubmitted(false);
+    } catch (error) {
+      console.error("Błąd wysyłania zgłoszenia:", error);
+
+      // 5. Obsługa błędu z backendu
+      let errorMessage = t("form.alerts.error"); // Domyślny błąd "Coś poszło nie tak"
+
+      // Jeśli backend zwrócił konkretny komunikat błędu (np. walidacja Joi)
+      if (error.response?.data?.details) {
+        // Backend zwraca tablicę błędów w 'details'
+        errorMessage = error.response.data.details.join(", ");
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      }
+
+      onShowAlert?.({
+        variant: "error",
+        message: errorMessage,
+      });
+    }
   };
 
   // wygodne aliasy błędów

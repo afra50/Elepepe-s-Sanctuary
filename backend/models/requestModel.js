@@ -3,16 +3,19 @@
 const createRequest = async (connection, data) => {
   const sql = `
     INSERT INTO requests (
+      applicant_type,
       full_name, email, phone, country, city,
       species, species_other, animal_name, age, animals_count,
       description, amount, currency, amount_type, deadline,
       treatment_ongoing, needs_installments, other_fundraiser_link, other_help,
       payout_name, payout_iban, payout_bank_name, payout_bank_country, payout_swift, payout_address,
-      consent_data_processing, consent_truth, consent_public_story
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      consent_data_processing, consent_truth, consent_public_story,
+      submission_language
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
+    data.applicantType,
     data.fullName,
     data.email,
     data.phone,
@@ -41,6 +44,7 @@ const createRequest = async (connection, data) => {
     data.consentDataProcessing,
     data.consentTruth,
     data.consentPublicStory,
+    data.submissionLanguage,
   ];
 
   const [result] = await connection.query(sql, values);
