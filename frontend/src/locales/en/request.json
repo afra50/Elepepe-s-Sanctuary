@@ -23,9 +23,18 @@
     "fields": {
       "optional": "optional",
 
+      "applicantType": {
+        "label": "Who is submitting the application?",
+        "options": {
+          "person": "Individual",
+          "organization": "Organization/foundation",
+          "vetClinic": "Veterinary clinic"
+        }
+      },
+
       "fullName": {
         "label": "Full name",
-        "placeholder": "e.g. John Smith"
+        "placeholder": "e.g. John Smith, Foundation XYZ, Clinic VetCare"
       },
 
       "email": {
@@ -195,6 +204,10 @@
     },
 
     "errors": {
+      "applicantType": {
+        "required": "Select whether the application is submitted by an individual, an organization or a veterinary office."
+      },
+
       "fullName": {
         "required": "Please enter your full name.",
         "min": "The full name should be at least 3 characters long.",

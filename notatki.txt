@@ -8,9 +8,8 @@ HOME
 - karuzela na najpilniejszych zbiorkach
 
 KONTAKT
-- dopisek o polityce
 - loader
-- zmiana danych na prawdziwe - dwa telefony, mail
+- zmiana danych na prawdziwe - mail
 - alert error jak backend nawali?
 
 REQUEST

@@ -23,9 +23,18 @@
     "fields": {
       "optional": "opcional",
 
+      "applicantType": {
+        "label": "¿Quién presenta la solicitud?",
+        "options": {
+          "person": "Personal particular",
+          "organization": "Organización/fundación",
+          "vetClinic": "Clínica veterinaria"
+        }
+      },
+
       "fullName": {
         "label": "Nombre y apellidos",
-        "placeholder": "p. ej. Juan Pérez"
+        "placeholder": "p. ej. Juan Pérez, Fundación XYZ, Clínica VetCare"
       },
 
       "email": {
@@ -157,12 +166,12 @@
 
       "payoutIban": {
         "label": "Número de cuenta / IBAN",
-        "placeholder": "p. ej. GB00 0000 0000 0000 0000 00"
+        "placeholder": "p. ej. ES00 0000 0000 0000 0000 0000"
       },
 
       "payoutSwift": {
         "label": "BIC / SWIFT del banco",
-        "placeholder": "p. ej. ABCDGBPW"
+        "placeholder": "p. ej. ABCDESPW"
       },
 
       "payoutBankName": {
@@ -172,7 +181,7 @@
 
       "payoutBankCountry": {
         "label": "País del banco",
-        "placeholder": "p. ej. Inglaterra"
+        "placeholder": "p. ej. España"
       },
 
       "payoutAddress": {
@@ -195,6 +204,10 @@
     },
 
     "errors": {
+      "applicantType": {
+        "required": "Seleccione si la solicitud la presenta un individuo, una organización o un consultorio veterinario."
+      },
+
       "fullName": {
         "required": "Introduce tu nombre y apellidos.",
         "min": "El nombre y los apellidos deben tener al menos 3 caracteres.",

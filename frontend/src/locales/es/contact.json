@@ -5,14 +5,16 @@
     "contactInfo": {
       "title": "Datos de contacto",
       "labels": {
-        "phone": "Teléfono:",
-        "email": "Correo electrónico:"
+        "phoneMain": "Teléfono principal (WhatsApp)",
+        "phoneSecondary": "Teléfono secundario",
+        "email": "Correo electrónico"
       }
     },
     "foundation": {
       "title": "Detalles de la fundación",
       "labels": {
         "regNumber": "Nº Nacional:",
+        "nif": "NIF:",
         "address": "Dirección:",
         "regDate": "Fecha de reg.:"
       }
@@ -59,6 +61,7 @@
       "validation": "Corrija los campos de formulario seleccionados.",
       "success": "El mensaje ha sido enviado."
     },
+    "privacyNote": "Al enviar el formulario, aceptas la política de privacidad.",
     "submit": "Enviar un mensaje"
   }
 }

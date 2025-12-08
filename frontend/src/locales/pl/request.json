@@ -23,9 +23,18 @@
     "fields": {
       "optional": "opcjonalne",
 
+      "applicantType": {
+        "label": "Kto składa zgłoszenie?",
+        "options": {
+          "person": "Osoba fizyczna",
+          "organization": "Organizacja / fundacja",
+          "vetClinic": "Gabinet weterynaryjny"
+        }
+      },
+
       "fullName": {
-        "label": "Imię i nazwisko",
-        "placeholder": "Np. Anna Kowalska"
+        "label": "Imię i nazwisko / nazwa",
+        "placeholder": "Np. Anna Kowalska, Fundacja XYZ, Gabinet VetCare"
       },
 
       "email": {
@@ -195,6 +204,10 @@
     },
 
     "errors": {
+      "applicantType": {
+        "required": "Wybierz, czy zgłoszenie składa osoba prywatna, organizacja czy gabinet weterynaryjny."
+      },
+
       "fullName": {
         "required": "Podaj imię i nazwisko.",
         "min": "Imię i nazwisko powinny mieć co najmniej 3 znaki.",

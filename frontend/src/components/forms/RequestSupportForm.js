@@ -7,6 +7,7 @@ import DatePickerField from "../ui/DatePickerField";
 
 const initialForm = {
   // Dane zgłaszającego
+  applicantType: "",
   fullName: "",
   email: "",
   phone: "",
@@ -95,6 +96,11 @@ function RequestSupportForm({ onShowAlert }) {
 
     switch (name) {
       // --- Dane opiekuna ---
+      case "applicantType": {
+        if (!trimmed) return t("form.errors.applicantType.required");
+        return "";
+      }
+
       case "fullName": {
         if (!trimmed) return t("form.errors.fullName.required");
         if (trimmed.length < 3) return t("form.errors.fullName.min");
@@ -803,6 +809,7 @@ function RequestSupportForm({ onShowAlert }) {
   };
 
   // wygodne aliasy błędów
+  const applicantTypeError = getError("applicantType");
   const fullNameError = getError("fullName");
   const emailError = getError("email");
   const phoneError = getError("phone");
@@ -840,6 +847,43 @@ function RequestSupportForm({ onShowAlert }) {
       {/* === 1. Dane zgłaszającego === */}
       <section className="request-section request-section--applicant">
         <h3>{t("form.sections.applicant")}</h3>
+
+        {/* Typ zgłaszającego */}
+        <div className={`form-field ${applicantTypeError ? "is-error" : ""}`}>
+          <label>{t("form.fields.applicantType.label")}</label>
+          <RadioGroup
+            name="applicantType"
+            value={form.applicantType}
+            onChange={(val) => {
+              setForm((prev) => ({ ...prev, applicantType: val }));
+              if (hasSubmitted) {
+                setErrors((prev) => ({
+                  ...prev,
+                  applicantType: validateField("applicantType", val, {
+                    ...form,
+                    applicantType: val,
+                  }),
+                }));
+              }
+            }}
+            inline
+            options={[
+              {
+                value: "person",
+                label: t("form.fields.applicantType.options.person"),
+              },
+              {
+                value: "organization",
+                label: t("form.fields.applicantType.options.organization"),
+              },
+              {
+                value: "vetClinic",
+                label: t("form.fields.applicantType.options.vetClinic"),
+              },
+            ]}
+          />
+          <p className="field-error">{applicantTypeError || "\u00A0"}</p>
+        </div>
 
         <div className={`form-field ${fullNameError ? "is-error" : ""}`}>
           <label htmlFor="fullName">{t("form.fields.fullName.label")}</label>

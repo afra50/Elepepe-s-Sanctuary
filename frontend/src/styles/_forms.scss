@@ -569,3 +569,10 @@
   .react-datepicker__navigation-icon::before {
   border-color: $color-primary;
 }
+
+.form-privacy-note {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba($color-secondary, 0.7);
+}

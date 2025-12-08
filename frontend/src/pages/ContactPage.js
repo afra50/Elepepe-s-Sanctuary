@@ -39,9 +39,17 @@ function ContactPage() {
 
             <div className="contact-info">
               <p>
-                <strong>{t("sections.contactInfo.labels.phone")}</strong>
+                <strong>{t("sections.contactInfo.labels.phoneMain")}</strong>
                 <br />
-                +34 601 123 456
+                +48 533 162 318
+              </p>
+
+              <p>
+                <strong>
+                  {t("sections.contactInfo.labels.phoneSecondary")}
+                </strong>
+                <br />
+                +34 644 34 88 73
               </p>
 
               <p>
@@ -54,10 +62,16 @@ function ContactPage() {
             <h3>{t("sections.foundation.title")}</h3>
             <div className="foundation-info">
               <p>Elepepe&apos;s Sanctuary</p>
+
               <p>
                 <strong>{t("sections.foundation.labels.regNumber")}</strong>{" "}
                 631,974
               </p>
+
+              <p>
+                <strong>{t("sections.foundation.labels.nif")}</strong> G22905830
+              </p>
+
               <p>
                 <strong>{t("sections.foundation.labels.address")}</strong>
                 <br />
@@ -69,6 +83,7 @@ function ContactPage() {
                 <br />
                 España
               </p>
+
               <p>
                 <strong>{t("sections.foundation.labels.regDate")}</strong>{" "}
                 06/11/2025
@@ -88,5 +103,4 @@ function ContactPage() {
     </main>
   );
 }
-
 export default ContactPage;

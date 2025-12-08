@@ -191,6 +191,8 @@ function ContactForm({ onShowAlert }) {
         <p className="field-error">{messageError || "\u00A0"}</p>
       </div>
 
+      <p className="form-privacy-note">{t("form.privacyNote")}</p>
+
       <div className="form-actions">
         <Button type="submit" variant="primary" size="md">
           {t("form.submit")}
