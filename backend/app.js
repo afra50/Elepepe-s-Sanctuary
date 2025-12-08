@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const path = require("path"); // <--- 1. Import 'path' module
 
 const authRoutes = require("./routes/authRoutes");
 const requestRoutes = require("./routes/requestRoutes");
@@ -17,7 +18,11 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// TRASY
+// --- 2. Serve Static Files ---
+// This allows the frontend to access files via: http://localhost:5000/uploads/requests/123/photos/image.webp
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// TRASY (Routes)
 app.use("/api/auth", authRoutes);
 app.use("/api/requests", requestRoutes);
 
