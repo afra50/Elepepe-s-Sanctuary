@@ -24,9 +24,10 @@ REQUEST
 * BIC/SWIFT + adres
 
 BACKEND
-- crony - jakie?
+- crony - jakie?: 1. usuwanie request i związanych plików po zakończeniu zbiórki, 2. usuwanie zbiórki po X latach
 - statyczne obrazki
 - Joi do walidacji requestów
+- obsłużyc kilka języków na zbiórkach - jak tabele? czy zapisywać kraj w zależności od języka? co z wartością kluczy w request, backend chyba musi wiedzieć w jakim jezku jest wypelniony formularz zeby potem adminowi wyswietlalo sie odpowiednio
 
 NA KONIEC
 - regulamin

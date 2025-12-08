@@ -6,37 +6,27 @@ const path = require("path");
 const fs = require("fs").promises;
 const Joi = require("joi");
 
-// --- 2. Validation Schema (English Labels) ---
+// --- 2. Validation Schema ---
 const requestSchema = Joi.object({
-  // Applicant Data
   fullName: Joi.string().min(2).max(100).required().label("Full Name"),
   email: Joi.string().email().max(100).required().label("Email"),
   phone: Joi.string().max(20).required().label("Phone Number"),
   country: Joi.string().max(100).required().label("Country"),
   city: Joi.string().max(100).allow(null, "").label("City"),
-
-  // Pet Data
   species: Joi.string().valid("rat", "guineaPig", "other").required(),
   speciesOther: Joi.string().max(100).allow(null, ""),
   animalName: Joi.string().max(100).required().label("Animal Name"),
   age: Joi.string().max(50).allow(null, "").label("Age"),
   animalsCount: Joi.number().integer().min(1).max(99).default(1),
-
-  // Description & Finance
   description: Joi.string().min(20).max(5000).required().label("Description"),
   amount: Joi.number().positive().max(1000000).required().label("Amount"),
   currency: Joi.string().valid("EUR", "PLN").required(),
   amountType: Joi.string().valid("estimated", "exact").required(),
   deadline: Joi.date().greater("now").required().label("Deadline"),
-
-  // Checkboxes (Strings "true"/"false" from FormData)
   treatmentOngoing: Joi.string().valid("true", "false").default("false"),
   needsInstallments: Joi.string().valid("true", "false").default("false"),
-
   otherFundraiserLink: Joi.string().uri().max(500).allow(null, ""),
   otherHelp: Joi.string().max(1000).allow(null, ""),
-
-  // Payout Data (All required)
   payoutName: Joi.string().max(100).required().label("Payout Account Holder"),
   payoutIban: Joi.string().max(50).required().label("IBAN"),
   payoutBankName: Joi.string().max(100).required().label("Bank Name"),
@@ -46,8 +36,6 @@ const requestSchema = Joi.object({
     .max(255)
     .required()
     .label("Account Holder Address"),
-
-  // Consents (Must be true)
   consentDataProcessing: Joi.string()
     .valid("true")
     .required()
@@ -60,10 +48,10 @@ const requestSchema = Joi.object({
     .valid("true")
     .required()
     .label("Public Story Consent"),
-}).unknown(true); // Allow other fields (like files)
+}).unknown(true);
 
 const createRequest = async (req, res) => {
-  // --- 3. Validate Data BEFORE Processing ---
+  // --- 3. Validate Data ---
   const { error, value } = requestSchema.validate(req.body, {
     abortEarly: false,
   });
@@ -81,7 +69,7 @@ const createRequest = async (req, res) => {
   try {
     await connection.beginTransaction();
 
-    // 1. Prepare text data
+    // 1. Insert Request into DB
     const requestData = {
       fullName: value.fullName,
       email: value.email,
@@ -113,50 +101,83 @@ const createRequest = async (req, res) => {
       consentPublicStory: 1,
     };
 
-    // 2. Save Request to DB
     const newRequestId = await RequestModel.createRequest(
       connection,
       requestData
     );
 
-    // 3. Process Files
+    // 2. Process Files
     if (req.files) {
       const allFiles = [
         ...(req.files.petPhotos || []),
         ...(req.files.documents || []),
       ];
 
-      // Security: Limit total number of files
       if (allFiles.length > 20) {
         throw new Error("Too many files. Maximum 20 attachments allowed.");
       }
 
+      // === CHANGE 1: Update Base Path to include 'requests' folder ===
+      // Path: backend/uploads/requests/{id}/...
+      const baseUploadDir = path.join(
+        __dirname,
+        "..",
+        "uploads",
+        "requests",
+        String(newRequestId)
+      );
+      const photosDir = path.join(baseUploadDir, "photos");
+      const docsDir = path.join(baseUploadDir, "documents");
+
+      // Create folders recursively
+      await fs.mkdir(photosDir, { recursive: true });
+      await fs.mkdir(docsDir, { recursive: true });
+
       const filesToInsert = [];
-      const uploadDir = path.join(__dirname, "..", "uploads");
-      await fs.mkdir(uploadDir, { recursive: true });
 
       for (const file of allFiles) {
-        // Security: Size check (secondary to Multer)
         if (file.size > 10 * 1024 * 1024) continue;
 
-        let filename = `${uuidv4()}${path.extname(file.originalname)}`;
-        let fileType = "document";
+        let filename = `${uuidv4()}`;
+        let targetDir;
+        let fileType;
+        let folderName; // Helper for DB path
 
-        if (file.mimetype.startsWith("image/")) {
+        // Determine target folder based on field name
+        if (file.fieldname === "petPhotos") {
+          targetDir = photosDir;
           fileType = "photo";
-          filename = `${uuidv4()}.webp`;
+          folderName = "photos";
+        } else {
+          // documents (receipts, etc.)
+          targetDir = docsDir;
+          fileType = "document";
+          folderName = "documents";
+        }
+
+        let finalFilename;
+
+        // Process based on mimetype (Image vs PDF)
+        if (file.mimetype.startsWith("image/")) {
+          finalFilename = `${filename}.webp`;
 
           await sharp(file.buffer)
             .resize({ width: 1200, withoutEnlargement: true })
             .webp({ quality: 80 })
-            .toFile(path.join(uploadDir, filename));
+            .toFile(path.join(targetDir, finalFilename));
         } else {
-          await fs.writeFile(path.join(uploadDir, filename), file.buffer);
+          // PDF or other docs -> save as is
+          finalFilename = `${filename}${path.extname(file.originalname)}`;
+          await fs.writeFile(path.join(targetDir, finalFilename), file.buffer);
         }
+
+        // === CHANGE 2: Update DB Path to include 'requests' ===
+        // Example: /uploads/requests/15/photos/abc.webp
+        const relativePath = `/uploads/requests/${newRequestId}/${folderName}/${finalFilename}`;
 
         filesToInsert.push([
           newRequestId,
-          `/uploads/${filename}`,
+          relativePath,
           fileType,
           file.originalname,
         ]);
@@ -176,8 +197,6 @@ const createRequest = async (req, res) => {
   } catch (error) {
     await connection.rollback();
     console.error("Error creating request:", error);
-
-    // Return generic error message to client
     res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to save the request. Please try again later.",
