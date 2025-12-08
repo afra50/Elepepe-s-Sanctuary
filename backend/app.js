@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+
 const authRoutes = require("./routes/authRoutes");
+const requestRoutes = require("./routes/requestRoutes");
 
 const app = express();
 
@@ -17,6 +19,7 @@ app.use(cookieParser());
 
 // TRASY
 app.use("/api/auth", authRoutes);
+app.use("/api/requests", requestRoutes);
 
 // 404
 app.use((req, res) => {

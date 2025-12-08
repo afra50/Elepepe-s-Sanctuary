@@ -8,7 +8,6 @@ HOME
 - karuzela na najpilniejszych zbiorkach
 
 KONTAKT
-<<<<<<< HEAD
 - dopisek o polityce
 - loader
 - zmiana danych na prawdziwe - dwa telefony, mail
@@ -21,14 +20,17 @@ REQUEST
 * treść - większe textarea?
 * wybór daty osobny komponent
 * wystylowac pole do wybierania plikow
+* polityka jako link
+* BIC/SWIFT + adres
 
 BACKEND
 - crony - jakie?
 - statyczne obrazki
+- Joi do walidacji requestów
 
 NA KONIEC
 - regulamin
 - polityka - languagedetector?, formularz kontaktowy, fomularz zgloszenia
 - index.html + html lang - tak jak na zebrane
 - seo - robots + google search console + sitemap + og img
-- cron, wyl x-powered-by, ratelimiter, slow-down, logi (winston? logger?), helmet, cookies http only, samesite:strict, secure, jwt + jwt refresh, authmiddleware, compression, morgan, proxy, ssl
+- cron, wyl x-powered-by, ratelimiter, slow-down, logi (winston? logger?), helmet, cookies http only, samesite:strict, secure, compression, morgan, proxy, ssl
