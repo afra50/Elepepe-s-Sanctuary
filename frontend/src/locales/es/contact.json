@@ -26,11 +26,11 @@
     "fields": {
       "fullName": {
         "label": "Nombre y apellido",
-        "placeholder": "P.ej. Juan Pérez"
+        "placeholder": "p. ej. Juan Pérez"
       },
       "email": {
         "label": "Dirección de correo electrónico",
-        "placeholder": "P.ej. juan@ejemplo.com"
+        "placeholder": "p. ej. juan@ejemplo.com"
       },
       "message": {
         "label": "Mensaje",

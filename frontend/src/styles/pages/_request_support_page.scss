@@ -103,7 +103,7 @@
 
   .request-section {
     & + .request-section {
-      margin-top: 1.8rem;
+      margin-top: 1rem;
       padding-top: 1.5rem;
       border-top: 1px solid rgba($color-border, 0.6);
     }
@@ -141,22 +141,6 @@
     }
   }
 
-  /* Wiersz kwota + waluta itd. */
-  .request-row {
-    display: flex;
-    gap: 1rem;
-
-    &--amount {
-      .form-field {
-        flex: 1;
-      }
-    }
-  }
-
-  .form-actions {
-    margin-top: 1.8rem;
-  }
-
   /* ===== RESPONSYWNOŚĆ ===== */
 
   @media (max-width: 768px) {
@@ -191,6 +175,58 @@
           max-width: none;
         }
       }
+    }
+  }
+
+  /* większa tekstarea z opisem sprawy */
+  .request-section--case {
+    #description {
+      min-height: 400px;
+    }
+    .checkboxes {
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  /* Wspólny wiersz na kilka pól obok siebie */
+  .request-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+
+    &--amount {
+      .form-field {
+        flex: 1;
+      }
+    }
+  }
+
+  /* Pola w wierszu dzielą po równo szerokość na dużych ekranach */
+  .request-row .form-field {
+    flex: 1;
+    margin-bottom: 0; // odstęp kontrolujemy gapem
+  }
+
+  /* Odstęp pod całym wierszem */
+  .request-row + .form-field,
+  .request-row + .request-row {
+    margin-top: 0.8rem;
+  }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 600px) {
+    .request-row {
+      flex-direction: column;
+    }
+
+    .request-row .form-field {
+      flex: 0 0 auto; // przestajemy dzielić szerokość
+      width: 100%; // pełna szerokość jak zwykłe pola
+    }
+
+    /* dla wiersza kwota + waluta – też pełna szerokość */
+    .request-row--amount .form-field:nth-child(2) {
+      max-width: none;
     }
   }
 }

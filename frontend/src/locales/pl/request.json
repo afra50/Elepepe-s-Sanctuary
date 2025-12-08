@@ -35,7 +35,7 @@
 
       "phone": {
         "label": "Numer telefonu",
-        "placeholder": "Np. +48 600 000 000"
+        "placeholder": "Np. +48123456789"
       },
 
       "country": {
@@ -84,7 +84,7 @@
 
       "amount": {
         "label": "Kwota potrzebna",
-        "placeholder": "Np. 2000.00"
+        "placeholder": "Np. 2000,00"
       },
 
       "currency": {
@@ -104,7 +104,8 @@
       },
 
       "deadline": {
-        "label": "Do kiedy środki są potrzebne?"
+        "label": "Do kiedy środki są potrzebne?",
+        "placeholder": "dd.mm.rrrr"
       },
 
       "treatmentOngoing": {
@@ -127,12 +128,26 @@
 
       "petPhotos": {
         "label": "Zdjęcia zwierzaka",
-        "hint": "Dodaj 1–5 wyraźnych zdjęć – pomogą przedstawić historię Twojego podopiecznego."
+        "button": "Wybierz zdjęcia",
+        "hint": "Dodaj 1–5 wyraźnych zdjęć – pomogą przedstawić historię Twojego podopiecznego.",
+        "selected_one": "Wybrano {{count}} zdjęcie",
+        "selected_few": "Wybrano {{count}} zdjęcia",
+        "selected_many": "Wybrano {{count}} zdjęć",
+        "selected_other": "Wybrano {{count}} zdjęć",
+        "placeholder": "Nie wybrano zdjęć"
       },
 
       "documents": {
         "label": "Dokumenty, paragony, faktury, wyniki badań",
-        "hint": "Załącz pliki potwierdzające koszty i diagnozę (PDF, zdjęcia paragonów, wypisów itp.)."
+        "button": "Wybierz pliki",
+        "hint": "Załącz pliki potwierdzające koszty i diagnozę (PDF, zdjęcia paragonów, wypisów itp.).",
+        "selected_one": "Wybrano {{count}} plik",
+        "selected_few": "Wybrano {{count}} pliki",
+        "selected_many": "Wybrano {{count}} plików",
+        "selected_other": "Wybrano {{count}} plików",
+        "placeholder": "Nie wybrano plików",
+        "preview": "Podgląd",
+        "remove": "Usuń"
       },
 
       "payoutName": {
@@ -179,8 +194,163 @@
       }
     },
 
+    "errors": {
+      "fullName": {
+        "required": "Podaj imię i nazwisko.",
+        "min": "Imię i nazwisko powinny mieć co najmniej 3 znaki.",
+        "max": "Imię i nazwisko mogą mieć maksymalnie {{max}} znaków."
+      },
+
+      "email": {
+        "required": "Podaj adres e-mail.",
+        "min": "Adres e-mail jest za krótki.",
+        "max": "Adres e-mail może mieć maksymalnie {{max}} znaków.",
+        "format": "Podaj poprawny adres e-mail."
+      },
+
+      "phone": {
+        "required": "Podaj numer telefonu.",
+        "digits": "Numer telefonu może zawierać tylko cyfry oraz znak + na początku.",
+        "min": "Numer telefonu jest za krótki.",
+        "max": "Numer telefonu może mieć maksymalnie {{max}} cyfr."
+      },
+
+      "country": {
+        "required": "Podaj kraj.",
+        "min": "Nazwa kraju jest za krótka.",
+        "max": "Nazwa kraju może mieć maksymalnie {{max}} znaków."
+      },
+
+      "city": {
+        "min": "Nazwa miasta jest za krótka.",
+        "max": "Nazwa miasta może mieć maksymalnie {{max}} znaków."
+      },
+
+      "species": {
+        "required": "Wybierz gatunek zwierzaka."
+      },
+
+      "speciesOther": {
+        "required": "Podaj gatunek zwierzaka.",
+        "min": "Nazwa gatunku jest za krótka."
+      },
+
+      "animalName": {
+        "required": "Podaj imię zwierzaka lub zwierzaków.",
+        "min": "Imię jest za krótkie.",
+        "max": "Imię może mieć maksymalnie {{max}} znaków."
+      },
+
+      "animalsCount": {
+        "required": "Podaj liczbę zwierząt objętych zgłoszeniem.",
+        "integer": "Podaj liczbę całkowitą, bez przecinków.",
+        "min": "Liczba zwierząt musi wynosić co najmniej 1.",
+        "max": "Liczba zwierząt jest zbyt duża."
+      },
+
+      "age": {
+        "max": "Wiek może mieć maksymalnie {{max}} znaków."
+      },
+
+      "description": {
+        "required": "Opisz sytuację i potrzeby.",
+        "min": "Opis jest za krótki – dodaj więcej szczegółów (min. 30 znaków).",
+        "max": "Opis może mieć maksymalnie {{max}} znaków."
+      },
+
+      "amount": {
+        "required": "Podaj kwotę, o którą wnioskujesz.",
+        "format": "Podaj poprawną kwotę (cyfry, opcjonalnie dwie cyfry po przecinku).",
+        "positive": "Kwota musi być większa od zera."
+      },
+
+      "currency": {
+        "required": "Wybierz walutę."
+      },
+
+      "amountType": {
+        "required": "Wybierz, czy kwota jest szacunkowa czy dokładna."
+      },
+
+      "deadline": {
+        "required": "Podaj, do kiedy środki są potrzebne."
+      },
+
+      "otherFundraiserLink": {
+        "max": "Link do zbiórki może mieć maksymalnie {{max}} znaków.",
+        "format": "Podaj poprawny adres URL."
+      },
+
+      "otherHelp": {
+        "max": "To pole może mieć maksymalnie {{max}} znaków."
+      },
+
+      "payoutName": {
+        "required": "Podaj imię i nazwisko właściciela konta.",
+        "min": "Imię i nazwisko właściciela konta są za krótkie.",
+        "max": "Imię i nazwisko właściciela konta mogą mieć maksymalnie {{max}} znaków."
+      },
+
+      "payoutIban": {
+        "required": "Podaj numer konta / IBAN.",
+        "min": "Numer IBAN jest za krótki.",
+        "max": "Numer IBAN może mieć maksymalnie {{max}} znaków.",
+        "format": "Numer IBAN może zawierać tylko litery i cyfry (bez znaków specjalnych)."
+      },
+
+      "payoutSwift": {
+        "required": "Podaj kod BIC / SWIFT banku.",
+        "format": "Podaj poprawny kod BIC / SWIFT (8 lub 11 znaków, litery i cyfry).",
+        "max": "Kod BIC / SWIFT może mieć maksymalnie {{max}} znaków."
+      },
+
+      "payoutBankName": {
+        "required": "Podaj nazwę banku.",
+        "min": "Nazwa banku jest za krótka.",
+        "max": "Nazwa banku może mieć maksymalnie {{max}} znaków."
+      },
+
+      "payoutBankCountry": {
+        "required": "Podaj kraj banku.",
+        "min": "Nazwa kraju banku jest za krótka.",
+        "max": "Nazwa kraju banku może mieć maksymalnie {{max}} znaków."
+      },
+
+      "payoutAddress": {
+        "required": "Podaj adres właściciela konta.",
+        "min": "Adres jest za krótki.",
+        "max": "Adres może mieć maksymalnie {{max}} znaków."
+      },
+
+      "consentDataProcessing": {
+        "required": "Aby wysłać zgłoszenie, musisz wyrazić zgodę na przetwarzanie danych."
+      },
+
+      "consentTruth": {
+        "required": "Aby wysłać zgłoszenie, musisz potwierdzić prawdziwość danych."
+      },
+
+      "consentPublicStory": {
+        "required": "Aby wysłać zgłoszenie, musisz wyrazić zgodę na publikację historii podopiecznego."
+      },
+
+      "attachments": {
+        "fileMax": "Każdy plik może mieć maksymalnie {{maxMb}} MB.",
+        "totalMax": "Łącznie możesz dodać maksymalnie {{max}} plików (zdjęcia + dokumenty)."
+      },
+
+      "petPhotos": {
+        "required": "Dodaj przynajmniej jedno zdjęcie zwierzaka."
+      },
+
+      "documents": {
+        "required": "Dodaj przynajmniej jeden dokument potwierdzający koszty lub diagnozę."
+      }
+    },
+
     "alerts": {
-      "success": "Zgłoszenie zostało wysłane. Skontaktujemy się z Tobą tak szybko, jak to możliwe."
+      "success": "Zgłoszenie zostało wysłane. Skontaktujemy się z Tobą tak szybko, jak to możliwe.",
+      "validation": "Sprawdź proszę pola oznaczone na czerwono i popraw zaznaczone błędy."
     },
 
     "submit": "Wyślij zgłoszenie"
