@@ -145,6 +145,11 @@
         "placeholder": "Np. PL00 0000 0000 0000 0000 0000 0000"
       },
 
+      "payoutSwift": {
+        "label": "BIC / SWIFT banku",
+        "placeholder": "Np. ABCDPLPW"
+      },
+
       "payoutBankName": {
         "label": "Nazwa banku",
         "placeholder": "Np. Bank XYZ"
@@ -153,6 +158,12 @@
       "payoutBankCountry": {
         "label": "Kraj banku",
         "placeholder": "Np. Polska"
+      },
+
+      "payoutAddress": {
+        "label": "Adres właściciela konta",
+        "placeholder": "Ulica, numer domu/mieszkania, kod pocztowy, miejscowość, kraj",
+        "hint": "Podaj pełny adres wymagany przy przelewach zagranicznych."
       },
 
       "consentDataProcessing": {

@@ -35,6 +35,8 @@ const initialForm = {
   payoutIban: "",
   payoutBankName: "",
   payoutBankCountry: "",
+  payoutSwift: "", // NEW
+  payoutAddress: "", // NEW
 
   // Zgody
   consentDataProcessing: false,
@@ -441,49 +443,87 @@ function RequestSupportForm({ onShowAlert }) {
           />
         </div>
 
-        <div className="form-field">
-          <label htmlFor="payoutIban">
-            {t("form.fields.payoutIban.label")}
-          </label>
-          <input
-            id="payoutIban"
-            name="payoutIban"
-            type="text"
-            value={form.payoutIban}
-            onChange={handleChange}
-            placeholder={t("form.fields.payoutIban.placeholder")}
-            required
-          />
+        {/* IBAN + BIC / SWIFT w jednym wierszu */}
+        <div className="request-row request-row--payout">
+          <div className="form-field">
+            <label htmlFor="payoutIban">
+              {t("form.fields.payoutIban.label")}
+            </label>
+            <input
+              id="payoutIban"
+              name="payoutIban"
+              type="text"
+              value={form.payoutIban}
+              onChange={handleChange}
+              placeholder={t("form.fields.payoutIban.placeholder")}
+              required
+            />
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="payoutSwift">
+              {t("form.fields.payoutSwift.label")}
+            </label>
+            <input
+              id="payoutSwift"
+              name="payoutSwift"
+              type="text"
+              value={form.payoutSwift}
+              onChange={handleChange}
+              placeholder={t("form.fields.payoutSwift.placeholder")}
+              required
+            />
+          </div>
         </div>
 
-        <div className="form-field">
-          <label htmlFor="payoutBankName">
-            {t("form.fields.payoutBankName.label")}
-          </label>
-          <input
-            id="payoutBankName"
-            name="payoutBankName"
-            type="text"
-            value={form.payoutBankName}
-            onChange={handleChange}
-            placeholder={t("form.fields.payoutBankName.placeholder")}
-            required
-          />
+        {/* Nazwa banku + kraj banku */}
+        <div className="request-row request-row--payout">
+          <div className="form-field">
+            <label htmlFor="payoutBankName">
+              {t("form.fields.payoutBankName.label")}
+            </label>
+            <input
+              id="payoutBankName"
+              name="payoutBankName"
+              type="text"
+              value={form.payoutBankName}
+              onChange={handleChange}
+              placeholder={t("form.fields.payoutBankName.placeholder")}
+              required
+            />
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="payoutBankCountry">
+              {t("form.fields.payoutBankCountry.label")}
+            </label>
+            <input
+              id="payoutBankCountry"
+              name="payoutBankCountry"
+              type="text"
+              value={form.payoutBankCountry}
+              onChange={handleChange}
+              placeholder={t("form.fields.payoutBankCountry.placeholder")}
+              required
+            />
+          </div>
         </div>
 
+        {/* Adres właściciela konta – wymagany przy przelewach zagranicznych */}
         <div className="form-field">
-          <label htmlFor="payoutBankCountry">
-            {t("form.fields.payoutBankCountry.label")}
+          <label htmlFor="payoutAddress">
+            {t("form.fields.payoutAddress.label")}
           </label>
           <input
-            id="payoutBankCountry"
-            name="payoutBankCountry"
+            id="payoutAddress"
+            name="payoutAddress"
             type="text"
-            value={form.payoutBankCountry}
+            value={form.payoutAddress}
             onChange={handleChange}
-            placeholder={t("form.fields.payoutBankCountry.placeholder")}
+            placeholder={t("form.fields.payoutAddress.placeholder")}
             required
           />
+          <p className="field-hint">{t("form.fields.payoutAddress.hint")}</p>
         </div>
       </section>
 
