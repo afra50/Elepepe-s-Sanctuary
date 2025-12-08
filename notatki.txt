@@ -14,7 +14,8 @@ KONTAKT
 - alert error jak backend nawali?
 
 REQUEST
-* alert error backend
+- alert error backend
+- loader
 
 BACKEND
 - crony - jakie?: 1. usuwanie request i związanych plików po zakończeniu zbiórki, 2. usuwanie zbiórki po X latach
