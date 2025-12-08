@@ -14,18 +14,7 @@ KONTAKT
 - alert error jak backend nawali?
 
 REQUEST
-<<<<<<< HEAD
 * alert error backend
-=======
-* walidacja
-* alert error bo chyba w ogole nie ma
-* liczba zwierząt + kwota - ładniejsze strzalki, mniejsze pole?
-* treść - większe textarea?
-* wybór daty osobny komponent
-* wystylowac pole do wybierania plikow
-* polityka jako link
-* BIC/SWIFT + adres
->>>>>>> aabd67a0840367299432d2aba9abad318802dddb
 
 BACKEND
 - crony - jakie?
