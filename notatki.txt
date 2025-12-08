@@ -13,7 +13,7 @@ KONTAKT
 - alert error jak backend nawali?
 
 REQUEST
-- alert error backend
+- maks na inne zwierze, kwote
 - loader
 
 BACKEND

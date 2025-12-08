@@ -48,22 +48,22 @@ const initialForm = {
 };
 
 // proste limity długości (możesz sobie dopasować)
-const MAX_NAME_LENGTH = 80;
-const MAX_EMAIL_LENGTH = 120;
+const MAX_NAME_LENGTH = 100;
+const MAX_EMAIL_LENGTH = 100;
 const MAX_PHONE_LENGTH = 20;
-const MAX_COUNTRY_LENGTH = 80;
-const MAX_CITY_LENGTH = 80;
-const MAX_ANIMAL_NAME_LENGTH = 80;
-const MAX_AGE_LENGTH = 60;
-const MAX_DESCRIPTION_LENGTH = 2000;
-const MAX_OTHER_HELP_LENGTH = 1500;
-const MAX_URL_LENGTH = 200;
+const MAX_COUNTRY_LENGTH = 100;
+const MAX_CITY_LENGTH = 100;
+const MAX_ANIMAL_NAME_LENGTH = 100;
+const MAX_AGE_LENGTH = 50;
+const MAX_DESCRIPTION_LENGTH = 5000;
+const MAX_OTHER_HELP_LENGTH = 1000;
+const MAX_URL_LENGTH = 500;
 const MAX_IBAN_LENGTH = 34;
 const MAX_SWIFT_LENGTH = 11;
-const MAX_PAYOUT_NAME_LENGTH = 80;
-const MAX_BANK_NAME_LENGTH = 80;
-const MAX_BANK_COUNTRY_LENGTH = 80;
-const MAX_PAYOUT_ADDRESS_LENGTH = 180;
+const MAX_PAYOUT_NAME_LENGTH = 100;
+const MAX_BANK_NAME_LENGTH = 100;
+const MAX_BANK_COUNTRY_LENGTH = 100;
+const MAX_PAYOUT_ADDRESS_LENGTH = 255;
 const MAX_FILE_SIZE_MB = 10;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const MAX_TOTAL_FILES = 20;
@@ -187,7 +187,7 @@ function RequestSupportForm({ onShowAlert }) {
         const num = parseInt(trimmed, 10);
         if (!Number.isFinite(num) || num < 1)
           return t("form.errors.animalsCount.min");
-        if (num > 999) return t("form.errors.animalsCount.max");
+        if (num > 99) return t("form.errors.animalsCount.max");
         return "";
       }
 
