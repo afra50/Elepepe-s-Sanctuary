@@ -14,7 +14,8 @@ KONTAKT
 - alert error jak backend nawali?
 
 REQUEST
-* alert error backend
+- alert error backend
+- loader
 
 BACKEND
 - crony - jakie?

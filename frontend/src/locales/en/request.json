@@ -336,7 +336,7 @@
 
       "attachments": {
         "fileMax": "Each file can be up to {{maxMb}} MB.",
-        "totalMax": "You can upload up to {{max}} files in total (photos + documents)."
+        "totalMax": "Maximum number of files exceeded."
       },
 
       "petPhotos": {
