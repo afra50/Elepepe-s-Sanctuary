@@ -18,15 +18,34 @@
     "payoutsDesc": "Registro de transferencias salientes a los beneficiarios."
   },
   "requests": {
-    "subtitle": "Gestionar solicitudes de apoyo entrantes"
+    "subtitle": "Gestionar solicitudes de apoyo entrantes",
+    "sentDate": "Fecha de envío",
+    "unknownCountry": "País desconocido",
+    "noRequestsFound": "No hay solicitudes en esta sección",
+    "allDone": "Todas las solicitudes han sido gestionadas.",
+    "fetchError": "Error al recuperar las solicitudes."
   },
   "status": {
     "pending": "Pendientes",
     "approved": "Aprobadas",
     "rejected": "Rechazadas"
   },
+  "actions": {
+    "filter": "Filtros",
+    "sort": "Ordenar",
+    "details": "Detalles"
+  },
   "form": {
+    "sections": {
+      "animal": "Mascota"
+    },
     "fields": {
+      "amount": {
+        "label": "Importe"
+      },
+      "deadline": {
+        "label": "Fecha límite"
+      },
       "applicantType": {
         "options": {
           "person": "Particular",

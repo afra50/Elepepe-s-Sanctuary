@@ -10,15 +10,18 @@ HOME
 
 KONTAKT
 - loader
+- polityka podpiac
 - zmiana danych na prawdziwe - mail
 - alert error jak backend nawali?
 
+FOOTER
+- polityka i regulamin podpiac
+
 ADMIN
 1. Requests
-    - podpiac backend
-    - zmiana statusow
-    - wyswietlanie szczegolow
+    - wyswietlanie szczegolow + zmiana statusu
     - tlumaczenia
+    - przycisk do odswiezania
 
 BACKEND
 - crony - jakie?: 1. usuwanie request i związanych plików po zakończeniu zbiórki lub po odrzuceniu (1 mies po)

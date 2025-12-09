@@ -18,15 +18,34 @@
     "payoutsDesc": "Records of outgoing transfers to beneficiaries."
   },
   "requests": {
-    "subtitle": "Manage incoming requests for support"
+    "subtitle": "Manage incoming requests for support",
+    "sentDate": "Sent date",
+    "unknownCountry": "Unknown country",
+    "noRequestsFound": "No requests found in this section",
+    "allDone": "All requests have been handled.",
+    "fetchError": "Failed to fetch requests."
   },
   "status": {
     "pending": "Pending",
     "approved": "Approved",
     "rejected": "Rejected"
   },
+  "actions": {
+    "filter": "Filter",
+    "sort": "Sort",
+    "details": "Details"
+  },
   "form": {
+    "sections": {
+      "animal": "Pet"
+    },
     "fields": {
+      "amount": {
+        "label": "Amount"
+      },
+      "deadline": {
+        "label": "Deadline"
+      },
       "applicantType": {
         "options": {
           "person": "Individual",

@@ -216,4 +216,58 @@ const createRequest = async (req, res) => {
   }
 };
 
-module.exports = { createRequest };
+const getRequests = async (req, res) => {
+  const connection = await db.getConnection();
+
+  try {
+    // Extract query parameters (e.g. GET /api/requests?status=pending)
+    const { status } = req.query;
+
+    const filters = {};
+    if (status) {
+      filters.status = status;
+    }
+
+    const requests = await RequestModel.getRequests(connection, filters);
+
+    res.status(200).json(requests);
+  } catch (error) {
+    console.error("Error fetching requests:", error);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: "Failed to fetch requests.",
+    });
+  } finally {
+    connection.release();
+  }
+};
+
+// Optional: Get single request details (for the modal)
+const getRequestDetails = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const { id } = req.params;
+    const request = await RequestModel.getRequestById(connection, id);
+
+    if (!request) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+
+    // TODO: Fetch files associated with this request if needed here
+    // const files = await RequestModel.getFilesByRequestId(connection, id);
+    // request.files = files;
+
+    res.status(200).json(request);
+  } catch (error) {
+    console.error("Error fetching request details:", error);
+    res.status(500).json({ error: "Server Error" });
+  } finally {
+    connection.release();
+  }
+};
+
+module.exports = {
+  createRequest,
+  getRequests,
+  getRequestDetails,
+};

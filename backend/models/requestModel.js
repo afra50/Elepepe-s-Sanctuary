@@ -62,7 +62,53 @@ const addFiles = async (connection, filesData) => {
   return result;
 };
 
+const getRequests = async (connection, filters = {}) => {
+  let sql = `
+    SELECT 
+      id, 
+      applicant_type AS applicantType, 
+      full_name AS fullName, 
+      amount, 
+      currency, 
+      deadline, 
+      species, 
+      animals_count AS animalsCount, 
+      submission_language AS submissionLanguage, 
+      created_at AS createdAt, 
+      status,
+      country -- Added country for the admin card view
+    FROM requests
+  `;
+
+  const values = [];
+  const whereClauses = [];
+
+  // Filter by status if provided (pending, approved, rejected)
+  if (filters.status) {
+    whereClauses.push("status = ?");
+    values.push(filters.status);
+  }
+
+  if (whereClauses.length > 0) {
+    sql += " WHERE " + whereClauses.join(" AND ");
+  }
+
+  // Order by newest first
+  sql += " ORDER BY created_at DESC";
+
+  const [rows] = await connection.query(sql, values);
+  return rows;
+};
+
+const getRequestById = async (connection, id) => {
+  const sql = `SELECT * FROM requests WHERE id = ?`;
+  const [rows] = await connection.query(sql, [id]);
+  return rows[0];
+};
+
 module.exports = {
   createRequest,
   addFiles,
+  getRequests,
+  getRequestById,
 };
