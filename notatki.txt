@@ -13,8 +13,8 @@ KONTAKT
 - alert error jak backend nawali?
 
 REQUEST
-- maks na inne zwierze, kwote
-- loader
+- maks na inne zwierze - 100, kwote - 1000000
+- po bledzie backendowym formularz ma sie nie resetowac
 
 BACKEND
 - crony - jakie?: 1. usuwanie request i związanych plików po zakończeniu zbiórki, 2. usuwanie zbiórki po X latach

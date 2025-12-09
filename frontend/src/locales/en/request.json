@@ -363,9 +363,11 @@
 
     "alerts": {
       "success": "Your request has been submitted. We will contact you as soon as possible.",
-      "validation": "Please check the fields marked in red and correct the highlighted errors."
+      "validation": "Please check the fields marked in red and correct the highlighted errors.",
+      "error": "An unexpected error occurred. Please try again first."
     },
 
-    "submit": "Submit request"
+    "submit": "Submit request",
+    "submitting": "Sending..."
   }
 }

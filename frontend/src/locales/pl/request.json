@@ -363,9 +363,11 @@
 
     "alerts": {
       "success": "Zgłoszenie zostało wysłane. Skontaktujemy się z Tobą tak szybko, jak to możliwe.",
-      "validation": "Sprawdź proszę pola oznaczone na czerwono i popraw zaznaczone błędy."
+      "validation": "Sprawdź proszę pola oznaczone na czerwono i popraw zaznaczone błędy.",
+      "error": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie."
     },
 
-    "submit": "Wyślij zgłoszenie"
+    "submit": "Wyślij zgłoszenie",
+    "submitting": "Wysyłanie..."
   }
 }

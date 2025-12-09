@@ -363,9 +363,11 @@
 
     "alerts": {
       "success": "Tu solicitud ha sido enviada. Nos pondremos en contacto contigo lo antes posible.",
-      "validation": "Revisa los campos marcados en rojo y corrige los errores indicados."
+      "validation": "Revisa los campos marcados en rojo y corrige los errores indicados.",
+      "error": "Se produjo un error inesperado. Inténtalo de nuevo."
     },
 
-    "submit": "Enviar solicitud"
+    "submit": "Enviar solicitud",
+    "submitting": "Enviando..."
   }
 }

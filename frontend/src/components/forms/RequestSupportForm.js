@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import Button from "../ui/Button";
 import RadioGroup from "../ui/RadioGroup";
 import Checkbox from "../ui/Checkbox";
+import Loader from "../ui/Loader"; // <-- Dodaj import
 import DatePickerField from "../ui/DatePickerField";
 import api from "../../utils/api";
 
@@ -81,6 +82,7 @@ function RequestSupportForm({ onShowAlert }) {
 
   const [errors, setErrors] = useState({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const petPhotosInputRef = useRef(null);
   const documentsInputRef = useRef(null);
@@ -796,6 +798,8 @@ function RequestSupportForm({ onShowAlert }) {
       return;
     }
 
+    setIsSubmitting(true);
+
     // 2. Przygotowanie FormData (bo wysyłamy pliki)
     const formData = new FormData();
 
@@ -821,18 +825,12 @@ function RequestSupportForm({ onShowAlert }) {
     });
 
     try {
-      // 3. Wysłanie do backendu
-      // api.js sam doda odpowiednie nagłówki dla FormData (multipart/form-data)
-      // ale dla pewności przy FormData warto usunąć domyślny Content-Type JSON
       const response = await api.post("/requests", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       console.log("Response:", response.data);
 
-      // 4. Sukces
       onShowAlert?.({
         variant: "success",
         message: t("form.alerts.success"),
@@ -844,14 +842,10 @@ function RequestSupportForm({ onShowAlert }) {
       setErrors({});
       setHasSubmitted(false);
     } catch (error) {
-      console.error("Błąd wysyłania zgłoszenia:", error);
+      console.error("error sending report:", error);
 
-      // 5. Obsługa błędu z backendu
-      let errorMessage = t("form.alerts.error"); // Domyślny błąd "Coś poszło nie tak"
-
-      // Jeśli backend zwrócił konkretny komunikat błędu (np. walidacja Joi)
+      let errorMessage = t("form.alerts.error");
       if (error.response?.data?.details) {
-        // Backend zwraca tablicę błędów w 'details'
         errorMessage = error.response.data.details.join(", ");
       } else if (error.response?.data?.error) {
         errorMessage = error.response.data.error;
@@ -861,6 +855,8 @@ function RequestSupportForm({ onShowAlert }) {
         variant: "error",
         message: errorMessage,
       });
+    } finally {
+      setIsSubmitting(false); // <-- Stop loadera (zawsze)
     }
   };
 
@@ -1622,8 +1618,20 @@ function RequestSupportForm({ onShowAlert }) {
       </section>
 
       <div className="form-actions">
-        <Button type="submit" variant="primary" size="md">
-          {t("form.submit")}
+        <Button
+          type="submit"
+          variant="primary"
+          size="md"
+          disabled={isSubmitting} // Zablokuj klikanie podczas wysyłania
+        >
+          {isSubmitting ? (
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Loader size="sm" className="loader-white" />
+              <span>{t("form.submitting") || "Wysyłanie..."}</span>
+            </div>
+          ) : (
+            t("form.submit")
+          )}
         </Button>
       </div>
     </form>
