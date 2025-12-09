@@ -5,6 +5,7 @@ const path = require("path"); // <--- 1. Import 'path' module
 
 const authRoutes = require("./routes/authRoutes");
 const requestRoutes = require("./routes/requestRoutes");
+const partnerRoutes = require("./routes/partnerRoutes");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // TRASY (Routes)
 app.use("/api/auth", authRoutes);
 app.use("/api/requests", requestRoutes);
+app.use("/api/partners", partnerRoutes);
 
 // 404
 app.use((req, res) => {

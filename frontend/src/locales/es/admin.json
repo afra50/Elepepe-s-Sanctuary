@@ -6,6 +6,7 @@
     "donations": "Donaciones",
     "foundationSupport": "Fondos propios",
     "payouts": "Pagos",
+    "partnerships": "Colaboraciones",
     "logout": "Cerrar sesión"
   },
   "dashboard": {
@@ -15,7 +16,8 @@
     "projectsDesc": "Gestión de recaudaciones activas. Edita descripciones, fotos y cambia estados.",
     "donationsDesc": "Historial completo de donaciones. Explora y busca transacciones.",
     "foundationSupportDesc": "Registro de aportaciones propias de la fundación a las recaudaciones.",
-    "payoutsDesc": "Registro de transferencias salientes a los beneficiarios."
+    "payoutsDesc": "Registro de transferencias salientes a los beneficiarios.",
+    "partnershipsDesc": "Gestionar socios y organizaciones que apoyan Elepepe’s Sanctuary"
   },
   "requests": {
     "subtitle": "Gestionar solicitudes de apoyo entrantes",
@@ -24,6 +26,18 @@
     "noRequestsFound": "No hay solicitudes en esta sección",
     "allDone": "Todas las solicitudes han sido gestionadas.",
     "fetchError": "Error al recuperar las solicitudes."
+  },
+  "partnerships": {
+    "subtitle": "Gestiona los socios que apoyan Elepepe’s Sanctuary: sus logotipos aparecerán en el sitio web.",
+    "current": "Socios actuales",
+    "countLabel": "socios",
+    "empty": "Aún no se ha añadido ningún socio. Haz clic en \"Añadir socio\" para agregar el primero.",
+    "confirmDelete": "¿Seguro que deseas eliminar a este socio?",
+    "buttons": {
+      "addNew": "Añadir socio",
+      "edit": "Editar socio",
+      "delete": "Eliminar socio"
+    }
   },
   "status": {
     "pending": "Pendientes",

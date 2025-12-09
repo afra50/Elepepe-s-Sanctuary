@@ -6,6 +6,7 @@
     "donations": "Darowizny",
     "foundationSupport": "Wpłaty własne",
     "payouts": "Wypłaty",
+    "partnerships": "Partnerzy",
     "logout": "Wyloguj"
   },
   "dashboard": {
@@ -15,7 +16,8 @@
     "projectsDesc": "Zarządzanie aktywnymi zbiórkami. Edycja opisów, zdjęć oraz zmiana statusów projektów.",
     "donationsDesc": "Pełna historia wpłat od darczyńców. Przeglądanie i wyszukiwanie transakcji.",
     "foundationSupportDesc": "Rejestr wpłat własnych fundacji na rzecz zbiórek.",
-    "payoutsDesc": "Ewidencja przelewów wychodzących do beneficjentów."
+    "payoutsDesc": "Ewidencja przelewów wychodzących do beneficjentów.",
+    "partnershipsDesc": "Zarządzaj partnerami i organizacjami, które wspierają Elepepe's Sanctuary."
   },
   "requests": {
     "subtitle": "Zarządzaj nadesłanymi prośbami o wsparcie",
@@ -24,6 +26,18 @@
     "noRequestsFound": "Brak zgłoszeń w tej sekcji",
     "allDone": "Wszystkie zgłoszenia zostały już obsłużone.",
     "fetchError": "Nie udało się pobrać zgłoszeń."
+  },
+  "partnerships": {
+    "subtitle": "Zarządzaj partnerami wspierającymi Elepepe’s Sanctuary – ich loga pojawią się na stronie.",
+    "current": "Aktualni partnerzy",
+    "countLabel": "partnerów",
+    "empty": "Nie dodano jeszcze żadnych partnerów. Kliknij „Dodaj partnera”, aby dodać pierwszego.",
+    "confirmDelete": "Czy na pewno chcesz usunąć tego partnera?",
+    "buttons": {
+      "addNew": "Dodaj partnera",
+      "edit": "Edytuj partnera",
+      "delete": "Usuń partnera"
+    }
   },
   "status": {
     "pending": "Oczekujące",
