@@ -75,5 +75,17 @@
         }
       }
     }
+  },
+  "filters": {
+    "searchPlaceholder": "Search...",
+    "clear": "Clear",
+    "allSpecies": "All species",
+    "allTypes": "All applicants",
+    "allLanguages": "All languages",
+    "sortOptions": {
+      "date": "Date added",
+      "deadline": "Deadline",
+      "amount": "Amount"
+    }
   }
 }

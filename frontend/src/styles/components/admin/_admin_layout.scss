@@ -76,6 +76,9 @@
         &__footer {
             padding: 1.5rem;
             border-top: 1px solid rgba($color-white, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
             .logout-btn {
                 background: none;
@@ -88,9 +91,10 @@
                 font-size: 1rem;
                 font-weight: 700;
                 padding: 0.5rem;
-                width: 100%;
+                width: auto;
                 text-align: left;
                 font-family: $font-body;
+                flex: 1;
 
                 &:hover {
                     color: darken($color-accent, 10%);
@@ -99,6 +103,20 @@
                 .nav-icon {
                     width: 20px;
                     height: 20px;
+                }
+            }
+
+            .mobile-back-btn {
+                display: none; // Na desktopie ukryty
+                background: none;
+                border: none;
+                color: $color-white;
+                cursor: pointer;
+                padding: 0.5rem;
+                transition: color 0.2s;
+
+                &:hover {
+                    color: $color-white;
                 }
             }
         }
@@ -139,6 +157,12 @@
             &__footer {
                 border: none;
                 padding: 0.5rem 1rem;
+
+                .mobile-back-btn {
+                    display: flex; // Pokaż na mobile
+                    align-items: center;
+                    justify-content: center;
+                }
             }
 
             .logout-btn span {

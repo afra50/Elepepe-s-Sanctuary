@@ -75,5 +75,17 @@
         }
       }
     }
+  },
+  "filters": {
+    "searchPlaceholder": "Buscar...",
+    "clear": "Limpiar",
+    "allSpecies": "Todas las especies",
+    "allTypes": "Todos los solicitantes",
+    "allLanguages": "Todos los idiomas",
+    "sortOptions": {
+      "date": "Fecha de creación",
+      "deadline": "Fecha límite",
+      "amount": "Importe"
+    }
   }
 }

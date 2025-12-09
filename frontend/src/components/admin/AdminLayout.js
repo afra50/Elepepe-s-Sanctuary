@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom"; // Dodano useLocation
 import { useTranslation } from "react-i18next";
 import api from "../../utils/api";
 import {
@@ -11,10 +11,12 @@ import {
   CreditCard,
   LogOut,
   Handshake,
+  ArrowLeft, // Dodano ikonę
 } from "lucide-react";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Potrzebne do sprawdzenia czy jesteśmy na dashboardzie
   const { t } = useTranslation("admin");
 
   const handleLogout = async () => {
@@ -26,8 +28,6 @@ const AdminLayout = () => {
     }
   };
 
-  // ZMIANA: Przekazujemy nazwę komponentu (bez < >), a nie wyrenderowany JSX
-  // Używamy dużej litery 'Icon', aby React wiedział, że to komponent
   const navItems = [
     {
       path: "/admin",
@@ -67,6 +67,9 @@ const AdminLayout = () => {
     },
   ];
 
+  // Sprawdzamy, czy jesteśmy na głównej stronie admina
+  const isDashboard = location.pathname === "/admin";
+
   return (
     <div className="admin-layout">
       {/* SIDEBAR */}
@@ -86,7 +89,6 @@ const AdminLayout = () => {
                   end={item.end}
                   className={({ isActive }) => (isActive ? "active" : "")}
                 >
-                  {/* TUTAJ RENDERUJEMY IKONĘ */}
                   <item.Icon size={20} className="nav-icon" />
                   <span>{item.label}</span>
                 </NavLink>
@@ -96,6 +98,17 @@ const AdminLayout = () => {
         </nav>
 
         <div className="admin-sidebar__footer">
+          {/* NOWOŚĆ: Przycisk Wstecz na mobile (jeśli nie jesteśmy na dashboardzie) */}
+          {!isDashboard && (
+            <button
+              onClick={() => navigate("/admin")}
+              className="mobile-back-btn"
+              title="Wróć do Dashboardu"
+            >
+              <ArrowLeft size={20} className="nav-icon" />
+            </button>
+          )}
+
           <button onClick={handleLogout} className="logout-btn">
             <LogOut size={20} className="nav-icon" />
             <span>{t("menu.logout")}</span>

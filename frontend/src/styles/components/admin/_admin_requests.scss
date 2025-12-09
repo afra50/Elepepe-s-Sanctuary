@@ -8,18 +8,16 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        margin-bottom: clamp(1.5rem, 3vw, 2.5rem); // Responsywny margines
+        margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
         gap: 1rem;
 
-        // Mobile: układ kolumnowy
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             flex-direction: column;
             align-items: flex-start;
         }
 
         .page-title {
             font-family: $font-heading;
-            // Font skaluje się od 1.75rem do 2.5rem w zależności od szerokości ekranu
             font-size: clamp(1.75rem, 4vw, 2.5rem);
             margin-bottom: 0.5rem;
             font-weight: 800;
@@ -36,28 +34,67 @@
             display: flex;
             gap: 0.75rem;
 
-            // Mobile: rozciągnij przyciski
-            @media (max-width: 768px) {
-                width: 100%;
-
-                button {
-                    flex: 1;
-                    justify-content: center;
+            // Searchbar w headerze - na mobile go chowamy
+            .header-search {
+                @media (max-width: 992px) {
+                    display: none;
                 }
             }
+
+            // Przycisk "Filtry" - widoczny TYLKO na mobile
+            .filter-toggle-btn {
+                display: none; // Desktop: UKRYJ
+
+                @media (max-width: 1023px) {
+                    display: flex; // Mobile: POKAŻ
+                    width: 100%;
+
+                    button {
+                        flex: 1;
+                        justify-content: center;
+                    }
+                }
+            }
+        }
+    }
+
+    // --- PANEL FILTRÓW (Wrapper) ---
+    .filter-panel-wrapper {
+        display: block; // Desktop: ZAWSZE WIDOCZNY
+        margin-bottom: 2rem;
+
+        @media (max-width: 992px) {
+            display: none; // Mobile: DOMYŚLNIE UKRYTY
+
+            // Mobile: POKAŻ GDY MA KLASĘ .open
+            &.open {
+                display: block;
+                animation: slideDown 0.3s ease-out;
+            }
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
 
     // --- ZAKŁADKI (TABS) ---
     .tabs-container {
         display: flex;
-        gap: clamp(0.5rem, 2vw, 1.5rem); // Mniejsze odstępy na mobile
+        gap: clamp(0.5rem, 2vw, 1.5rem);
         border-bottom: 2px solid rgba($color-border, 0.5);
         margin-bottom: 2rem;
         padding-bottom: 1px;
-        overflow-x: auto; // Przewijanie na bardzo małych ekranach
+        overflow-x: auto;
 
-        // Ukrycie paska przewijania (estetyka)
         scrollbar-width: none;
 
         &::-webkit-scrollbar {
@@ -78,7 +115,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            white-space: nowrap; // Zapobiega łamaniu tekstu w zakładkach
+            white-space: nowrap;
 
             &:hover {
                 color: $color-primary;
@@ -100,7 +137,7 @@
             }
 
             .count-badge {
-                background-color: rgba($color-border, 0.5);
+                background-color: $color-accent;
                 color: $color-secondary;
                 font-size: 0.75rem;
                 padding: 2px 8px;
@@ -113,8 +150,6 @@
     // --- GRID KART ---
     .requests-grid {
         display: grid;
-        // Automatyczny grid: kolumny mają min 300px, max 1fr (rozciągają się)
-        // Na dużych ekranach będą 3-4 kolumny, na tablecie 2, na mobile 1
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: clamp(1rem, 2vw, 1.5rem);
     }
@@ -130,6 +165,8 @@
         .empty-icon {
             color: rgba($color-secondary, 0.2);
             margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
         }
 
         h3 {

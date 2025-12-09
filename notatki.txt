@@ -20,8 +20,6 @@ FOOTER
 ADMIN
 1. Requests
     - wyswietlanie szczegolow + zmiana statusu
-    - tlumaczenia
-    - przycisk do odswiezania
 
 BACKEND
 - crony - jakie?: 1. usuwanie request i związanych plików po zakończeniu zbiórki lub po odrzuceniu (1 mies po)

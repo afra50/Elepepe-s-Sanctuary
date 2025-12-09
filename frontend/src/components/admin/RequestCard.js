@@ -9,8 +9,9 @@ import {
   Stethoscope,
   MapPin,
 } from "lucide-react";
+import { formatDate } from "../../utils/dateUtils"; // <--- 1. Import formatera
 
-// Pomocniczy komponent flagi (lokalnie w tym pliku)
+// Pomocniczy komponent flagi
 const LanguageFlag = ({ langCode }) => {
   const code = langCode ? langCode.toLowerCase() : "en";
   return (
@@ -38,7 +39,12 @@ const getApplicantIcon = (type) => {
 };
 
 const RequestCard = ({ req, onClick }) => {
-  const { t } = useTranslation("admin");
+  // 2. Pobieramy i18n, aby znać aktualny język
+  const { t, i18n } = useTranslation("admin");
+
+  // 3. Formatujemy daty "w locie" przy wyświetlaniu
+  const formattedCreated = formatDate(req.createdAt, i18n.language);
+  const formattedDeadline = formatDate(req.deadline, i18n.language);
 
   return (
     <article className="request-card clickable" onClick={onClick}>
@@ -65,8 +71,10 @@ const RequestCard = ({ req, onClick }) => {
             <MapPin size={14} />
             {req.country || t("requests.unknownCountry") || "Nieznany kraj"}
           </span>
+
           <span className="date-info">
-            {t("requests.sentDate") || "Wysłano"}: {req.createdAt}
+            {/* Wyświetlamy sformatowaną datę utworzenia */}
+            {t("requests.sentDate") || "Wysłano"}: {formattedCreated}
           </span>
         </div>
 
@@ -85,7 +93,8 @@ const RequestCard = ({ req, onClick }) => {
               <Calendar size={14} />{" "}
               {t("form.fields.deadline.label") || "Termin"}
             </span>
-            <span className="value">{req.deadline}</span>
+            {/* Wyświetlamy sformatowany termin */}
+            <span className="value">{formattedDeadline}</span>
           </div>
 
           <div className="info-item full-width">
