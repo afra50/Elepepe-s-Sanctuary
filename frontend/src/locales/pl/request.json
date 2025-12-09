@@ -245,7 +245,8 @@
 
       "speciesOther": {
         "required": "Podaj gatunek zwierzaka.",
-        "min": "Nazwa gatunku jest za krótka."
+        "min": "Nazwa gatunku jest za krótka.",
+        "max": "Nazwa gatunku może mieć maksymalnie {{max}} znaków."
       },
 
       "animalName": {
@@ -274,7 +275,8 @@
       "amount": {
         "required": "Podaj kwotę, o którą wnioskujesz.",
         "format": "Podaj poprawną kwotę (cyfry, opcjonalnie dwie cyfry po przecinku).",
-        "positive": "Kwota musi być większa od zera."
+        "positive": "Kwota musi być większa od zera.",
+        "max": "Kwota nie może być większa niż {{max}}."
       },
 
       "currency": {

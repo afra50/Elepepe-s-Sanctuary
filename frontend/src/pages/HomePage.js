@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 import { NavLink, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
 import ProgressBar from "../components/ui/ProgressBar";
-import Banner from "../components/Banner"; // <--- 1. IMPORT BANERA
+import Banner from "../components/Banner";
+import FundraiserCard from "../components/FundraiserCard";
 
 function HomePage() {
   const { t } = useTranslation("home");
@@ -16,6 +17,7 @@ function HomePage() {
       image: "/1-sample.jpg",
       current: 450,
       goal: 1200,
+      endDate: "2025-12-31", // <--- przykład
     },
     {
       id: 2,
@@ -23,6 +25,7 @@ function HomePage() {
       image: "/2-sample.jpg",
       current: 890,
       goal: 1000,
+      endDate: "2025-11-30",
     },
     {
       id: 3,
@@ -30,11 +33,15 @@ function HomePage() {
       image: "/3-sample.jpg",
       current: 0,
       goal: 2300,
+      endDate: "2026-01-15",
     },
   ];
 
-  const handleDonateClick = (e, projectId) => {
-    e.stopPropagation();
+  const handleCardClick = (projectId) => {
+    navigate(`/projects/${projectId}`);
+  };
+
+  const handleDonateClick = (projectId) => {
     navigate(`/donate/${projectId}`);
   };
 
@@ -71,46 +78,12 @@ function HomePage() {
 
           <div className="projects-grid">
             {urgentProjects.map((project) => (
-              <div
+              <FundraiserCard
                 key={project.id}
-                className="project-card"
-                onClick={() => navigate(`/projects/${project.id}`)}
-              >
-                <div className="project-card__img-wrapper">
-                  <div
-                    className="project-card__image"
-                    style={{ backgroundImage: `url(${project.image})` }}
-                  ></div>
-                </div>
-
-                <div className="project-card__content">
-                  <h3>{project.title}</h3>
-
-                  <div className="project-stats">
-                    <div className="stat-row">
-                      <span>
-                        {t("urgent.raised")}{" "}
-                        <strong>{project.current} PLN</strong>
-                      </span>
-                      <span>
-                        {t("urgent.goal")} <strong>{project.goal} PLN</strong>
-                      </span>
-                    </div>
-                    <ProgressBar
-                      current={project.current}
-                      goal={project.goal}
-                    />
-                  </div>
-
-                  <Button
-                    variant="primary"
-                    className="full-width"
-                    onClick={(e) => handleDonateClick(e, project.id)}
-                  >
-                    {t("urgent.support")}
-                  </Button>
-                </div>
-              </div>
+                project={project}
+                onCardClick={handleCardClick}
+                onDonateClick={handleDonateClick}
+              />
             ))}
           </div>
         </div>

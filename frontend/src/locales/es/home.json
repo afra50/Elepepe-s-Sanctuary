@@ -30,7 +30,9 @@
     "title": "Pequeños en necesidad especial",
     "raised": "Recaudado:",
     "goal": "Meta:",
-    "support": "Ayudar"
+    "support": "Ayudar",
+    "daysLeft": "{{count}} días restantes",
+    "daysLeftFinished": "La fecha límite ha pasado"
   },
   "banner": {
     "title": "Los finales felices existen",

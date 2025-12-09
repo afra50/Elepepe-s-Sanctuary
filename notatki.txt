@@ -13,10 +13,6 @@ KONTAKT
 - zmiana danych na prawdziwe - mail
 - alert error jak backend nawali?
 
-REQUEST
-- maks na inne zwierze - 100, kwote - 1000000
-- po bledzie backendowym formularz ma sie nie resetowac
-
 ADMIN
 1. Requests
     - podpiac backend

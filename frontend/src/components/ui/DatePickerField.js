@@ -43,6 +43,9 @@ function DatePickerField({ id, name, value, onChange, placeholder }) {
   const localeKey = baseLang === "pl" ? "pl" : baseLang === "es" ? "es" : "en";
   const dateFormat = baseLang === "en" ? "dd/MM/yyyy" : "dd.MM.yyyy";
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // żeby nie było problemów z godziną
+
   return (
     <div className="date-input">
       <DatePicker
@@ -52,11 +55,11 @@ function DatePickerField({ id, name, value, onChange, placeholder }) {
         }
         dateFormat={dateFormat}
         locale={localeKey}
-        // 🔹 TO JEST KLUCZ
         placeholderText={placeholder}
         customInput={<DateInput id={id} name={name} />}
         calendarClassName="date-input__popup"
         popperClassName="date-input__popper"
+        minDate={today} // ⬅️ BLOKADA DAT PRZESZŁYCH
       />
     </div>
   );

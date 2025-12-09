@@ -113,7 +113,7 @@
       },
 
       "deadline": {
-        "label": "¿Hasta cuándo se necesitan los fondos?",
+        "label": "¿Para cuándo se necesitan los fondos?",
         "placeholder": "dd.mm.aaaa"
       },
 
@@ -245,7 +245,8 @@
 
       "speciesOther": {
         "required": "Especifica la especie del animal.",
-        "min": "El nombre de la especie es demasiado corto."
+        "min": "El nombre de la especie es demasiado corto.",
+        "max": "El nombre de la especie puede tener como máximo {{max}} caracteres."
       },
 
       "animalName": {
@@ -274,7 +275,8 @@
       "amount": {
         "required": "Introduce el importe que solicitas.",
         "format": "Introduce un importe válido (dígitos, opcionalmente con dos decimales).",
-        "positive": "El importe debe ser mayor que cero."
+        "positive": "El importe debe ser mayor que cero.",
+        "max": "La cantidad no puede ser superior a {{max}}."
       },
 
       "currency": {
