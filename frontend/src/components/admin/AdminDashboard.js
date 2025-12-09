@@ -7,6 +7,7 @@ import {
   Heart,
   DollarSign,
   CreditCard,
+  Handshake,
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -48,6 +49,13 @@ const AdminDashboard = () => {
       desc: t("dashboard.payoutsDesc"), // Opis wypłat
       icon: <CreditCard className="card-icon" />,
       link: "/admin/payouts",
+    },
+    {
+      id: "partnerships",
+      title: t("menu.partnerships"),
+      desc: t("dashboard.partnershipsDesc"),
+      icon: <Handshake className="card-icon" />,
+      link: "/admin/partnerships",
     },
   ];
 

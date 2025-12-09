@@ -6,6 +6,7 @@
     "donations": "Donations",
     "foundationSupport": "Internal Funds",
     "payouts": "Payouts",
+    "partnerships": "Partnerships",
     "logout": "Logout"
   },
   "dashboard": {
@@ -15,7 +16,8 @@
     "projectsDesc": "Manage active fundraisers. Edit descriptions, photos, and change project statuses.",
     "donationsDesc": "Full history of donor payments. Browse and search transactions.",
     "foundationSupportDesc": "Registry of the foundation's own contributions towards fundraisers.",
-    "payoutsDesc": "Records of outgoing transfers to beneficiaries."
+    "payoutsDesc": "Records of outgoing transfers to beneficiaries.",
+    "partnershipsDesc": "Manage partners and organizations that support Elepepe's Sanctuary."
   },
   "requests": {
     "subtitle": "Manage incoming requests for support",
@@ -24,6 +26,18 @@
     "noRequestsFound": "No requests found in this section",
     "allDone": "All requests have been handled.",
     "fetchError": "Failed to fetch requests."
+  },
+  "partnerships": {
+    "subtitle": "Manage partners supporting Elepepe’s Sanctuary — their logos will appear on the website.",
+    "current": "Current partners",
+    "countLabel": "partners",
+    "empty": "No partners have been added yet. Click \"Add partner\" to add the first one.",
+    "confirmDelete": "Are you sure you want to delete this partner?",
+    "buttons": {
+      "addNew": "Add partner",
+      "edit": "Edit partner",
+      "delete": "Delete partner"
+    }
   },
   "status": {
     "pending": "Pending",

@@ -10,6 +10,7 @@ import {
   DollarSign,
   CreditCard,
   LogOut,
+  Handshake,
 } from "lucide-react";
 
 const AdminLayout = () => {
@@ -58,6 +59,11 @@ const AdminLayout = () => {
       path: "/admin/payouts",
       Icon: CreditCard,
       label: t("menu.payouts"),
+    },
+    {
+      path: "/admin/partnerships",
+      Icon: Handshake,
+      label: t("menu.partnerships"),
     },
   ];
 

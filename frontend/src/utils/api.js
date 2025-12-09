@@ -78,8 +78,6 @@ api.interceptors.response.use(
         processQueue(refreshError, null);
         isRefreshing = false;
 
-        // Opcjonalnie: Przekieruj do logowania
-        // window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }
@@ -87,5 +85,33 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+/**
+ * Helpers dla partnerów – będziesz ich używać w panelu admina
+ * (formularze będą wysyłać FormData z polem "logo")
+ */
+
+// wyciągamy origin z BASE_URL (czyli bez końcówki /api)
+const API_ORIGIN = BASE_URL.replace(/\/api\/?$/, "");
+
+// Zwracam też stałą do ewentualnego użycia przy obrazkach w innych miejscach
+export const FILES_BASE_URL = API_ORIGIN;
+
+// ---- PARTNERS API ----
+export const partnersApi = {
+  getAll: () => api.get("/partners"),
+
+  create: (formData) =>
+    api.post("/partners", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+
+  update: (id, formData) =>
+    api.put(`/partners/${id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+
+  delete: (id) => api.delete(`/partners/${id}`),
+};
 
 export default api;
