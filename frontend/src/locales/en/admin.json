@@ -9,12 +9,38 @@
     "logout": "Logout"
   },
   "dashboard": {
-    "title": "Administration Panel",
+    "title": "Admin Panel",
     "subtitle": "Select a section to manage:",
-    "requestsDesc": "Moderation of incoming requests from guardians. Approve or reject new applications for support.",
-    "projectsDesc": "Manage active fundraisers. Edit descriptions, photos, and project statuses.",
-    "donationsDesc": "Full history of donations from supporters. Browse and search transactions.",
-    "foundationSupportDesc": "Registry of the foundation's internal funds allocated directly to fundraisers.",
-    "payoutsDesc": "Registry of outgoing transfers to beneficiaries."
+    "requestsDesc": "Moderate requests from guardians. Review, approve, or reject new applications for help.",
+    "projectsDesc": "Manage active fundraisers. Edit descriptions, photos, and change project statuses.",
+    "donationsDesc": "Full history of donor payments. Browse and search transactions.",
+    "foundationSupportDesc": "Registry of the foundation's own contributions towards fundraisers.",
+    "payoutsDesc": "Records of outgoing transfers to beneficiaries."
+  },
+  "requests": {
+    "subtitle": "Manage incoming requests for support"
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  },
+  "form": {
+    "fields": {
+      "applicantType": {
+        "options": {
+          "person": "Individual",
+          "organization": "Organization",
+          "vetClinic": "Vet Clinic"
+        }
+      },
+      "species": {
+        "options": {
+          "rat": "Rat",
+          "guineaPig": "Guinea Pig",
+          "other": "Other"
+        }
+      }
+    }
   }
 }

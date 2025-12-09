@@ -1,4 +1,5 @@
 - paginacja
+- sortowanie, filtry + wyszukiwarka - uzyc kompoenntu checkbox
 - confirm dialog
 - komponent na brak polaczenia z backednem
 - min vh sprawdzic 
@@ -16,8 +17,15 @@ REQUEST
 - maks na inne zwierze - 100, kwote - 1000000
 - po bledzie backendowym formularz ma sie nie resetowac
 
+ADMIN
+1. Requests
+    - podpiac backend
+    - zmiana statusow
+    - wyswietlanie szczegolow
+    - tlumaczenia
+
 BACKEND
-- crony - jakie?: 1. usuwanie request i związanych plików po zakończeniu zbiórki, 2. usuwanie zbiórki po X latach
+- crony - jakie?: 1. usuwanie request i związanych plików po zakończeniu zbiórki lub po odrzuceniu (1 mies po)
 - Joi do walidacji requestów
 
 NA KONIEC
@@ -25,4 +33,4 @@ NA KONIEC
 - polityka - languagedetector?, formularz kontaktowy, fomularz zgloszenia
 - index.html + html lang - tak jak na zebrane
 - seo - robots + google search console + sitemap + og img
-- cron, wyl x-powered-by, ratelimiter, slow-down, logi (winston? logger?), helmet, cookies http only, samesite:strict, secure, compression, morgan, proxy, ssl
+- cors, wyl x-powered-by, ratelimiter, slow-down, logi (winston? logger?), helmet, cookies http only, samesite:strict, secure, compression, morgan, proxy, ssl

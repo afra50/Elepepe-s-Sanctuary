@@ -10,6 +10,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./components/admin/AdminDashboard";
+import AdminRequests from "./components/admin/AdminRequests";
 
 // Import ochrony
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -27,8 +28,16 @@ const routes = [
   // --- PANEL ADMINA (Chroniony) ---
   {
     path: "/admin",
-    element: <ProtectedRoute>{<AdminLayout />}</ProtectedRoute>,
-    children: [{ index: true, element: <AdminDashboard /> }],
+    element: (
+      <ProtectedRoute>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <AdminDashboard /> },
+      { path: "requests", element: <AdminRequests /> },
+      { path: "*", element: <NotFoundPage /> },
+    ],
   },
 
   // --- 404 ---

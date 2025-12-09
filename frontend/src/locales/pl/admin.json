@@ -16,5 +16,50 @@
     "donationsDesc": "Pełna historia wpłat od darczyńców. Przeglądanie i wyszukiwanie transakcji.",
     "foundationSupportDesc": "Rejestr wpłat własnych fundacji na rzecz zbiórek.",
     "payoutsDesc": "Ewidencja przelewów wychodzących do beneficjentów."
+  },
+  "requests": {
+    "subtitle": "Zarządzaj nadesłanymi prośbami o wsparcie",
+    "sentDate": "Data wysłania",
+    "unknownCountry": "Nieznany kraj",
+    "noRequestsFound": "Brak zgłoszeń w tej sekcji",
+    "allDone": "Wszystkie zgłoszenia zostały już obsłużone.",
+    "fetchError": "Nie udało się pobrać zgłoszeń."
+  },
+  "status": {
+    "pending": "Oczekujące",
+    "approved": "Zatwierdzone",
+    "rejected": "Odrzucone"
+  },
+  "actions": {
+    "filter": "Filtry",
+    "sort": "Sortuj",
+    "details": "Szczegóły"
+  },
+  "form": {
+    "sections": {
+      "animal": "Zwierzak"
+    },
+    "fields": {
+      "amount": {
+        "label": "Kwota"
+      },
+      "deadline": {
+        "label": "Termin"
+      },
+      "applicantType": {
+        "options": {
+          "person": "Osoba prywatna",
+          "organization": "Organizacja",
+          "vetClinic": "Gabinet wet."
+        }
+      },
+      "species": {
+        "options": {
+          "rat": "Szczur",
+          "guineaPig": "Świnka morska",
+          "other": "Inne"
+        }
+      }
+    }
   }
 }

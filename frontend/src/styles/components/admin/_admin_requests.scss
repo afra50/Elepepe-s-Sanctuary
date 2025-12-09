@@ -1,0 +1,296 @@
+.admin-requests-page {
+    font-family: $font-body;
+    color: $color-secondary;
+    width: 100%;
+
+    // --- NAGŁÓWEK ---
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: clamp(1.5rem, 3vw, 2.5rem); // Responsywny margines
+        gap: 1rem;
+
+        // Mobile: układ kolumnowy
+        @media (max-width: 768px) {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .page-title {
+            font-family: $font-heading;
+            // Font skaluje się od 1.75rem do 2.5rem w zależności od szerokości ekranu
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .page-subtitle {
+            color: $brown-700;
+            margin: 0;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        .actions-bar {
+            display: flex;
+            gap: 0.75rem;
+
+            // Mobile: rozciągnij przyciski
+            @media (max-width: 768px) {
+                width: 100%;
+
+                button {
+                    flex: 1;
+                    justify-content: center;
+                }
+            }
+        }
+    }
+
+    // --- ZAKŁADKI (TABS) ---
+    .tabs-container {
+        display: flex;
+        gap: clamp(0.5rem, 2vw, 1.5rem); // Mniejsze odstępy na mobile
+        border-bottom: 2px solid rgba($color-border, 0.5);
+        margin-bottom: 2rem;
+        padding-bottom: 1px;
+        overflow-x: auto; // Przewijanie na bardzo małych ekranach
+
+        // Ukrycie paska przewijania (estetyka)
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem clamp(0.5rem, 1.5vw, 1.25rem);
+            font-family: $font-heading;
+            font-weight: 600;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: lighten($color-secondary, 20%);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap; // Zapobiega łamaniu tekstu w zakładkach
+
+            &:hover {
+                color: $color-primary;
+            }
+
+            &.active {
+                color: $color-secondary;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -3px;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background-color: $color-primary;
+                    border-radius: 3px 3px 0 0;
+                }
+            }
+
+            .count-badge {
+                background-color: rgba($color-border, 0.5);
+                color: $color-secondary;
+                font-size: 0.75rem;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-family: $font-body;
+            }
+        }
+    }
+
+    // --- GRID KART ---
+    .requests-grid {
+        display: grid;
+        // Automatyczny grid: kolumny mają min 300px, max 1fr (rozciągają się)
+        // Na dużych ekranach będą 3-4 kolumny, na tablecie 2, na mobile 1
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    // --- KARTA ZGŁOSZENIA ---
+    .request-card {
+        background: $color-white;
+        border: 1px solid rgba($color-border, 0.6);
+        border-radius: $radius-md;
+        box-shadow: $shadow-sm;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        display: flex;
+        flex-direction: column;
+
+        // Karta klikalna
+        &.clickable {
+            cursor: pointer;
+        }
+
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: $shadow-md;
+            border-color: $color-border;
+        }
+
+        // Góra karty
+        .card-top {
+            padding: 1rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba($color-background, 0.3);
+            border-bottom: 1px solid rgba($color-border, 0.3);
+
+            .applicant-badge {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                padding: 4px 10px;
+                border-radius: 6px;
+
+                &.person {
+                    background-color: #e0f2fe;
+                    color: #0284c7;
+                }
+
+                &.organization {
+                    background-color: #fce7f3;
+                    color: #be185d;
+                }
+
+                &.vetClinic {
+                    background-color: #dcfce7;
+                    color: #15803d;
+                }
+            }
+
+            .lang-flag {
+                display: flex;
+                align-items: center;
+
+                .flag-icon {
+                    width: 20px;
+                    object-fit: cover;
+                }
+            }
+        }
+
+        // Środek karty
+        .card-body {
+            padding: 1.5rem 1.25rem;
+            flex: 1;
+
+            .applicant-name {
+                margin: 0 0 0.25rem 0;
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: $color-secondary;
+                // Obcinanie zbyt długich nazw
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .meta-row {
+                font-size: 0.85rem;
+                color: $brown-700;
+                margin-bottom: 1.25rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+
+                .country-info {
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    font-weight: 600; // Wyróżnienie kraju
+                    color: $color-secondary;
+                }
+
+                .date-info {
+                    color: lighten($color-secondary, 20%);
+                }
+            }
+
+            .info-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+
+                .info-item {
+                    display: flex;
+                    flex-direction: column;
+
+                    &.full-width {
+                        grid-column: 1 / -1;
+                        margin-top: 0.5rem;
+                        padding-top: 0.75rem;
+                        border-top: 1px dashed rgba($color-border, 0.5);
+                    }
+
+                    .label {
+                        font-size: 0.75rem;
+                        color: lighten($color-secondary, 20%);
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        margin-bottom: 4px;
+                        text-transform: uppercase;
+                        font-weight: 600;
+                    }
+
+                    .value {
+                        font-size: 0.95rem;
+                        font-weight: 600;
+                        color: $color-secondary;
+
+                        &.money {
+                            color: $color-primary;
+                            font-size: 1.1rem;
+                            font-weight: 700;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // --- PUSTY STAN ---
+    .empty-state {
+        text-align: center;
+        padding: clamp(3rem, 5vw, 5rem) 2rem;
+        background-color: rgba($color-white, 0.5);
+        border-radius: $radius-md;
+        border: 1px dashed $color-border;
+
+        .empty-icon {
+            color: rgba($color-secondary, 0.2);
+            margin-bottom: 1rem;
+        }
+
+        h3 {
+            margin-bottom: 0.5rem;
+            color: $color-secondary;
+            font-family: $font-heading;
+            font-size: 1.25rem;
+        }
+
+        p {
+            color: $brown-700;
+        }
+    }
+}

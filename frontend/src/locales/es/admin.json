@@ -11,10 +11,36 @@
   "dashboard": {
     "title": "Panel de Administración",
     "subtitle": "Selecciona una sección para gestionar:",
-    "requestsDesc": "Moderación de solicitudes de los guardianes. Aprueba o rechaza nuevas peticiones de ayuda.",
-    "projectsDesc": "Gestión de recaudaciones activas. Edita descripciones, fotos y estados de los proyectos.",
+    "requestsDesc": "Moderación de solicitudes de tutores. Revisa, aprueba o rechaza nuevas peticiones de ayuda.",
+    "projectsDesc": "Gestión de recaudaciones activas. Edita descripciones, fotos y cambia estados.",
     "donationsDesc": "Historial completo de donaciones. Explora y busca transacciones.",
-    "foundationSupportDesc": "Registro de fondos propios de la fundación asignados directamente a las recaudaciones.",
-    "payoutsDesc": "Registro de transferencias salientes a beneficiarios."
+    "foundationSupportDesc": "Registro de aportaciones propias de la fundación a las recaudaciones.",
+    "payoutsDesc": "Registro de transferencias salientes a los beneficiarios."
+  },
+  "requests": {
+    "subtitle": "Gestionar solicitudes de apoyo entrantes"
+  },
+  "status": {
+    "pending": "Pendientes",
+    "approved": "Aprobadas",
+    "rejected": "Rechazadas"
+  },
+  "form": {
+    "fields": {
+      "applicantType": {
+        "options": {
+          "person": "Particular",
+          "organization": "Organización",
+          "vetClinic": "Clínica Vet."
+        }
+      },
+      "species": {
+        "options": {
+          "rat": "Rata",
+          "guineaPig": "Cobaya",
+          "other": "Otro"
+        }
+      }
+    }
   }
 }
