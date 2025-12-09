@@ -72,11 +72,12 @@ const getRequests = async (connection, filters = {}) => {
       currency, 
       deadline, 
       species, 
+      species_other AS speciesOther,
       animals_count AS animalsCount, 
       submission_language AS submissionLanguage, 
       created_at AS createdAt, 
       status,
-      country -- Added country for the admin card view
+      country
     FROM requests
   `;
 
@@ -106,9 +107,20 @@ const getRequestById = async (connection, id) => {
   return rows[0];
 };
 
+const getFilesByRequestId = async (connection, requestId) => {
+  const sql = `
+    SELECT id, file_path, file_type, original_name, created_at 
+    FROM request_files 
+    WHERE request_id = ?
+  `;
+  const [rows] = await connection.query(sql, [requestId]);
+  return rows;
+};
+
 module.exports = {
   createRequest,
   addFiles,
   getRequests,
   getRequestById,
+  getFilesByRequestId,
 };

@@ -102,7 +102,14 @@ const RequestCard = ({ req, onClick }) => {
               <PawPrint size={14} /> {t("form.sections.animal") || "Zwierzak"}
             </span>
             <span className="value">
-              {t(`form.fields.species.options.${req.species}`) || req.species}
+              {/* LOGIKA WYŚWIETLANIA GATUNKU */}
+              {
+                req.species === "other" && req.speciesOther
+                  ? req.speciesOther // Jeśli 'other', pokaż wpisany tekst (np. "Królik")
+                  : t(`form.fields.species.options.${req.species}`) ||
+                    req.species // W przeciwnym razie tłumaczenie
+              }
+
               {req.animalsCount > 1 && ` (x${req.animalsCount})`}
             </span>
           </div>

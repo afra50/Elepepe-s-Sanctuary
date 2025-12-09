@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Filter, Search, ArrowUpDown } from "lucide-react";
+import { Filter, ExternalLink, Check, X as XIcon } from "lucide-react";
 import Button from "../../components/ui/Button";
 import Loader from "../../components/ui/Loader";
 import RequestCard from "../../components/admin/RequestCard";
 import api from "../../utils/api";
+import { formatDate } from "../../utils/dateUtils";
 import SearchBar from "../ui/SearchBar";
 import FilterBar from "../ui/FilterBar";
+import Modal from "../ui/Modal";
 
 // Stan początkowy filtrów
 const initialFilters = {
@@ -27,21 +29,20 @@ const AdminRequests = () => {
   const [error, setError] = useState(null);
   const [selectedRequest, setSelectedRequest] = useState(null);
 
-  // Stan filtrów
-  const [filters, setFilters] = useState(initialFilters);
+  // Stan dla szczegółów pobieranych dynamicznie (jeśli endpoint listy nie zwraca wszystkiego)
+  const [requestDetails, setRequestDetails] = useState(null);
+  const [isDetailsLoading, setIsDetailsLoading] = useState(false);
 
-  // Stan widoczności panelu filtrów (TYLKO DLA MOBILE)
+  const [filters, setFilters] = useState(initialFilters);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
-  // --- 1. POBIERANIE DANYCH ---
+  // --- 1. POBIERANIE LISTY ---
   useEffect(() => {
     const fetchRequests = async () => {
       setIsLoading(true);
       setError(null);
-
       try {
         const response = await api.get("/requests");
-        // Zapisujemy surowe dane, formatowanie daty następuje w RequestCard
         setRequests(response.data);
       } catch (err) {
         console.error("Error fetching requests:", err);
@@ -50,11 +51,33 @@ const AdminRequests = () => {
         setIsLoading(false);
       }
     };
-
     fetchRequests();
   }, [t]);
 
-  // --- Handlery ---
+  // --- 2. POBIERANIE SZCZEGÓŁÓW (Po kliknięciu w kartę) ---
+  const handleOpenDetails = async (req) => {
+    setSelectedRequest(req); // Ustawiamy podstawowe dane od razu (żeby modal się otworzył)
+    setIsDetailsLoading(true);
+
+    try {
+      // Pobieramy pełne dane z plikami
+      const response = await api.get(`/requests/${req.id}`);
+      setRequestDetails(response.data);
+    } catch (err) {
+      console.error("Error fetching details:", err);
+      // Fallback: używamy tego co mamy z listy
+      setRequestDetails(req);
+    } finally {
+      setIsDetailsLoading(false);
+    }
+  };
+
+  const handleCloseDetails = () => {
+    setSelectedRequest(null);
+    setRequestDetails(null);
+  };
+
+  // --- Handlery Filtrów ---
   const handleFilterChange = (name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
@@ -63,35 +86,27 @@ const AdminRequests = () => {
     setFilters(initialFilters);
   };
 
-  // --- Logika Filtrowania i Sortowania ---
+  // --- Logika Filtrowania ---
   const processedRequests = useMemo(() => {
     let result = [...requests];
-
-    // 1. Zakładka
     result = result.filter((req) => req.status === activeTab);
 
-    // 2. Wyszukiwarka
     if (filters.search) {
       const q = filters.search.toLowerCase();
       result = result.filter((req) => req.fullName.toLowerCase().includes(q));
     }
 
-    // 3. Filtry Dropdown
-    if (filters.species !== "all") {
+    if (filters.species !== "all")
       result = result.filter((req) => req.species === filters.species);
-    }
-    if (filters.applicantType !== "all") {
+    if (filters.applicantType !== "all")
       result = result.filter(
         (req) => req.applicantType === filters.applicantType
       );
-    }
-    if (filters.language !== "all") {
+    if (filters.language !== "all")
       result = result.filter(
         (req) => req.submissionLanguage === filters.language
       );
-    }
 
-    // 4. Sortowanie
     result.sort((a, b) => {
       const field = filters.sortBy;
       let valA = a[field];
@@ -101,7 +116,6 @@ const AdminRequests = () => {
         valA = new Date(valA).getTime();
         valB = new Date(valB).getTime();
       }
-
       if (field === "amount") {
         valA = Number(valA);
         valB = Number(valB);
@@ -115,7 +129,6 @@ const AdminRequests = () => {
     return result;
   }, [requests, activeTab, filters]);
 
-  // Opcje do sortowania
   const sortOptions = [
     {
       value: "createdAt",
@@ -128,16 +141,12 @@ const AdminRequests = () => {
   return (
     <div className="admin-requests-page">
       <header className="page-header">
+        {/* ... (Header bez zmian) ... */}
         <div>
           <h1 className="page-title">{t("menu.requests")}</h1>
-          <p className="page-subtitle">
-            {t("requests.subtitle") ||
-              "Zarządzaj nadesłanymi prośbami o wsparcie"}
-          </p>
+          <p className="page-subtitle">{t("requests.subtitle")}</p>
         </div>
-
         <div className="actions-bar">
-          {/* Wyszukiwarka w headerze (ukrywana na mobile przez CSS) */}
           <div className="header-search" style={{ minWidth: "300px" }}>
             <SearchBar
               value={filters.search}
@@ -146,8 +155,6 @@ const AdminRequests = () => {
               placeholder={t("filters.searchPlaceholder")}
             />
           </div>
-
-          {/* Przycisk Filtry - widoczny TYLKO na mobile (przez CSS) */}
           <div className="filter-toggle-btn">
             <Button
               variant={isFilterPanelOpen ? "primary" : "outline"}
@@ -161,9 +168,7 @@ const AdminRequests = () => {
         </div>
       </header>
 
-      {/* --- PANEL FILTRÓW --- */}
-      {/* Klasa 'open' jest dodawana tylko gdy klikniemy przycisk na mobile. 
-          Na desktopie CSS wymusi display: block niezależnie od stanu. */}
+      {/* ... (FilterBar i Tabs bez zmian) ... */}
       <div
         className={`filter-panel-wrapper ${isFilterPanelOpen ? "open" : ""}`}
       >
@@ -181,17 +186,11 @@ const AdminRequests = () => {
           onClear={handleClearFilters}
           clearLabel={t("filters.clear")}
         >
-          {/* Na mobile SearchBar znika z headera, więc warto dodać go tutaj, 
-              ale FilterBar przyjmuje children. Możemy to zostawić jak jest, 
-              ewentualnie dodać drugi SearchBar widoczny tylko na mobile wewnątrz FilterBar */}
-
           <select
             value={filters.species}
             onChange={(e) => handleFilterChange("species", e.target.value)}
           >
-            <option value="all">
-              {t("filters.allSpecies") || "Wszystkie gatunki"}
-            </option>
+            <option value="all">{t("filters.allSpecies")}</option>
             <option value="rat">{t("form.fields.species.options.rat")}</option>
             <option value="guineaPig">
               {t("form.fields.species.options.guineaPig")}
@@ -200,16 +199,13 @@ const AdminRequests = () => {
               {t("form.fields.species.options.other")}
             </option>
           </select>
-
           <select
             value={filters.applicantType}
             onChange={(e) =>
               handleFilterChange("applicantType", e.target.value)
             }
           >
-            <option value="all">
-              {t("filters.allTypes") || "Wszyscy zgłaszający"}
-            </option>
+            <option value="all">{t("filters.allTypes")}</option>
             <option value="person">
               {t("form.fields.applicantType.options.person")}
             </option>
@@ -220,14 +216,11 @@ const AdminRequests = () => {
               {t("form.fields.applicantType.options.vetClinic")}
             </option>
           </select>
-
           <select
             value={filters.language}
             onChange={(e) => handleFilterChange("language", e.target.value)}
           >
-            <option value="all">
-              {t("filters.allLanguages") || "Wszystkie języki"}
-            </option>
+            <option value="all">{t("filters.allLanguages")}</option>
             <option value="pl">🇵🇱 Polski</option>
             <option value="en">🇬🇧 English</option>
             <option value="es">🇪🇸 Español</option>
@@ -235,7 +228,6 @@ const AdminRequests = () => {
         </FilterBar>
       </div>
 
-      {/* --- ZAKŁADKI --- */}
       <div className="tabs-container">
         {["pending", "approved", "rejected"].map((status) => (
           <button
@@ -251,7 +243,7 @@ const AdminRequests = () => {
         ))}
       </div>
 
-      {/* --- LISTA KART --- */}
+      {/* LISTA */}
       <div className="requests-content">
         {isLoading ? (
           <div className="loading-state">
@@ -261,16 +253,8 @@ const AdminRequests = () => {
           <div className="error-state">{error}</div>
         ) : processedRequests.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-icon">
-              <Search size={48} />
-            </div>
-            <h3>
-              {t("requests.noRequestsFound") || "Brak zgłoszeń w tej sekcji"}
-            </h3>
-            <p>
-              {t("requests.allDone") ||
-                "Wszystkie zgłoszenia zostały już obsłużone."}
-            </p>
+            <h3>{t("requests.noRequestsFound")}</h3>
+            <p>{t("requests.allDone")}</p>
           </div>
         ) : (
           <div className="requests-grid">
@@ -278,63 +262,271 @@ const AdminRequests = () => {
               <RequestCard
                 key={req.id}
                 req={req}
-                onClick={() => setSelectedRequest(req)}
+                onClick={() => handleOpenDetails(req)} // <--- ZMIANA: używamy handlera
               />
             ))}
           </div>
         )}
       </div>
 
-      {/* --- MODAL --- */}
-      {selectedRequest && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              background: "white",
-              padding: "2rem",
-              borderRadius: "8px",
-              maxWidth: "600px",
-              width: "90%",
-              maxHeight: "90vh",
-              overflowY: "auto",
-            }}
-          >
-            <h2>Szczegóły: {selectedRequest.fullName}</h2>
-            <pre
-              style={{
-                maxHeight: "400px",
-                overflow: "auto",
-                background: "#f5f5f5",
-                padding: "1rem",
-              }}
-            >
-              {JSON.stringify(selectedRequest, null, 2)}
-            </pre>
-            <div
-              style={{
-                marginTop: "1rem",
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button onClick={() => setSelectedRequest(null)}>Zamknij</Button>
-            </div>
+      <Modal
+        isOpen={!!selectedRequest}
+        onClose={handleCloseDetails}
+        title={
+          selectedRequest
+            ? `${t("requests.detailsTitle") || "Szczegóły wniosku"} #${
+                selectedRequest.id
+              }`
+            : ""
+        }
+        size="lg"
+        footer={
+          <Button variant="outline" onClick={handleCloseDetails}>
+            {t("actions.close") || "Zamknij"}
+          </Button>
+        }
+      >
+        {isDetailsLoading || !requestDetails ? (
+          <Loader size="md" variant="center" />
+        ) : (
+          <div className="request-details-view">
+            {/* SEKCJA: DANE WNIOSKODAWCY */}
+            <section className="details-section">
+              <h3 className="section-title">Wnioskodawca</h3>
+              <div className="details-grid">
+                <div className="form-field read-only">
+                  <span className="label">Typ</span>
+                  <div className="value">
+                    {t(
+                      `form.fields.applicantType.options.${requestDetails.applicantType}`
+                    )}
+                  </div>
+                </div>
+                <div className="form-field read-only">
+                  <span className="label">Imię i nazwisko / Nazwa</span>
+                  <div className="value">{requestDetails.fullName}</div>
+                </div>
+                <div className="form-field read-only">
+                  <span className="label">Email</span>
+                  <div className="value">
+                    <a href={`mailto:${requestDetails.email}`}>
+                      {requestDetails.email}
+                    </a>
+                  </div>
+                </div>
+                <div className="form-field read-only">
+                  <span className="label">Telefon</span>
+                  <div className="value">
+                    <a href={`tel:${requestDetails.phone}`}>
+                      {requestDetails.phone}
+                    </a>
+                  </div>
+                </div>
+                <div className="form-field read-only">
+                  <span className="label">Lokalizacja</span>
+                  <div className="value">
+                    {requestDetails.city ? `${requestDetails.city}, ` : ""}
+                    {requestDetails.country}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <hr className="divider" />
+
+            {/* SEKCJA: DANE ZWIERZĘCIA I ZBIÓRKI */}
+            <section className="details-section">
+              <h3 className="section-title">O Zwierzaku i Zbiórce</h3>
+              <div className="details-grid">
+                <div className="form-field read-only">
+                  <span className="label">Imię zwierzaka</span>
+                  <div className="value">{requestDetails.animalName}</div>
+                </div>
+                <div className="form-field read-only">
+                  <span className="label">Gatunek</span>
+                  <div className="value">
+                    {t(`form.fields.species.options.${requestDetails.species}`)}
+                    {requestDetails.species === "other" &&
+                      ` (${requestDetails.speciesOther})`}
+                  </div>
+                </div>
+                <div className="form-field read-only">
+                  <span className="label">Wiek</span>
+                  <div className="value">{requestDetails.age || "-"}</div>
+                </div>
+                <div className="form-field read-only">
+                  <span className="label">Liczba zwierząt</span>
+                  <div className="value">{requestDetails.animalsCount}</div>
+                </div>
+
+                {/* Finanse */}
+                <div className="form-field read-only">
+                  <span className="label">Wnioskowana Kwota</span>
+                  <div className="value money">
+                    {requestDetails.amount} {requestDetails.currency}
+                    <span className="meta">({requestDetails.amountType})</span>
+                  </div>
+                </div>
+                <div className="form-field read-only">
+                  <span className="label">Termin (Deadline)</span>
+                  <div className="value">
+                    {formatDate(requestDetails.deadline, i18n.language)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Opis - pełna szerokość */}
+              <div className="form-field read-only mt-3">
+                <span className="label">Opis sytuacji</span>
+                <div className="value text-block">
+                  {requestDetails.description}
+                </div>
+              </div>
+
+              {/* Flagi logiczne */}
+              <div className="flags-grid mt-3">
+                <div
+                  className={`flag-item ${
+                    requestDetails.treatmentOngoing ? "active" : ""
+                  }`}
+                >
+                  {requestDetails.treatmentOngoing ? (
+                    <Check size={16} />
+                  ) : (
+                    <XIcon size={16} />
+                  )}
+                  <span>Leczenie w toku</span>
+                </div>
+                <div
+                  className={`flag-item ${
+                    requestDetails.needsInstallments ? "active" : ""
+                  }`}
+                >
+                  {requestDetails.needsInstallments ? (
+                    <Check size={16} />
+                  ) : (
+                    <XIcon size={16} />
+                  )}
+                  <span>Potrzebne raty</span>
+                </div>
+              </div>
+
+              {requestDetails.otherFundraiserLink && (
+                <div className="form-field read-only mt-2">
+                  <span className="label">Inna zbiórka</span>
+                  <div className="value">
+                    <a
+                      href={requestDetails.otherFundraiserLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex-link"
+                    >
+                      {requestDetails.otherFundraiserLink}{" "}
+                      <ExternalLink size={14} />
+                    </a>
+                  </div>
+                </div>
+              )}
+            </section>
+
+            <hr className="divider" />
+
+            {/* SEKCJA: PLIKI (Używamy klas z forms.scss) */}
+            <section className="details-section">
+              <h3 className="section-title">Załączniki</h3>
+
+              {/* Zdjęcia */}
+              {requestDetails.petPhotos &&
+                requestDetails.petPhotos.length > 0 && (
+                  <div className="mb-3">
+                    <span className="label d-block mb-2">
+                      Zdjęcia ({requestDetails.petPhotos.length})
+                    </span>
+                    <div className="file-previews">
+                      {requestDetails.petPhotos.map((photo) => (
+                        <div key={photo.id} className="file-preview">
+                          <a
+                            href={photo.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <img src={photo.url} alt={photo.originalName} />
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {/* Dokumenty */}
+              {requestDetails.documents &&
+                requestDetails.documents.length > 0 && (
+                  <div>
+                    <span className="label d-block mb-2">
+                      Dokumenty ({requestDetails.documents.length})
+                    </span>
+                    <ul className="file-list">
+                      {requestDetails.documents.map((doc) => (
+                        <li key={doc.id} className="file-list__item">
+                          <div className="file-list__dot"></div>
+                          <span className="file-list__name">
+                            {doc.originalName}
+                          </span>
+                          <div className="file-list__actions">
+                            <a
+                              href={doc.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="file-list__btn file-list__btn--preview"
+                            >
+                              Pobierz
+                            </a>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+            </section>
+
+            <hr className="divider" />
+
+            {/* SEKCJA: DANE DO PRZELEWU */}
+            <details className="payout-details-group">
+              <summary>Dane do przelewu (Rozwiń)</summary>
+              <div className="details-grid mt-3">
+                <div className="form-field read-only">
+                  <span className="label">Właściciel konta</span>
+                  <div className="value">{requestDetails.payoutName}</div>
+                </div>
+                <div className="form-field read-only">
+                  <span className="label">Bank</span>
+                  <div className="value">
+                    {requestDetails.payoutBankName} (
+                    {requestDetails.payoutBankCountry})
+                  </div>
+                </div>
+                <div className="form-field read-only full-width">
+                  <span className="label">Numer konta (IBAN)</span>
+                  <div className="value font-mono">
+                    {requestDetails.payoutIban}
+                  </div>
+                </div>
+                <div className="form-field read-only">
+                  <span className="label">SWIFT/BIC</span>
+                  <div className="value font-mono">
+                    {requestDetails.payoutSwift}
+                  </div>
+                </div>
+                <div className="form-field read-only full-width">
+                  <span className="label">Adres właściciela</span>
+                  <div className="value">{requestDetails.payoutAddress}</div>
+                </div>
+              </div>
+            </details>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   );
 };

@@ -25,7 +25,7 @@ const requestSchema = Joi.object({
   age: Joi.string().max(50).allow(null, "").label("Age"),
   animalsCount: Joi.number().integer().min(1).max(99).default(1),
 
-  description: Joi.string().min(20).max(5000).required().label("Description"),
+  description: Joi.string().min(20).max(8000).required().label("Description"),
   amount: Joi.number().positive().max(1000000).required().label("Amount"),
   currency: Joi.string().valid("EUR", "PLN").required(),
   amountType: Joi.string().valid("estimated", "exact").required(),
@@ -242,22 +242,79 @@ const getRequests = async (req, res) => {
   }
 };
 
-// Optional: Get single request details (for the modal)
 const getRequestDetails = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const { id } = req.params;
-    const request = await RequestModel.getRequestById(connection, id);
+    const requestRaw = await RequestModel.getRequestById(connection, id);
 
-    if (!request) {
+    if (!requestRaw) {
       return res.status(404).json({ message: "Request not found" });
     }
 
-    // TODO: Fetch files associated with this request if needed here
-    // const files = await RequestModel.getFilesByRequestId(connection, id);
-    // request.files = files;
+    const files = await RequestModel.getFilesByRequestId(connection, id);
+    const petPhotos = files.filter((f) => f.file_type === "photo");
+    const documents = files.filter((f) => f.file_type === "document");
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
 
-    res.status(200).json(request);
+    const formatFile = (f) => ({
+      id: f.id,
+      url: `${baseUrl}${f.file_path}`,
+      originalName: f.original_name,
+      type: f.file_type,
+    });
+
+    // MAPOWANIE snake_case -> camelCase
+    const requestData = {
+      id: requestRaw.id,
+      status: requestRaw.status,
+      createdAt: requestRaw.created_at,
+
+      // Dane wnioskodawcy
+      applicantType: requestRaw.applicant_type,
+      fullName: requestRaw.full_name,
+      email: requestRaw.email,
+      phone: requestRaw.phone,
+      country: requestRaw.country,
+      city: requestRaw.city,
+
+      // Dane zwierzęcia / zbiórki
+      species: requestRaw.species,
+      speciesOther: requestRaw.species_other,
+      animalName: requestRaw.animal_name,
+      age: requestRaw.age,
+      animalsCount: requestRaw.animals_count,
+      description: requestRaw.description,
+
+      // Finanse
+      amount: requestRaw.amount,
+      currency: requestRaw.currency,
+      amountType: requestRaw.amount_type,
+      deadline: requestRaw.deadline,
+
+      // Flagi
+      treatmentOngoing: requestRaw.treatment_ongoing,
+      needsInstallments: requestRaw.needs_installments,
+      otherFundraiserLink: requestRaw.other_fundraiser_link,
+      otherHelp: requestRaw.other_help,
+
+      // Dane do przelewu
+      payoutName: requestRaw.payout_name,
+      payoutIban: requestRaw.payout_iban,
+      payoutBankName: requestRaw.payout_bank_name,
+      payoutBankCountry: requestRaw.payout_bank_country,
+      payoutSwift: requestRaw.payout_swift,
+      payoutAddress: requestRaw.payout_address,
+
+      // Zgody i język
+      submissionLanguage: requestRaw.submission_language,
+
+      // Pliki
+      petPhotos: petPhotos.map(formatFile),
+      documents: documents.map(formatFile),
+    };
+
+    res.status(200).json(requestData);
   } catch (error) {
     console.error("Error fetching request details:", error);
     res.status(500).json({ error: "Server Error" });

@@ -180,4 +180,163 @@
             color: $brown-700;
         }
     }
+
+    .request-details-view {
+        font-family: $font-body;
+        color: $color-secondary;
+
+        .section-title {
+            font-family: $font-heading;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: $primary-600;
+            border-bottom: 2px solid rgba($primary-600, 0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .divider {
+            margin: 2rem 0;
+            border: 0;
+            border-top: 1px solid rgba($color-border, 0.6);
+        }
+
+        /* Grid do układania pól obok siebie */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.25rem;
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* Stylizacja pola "Read Only" - naśladuje .form-field z forms.scss */
+        .form-field.read-only {
+            // Dziedziczy layout z .form-field z forms.scss
+
+            .value {
+                // Wygląd wartości (zamiast inputa)
+                background-color: transparent;
+                border: 1px solid transparent; // Rezerwujemy miejsce żeby nie skakało
+                padding: 0.4rem 0;
+                font-size: 0.95rem;
+                color: $color-secondary;
+                word-break: break-word;
+                font-weight: 500;
+
+                &.money {
+                    font-weight: 700;
+                    color: darken($color-accent, 10%);
+                    font-size: 1.1rem;
+
+                    .meta {
+                        font-size: 0.8rem;
+                        color: $secondary-muted;
+                        font-weight: 400;
+                        margin-left: 0.5rem;
+                    }
+                }
+
+                &.text-block {
+                    white-space: pre-wrap; // Zachowuje akapity
+                    line-height: 1.6;
+                    background-color: #f9f5f1; // Delikatne tło dla długiego tekstu
+                    padding: 1rem;
+                    border-radius: 0.5rem;
+                    border: 1px solid rgba($color-border, 0.5);
+                }
+
+                &.font-mono {
+                    font-family: monospace;
+                    letter-spacing: 0.05em;
+                    background-color: rgba(0, 0, 0, 0.03);
+                    padding: 0.2rem 0.5rem;
+                    border-radius: 4px;
+                    display: inline-block;
+                }
+
+                a {
+                    color: $color-primary;
+                    text-decoration: underline;
+                    text-underline-offset: 3px;
+
+                    &:hover {
+                        color: darken($color-primary, 10%);
+                    }
+
+                    &.flex-link {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 5px;
+                    }
+                }
+            }
+        }
+
+        /* Flagi (Leczenie w toku itp.) */
+        .flags-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+
+            .flag-item {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
+                border-radius: 999px;
+                background-color: rgba($color-border, 0.3);
+                color: $secondary-muted;
+
+                &.active {
+                    background-color: rgba($color-accent, 0.15);
+                    color: darken($color-accent, 15%);
+                    font-weight: 600;
+                }
+            }
+        }
+
+        /* Sekcja Payout (Rozwijana) */
+        .payout-details-group {
+            border: 1px solid rgba($color-border, 0.6);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: rgba(#fff, 0.5);
+
+            summary {
+                cursor: pointer;
+                font-weight: 600;
+                color: $brown-700;
+                padding: 0.5rem 0;
+
+                &:hover {
+                    color: $color-primary;
+                }
+            }
+        }
+
+        /* Helpers */
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-3 {
+            margin-top: 1rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        .d-block {
+            display: block;
+        }
+    }
 }
