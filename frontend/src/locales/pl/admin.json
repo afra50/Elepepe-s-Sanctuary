@@ -61,5 +61,17 @@
         }
       }
     }
+  },
+  "filters": {
+    "searchPlaceholder": "Szukaj...",
+    "clear": "Wyczyść",
+    "allSpecies": "Wszystkie gatunki",
+    "allTypes": "Wszyscy zgłaszający",
+    "allLanguages": "Wszystkie języki",
+    "sortOptions": {
+      "date": "Data dodania",
+      "deadline": "Termin",
+      "amount": "Kwota"
+    }
   }
 }
