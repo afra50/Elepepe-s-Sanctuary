@@ -70,6 +70,7 @@ const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const MAX_TOTAL_FILES = 20;
 // jeśli ten limit 5 zdjęć ma zostać – zostawiam, tylko wynoszę do stałej:
 const MAX_PET_PHOTOS = 5;
+const MAX_SPECIES_OTHER_LENGTH = 100;
 
 function RequestSupportForm({ onShowAlert }) {
   const { t, i18n } = useTranslation("request");
@@ -168,6 +169,10 @@ function RequestSupportForm({ onShowAlert }) {
         if (currentForm.species === "other") {
           if (!trimmed) return t("form.errors.speciesOther.required");
           if (trimmed.length < 2) return t("form.errors.speciesOther.min");
+          if (trimmed.length > MAX_SPECIES_OTHER_LENGTH)
+            return t("form.errors.speciesOther.max", {
+              max: MAX_SPECIES_OTHER_LENGTH,
+            });
         }
         return "";
       }
@@ -216,9 +221,13 @@ function RequestSupportForm({ onShowAlert }) {
         if (!str) return t("form.errors.amount.required");
         if (!/^\d+(\.\d{1,2})?$/.test(str))
           return t("form.errors.amount.format"); // max 2 miejsca po przecinku
+
         const num = Number(str);
         if (!Number.isFinite(num) || num <= 0)
           return t("form.errors.amount.positive");
+
+        if (num > 1000000) return t("form.errors.amount.max", { max: 1000000 });
+
         return "";
       }
 
@@ -471,6 +480,10 @@ function RequestSupportForm({ onShowAlert }) {
 
     if (name === "age" && newValue.length > MAX_AGE_LENGTH) {
       newValue = newValue.slice(0, MAX_AGE_LENGTH);
+    }
+
+    if (name === "speciesOther" && newValue.length > MAX_SPECIES_OTHER_LENGTH) {
+      newValue = newValue.slice(0, MAX_SPECIES_OTHER_LENGTH);
     }
 
     if (name === "animalsCount") {
@@ -803,10 +816,7 @@ function RequestSupportForm({ onShowAlert }) {
     // 2. Przygotowanie FormData (bo wysyłamy pliki)
     const formData = new FormData();
 
-    // Dodaj pola tekstowe
     Object.keys(form).forEach((key) => {
-      // Backend oczekuje stringów 'true'/'false' dla booleanów w FormData
-      // lub po prostu wartości. Dla bezpieczeństwa konwertujemy null na pusty string.
       let value = form[key];
       if (value === null || value === undefined) value = "";
       formData.append(key, value);
@@ -814,12 +824,10 @@ function RequestSupportForm({ onShowAlert }) {
 
     formData.append("submissionLanguage", i18n.language || "pl");
 
-    // Dodaj zdjęcia zwierzaka (petPhotos)
     files.petPhotos.forEach((item) => {
       formData.append("petPhotos", item.file);
     });
 
-    // Dodaj dokumenty (documents)
     files.documents.forEach((file) => {
       formData.append("documents", file);
     });
@@ -829,6 +837,9 @@ function RequestSupportForm({ onShowAlert }) {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
+      // jeśli backend zwraca jakiś znacznik sukcesu, możesz go tu sprawdzić,
+      // np. if (!response.data?.success) throw new Error("...");
+
       console.log("Response:", response.data);
 
       onShowAlert?.({
@@ -836,7 +847,7 @@ function RequestSupportForm({ onShowAlert }) {
         message: t("form.alerts.success"),
       });
 
-      // Reset formularza
+      // 🔹 Reset TYLKO przy SUKCESIE backendu:
       setForm(initialForm);
       setFiles({ petPhotos: [], documents: [] });
       setErrors({});
@@ -845,6 +856,7 @@ function RequestSupportForm({ onShowAlert }) {
       console.error("error sending report:", error);
 
       let errorMessage = t("form.alerts.error");
+
       if (error.response?.data?.details) {
         errorMessage = error.response.data.details.join(", ");
       } else if (error.response?.data?.error) {
@@ -855,8 +867,11 @@ function RequestSupportForm({ onShowAlert }) {
         variant: "error",
         message: errorMessage,
       });
+
+      // 🔹 UWAGA: tutaj NIC nie resetujemy,
+      // formularz i pliki zostają takie, jak były
     } finally {
-      setIsSubmitting(false); // <-- Stop loadera (zawsze)
+      setIsSubmitting(false);
     }
   };
 
@@ -1065,6 +1080,7 @@ function RequestSupportForm({ onShowAlert }) {
               value={form.speciesOther}
               onChange={handleChange}
               placeholder={t("form.fields.speciesOther.placeholder")}
+              maxLength={MAX_SPECIES_OTHER_LENGTH}
             />
             <p className="field-error">{speciesOtherError || "\u00A0"}</p>
           </div>

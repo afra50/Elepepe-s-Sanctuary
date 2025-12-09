@@ -30,7 +30,9 @@
     "title": "Maluchy w szczególnej potrzebie",
     "raised": "Zebrano:",
     "goal": "Cel:",
-    "support": "Wesprzyj"
+    "support": "Wesprzyj",
+    "daysLeft": "{{count}} dni do końca",
+    "daysLeftFinished": "Termin zbiórki minął"
   },
   "banner": {
     "title": "Szczęśliwe zakończenia istnieją",

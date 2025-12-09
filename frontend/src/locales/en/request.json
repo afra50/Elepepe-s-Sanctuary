@@ -245,7 +245,8 @@
 
       "speciesOther": {
         "required": "Please specify the animal’s species.",
-        "min": "The species name is too short."
+        "min": "The species name is too short.",
+        "max": "The species name can be at most {{max}} characters long."
       },
 
       "animalName": {
@@ -274,7 +275,8 @@
       "amount": {
         "required": "Please enter the amount you are requesting.",
         "format": "Please enter a valid amount (digits, optionally with two decimal places).",
-        "positive": "The amount must be greater than zero."
+        "positive": "The amount must be greater than zero.",
+        "max": "The amount cannot be greater than {{max}}."
       },
 
       "currency": {
