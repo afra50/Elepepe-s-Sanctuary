@@ -50,7 +50,12 @@
   "status": {
     "pending": "Pendientes",
     "approved": "Aprobadas",
-    "rejected": "Rechazadas"
+    "rejected": "Rechazadas",
+    "confirmApprove": "¿Estás seguro de que deseas aprobar esta solicitud?",
+    "confirmReject": "¿Estás seguro de que deseas rechazar esta solicitud?",
+    "confirmPending": "¿Deseas devolver esta solicitud a pendientes?",
+    "successMessage": "El estado se ha actualizado correctamente.",
+    "errorMessage": "Ocurrió un error al actualizar el estado."
   },
   "actions": {
     "filter": "Filtros",
@@ -59,7 +64,10 @@
     "close": "Cerrar",
     "openLink": "Abrir enlace",
     "approve": "Aprobar",
-    "reject": "Rechazar"
+    "reject": "Rechazar",
+    "yes": "Sí",
+    "cancel": "Cancelar",
+    "no": "No"
   },
   "common": {
     "years": "años"

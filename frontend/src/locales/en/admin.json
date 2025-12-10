@@ -50,7 +50,12 @@
   "status": {
     "pending": "Pending",
     "approved": "Approved",
-    "rejected": "Rejected"
+    "rejected": "Rejected",
+    "confirmApprove": "Are you sure you want to approve this request?",
+    "confirmReject": "Are you sure you want to reject this request?",
+    "confirmPending": "Do you want to revert this request to pending?",
+    "successMessage": "Status updated successfully.",
+    "errorMessage": "An error occurred while updating status."
   },
   "actions": {
     "filter": "Filter",
@@ -59,7 +64,10 @@
     "close": "Close",
     "openLink": "Open Link",
     "approve": "Approve",
-    "reject": "Reject"
+    "reject": "Reject",
+    "yes": "Yes",
+    "cancel": "Cancel",
+    "no": "No"
   },
   "common": {
     "years": "years"
