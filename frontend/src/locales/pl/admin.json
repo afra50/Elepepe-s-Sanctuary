@@ -42,8 +42,18 @@
     "empty": "Nie dodano jeszcze żadnych partnerów. Kliknij „Dodaj partnera”, aby dodać pierwszego.",
     "loading": "Ładowanie partnerów...",
     "fetchError": "Nie udało się pobrać listy partnerów.",
+    "fetchErrorTitle": "Coś poszło nie tak przy ładowaniu partnerów",
     "deleteError": "Nie udało się usunąć partnera. Spróbuj ponownie.",
     "confirmDelete": "Czy na pewno chcesz usunąć tego partnera?",
+    "confirmDeleteNamed": "Czy na pewno chcesz usunąć partnera \"{{name}}\"?",
+    "alerts": {
+      "createSuccess": "Nowy partner został dodany.",
+      "updateSuccess": "Dane partnera zostały zaktualizowane.",
+      "deleteSuccess": "Partner został pomyślnie usunięty.",
+      "deleteError": "Nie udało się usunąć partnera. Spróbuj ponownie.",
+      "saveError": "Nie udało się zapisać partnera. Spróbuj ponownie.",
+      "validationError": "Formularz partnera zawiera błędy. Sprawdź pola i spróbuj ponownie."
+    },
     "buttons": {
       "addNew": "Dodaj partnera",
       "edit": "Edytuj partnera",
@@ -138,7 +148,10 @@
     "no": "Nie"
   },
   "common": {
-    "years": "lat"
+    "years": "lat",
+    "confirm": "Potwierdź",
+    "cancel": "Anuluj",
+    "ok": "OK"
   },
   "form": {
     "sections": {

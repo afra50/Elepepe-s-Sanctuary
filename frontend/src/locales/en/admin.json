@@ -40,11 +40,89 @@
     "current": "Current partners",
     "countLabel": "partners",
     "empty": "No partners have been added yet. Click \"Add partner\" to add the first one.",
+    "loading": "Loading partners...",
+    "fetchError": "Failed to fetch partners.",
+    "fetchErrorTitle": "Something went wrong loading partners",
+    "deleteError": "Failed to delete partner. Please try again.",
     "confirmDelete": "Are you sure you want to delete this partner?",
+    "confirmDeleteNamed": "Are you sure you want to delete partner \"{{name}}\"?",
+    "alerts": {
+      "createSuccess": "A new partner has been added.",
+      "updateSuccess": "Partner details have been updated.",
+      "deleteSuccess": "Partner has been deleted successfully.",
+      "deleteError": "Failed to delete partner. Please try again.",
+      "saveError": "Failed to save partner. Please try again.",
+      "validationError": "The partner form contains errors. Please check the fields and try again."
+    },
     "buttons": {
       "addNew": "Add partner",
       "edit": "Edit partner",
-      "delete": "Delete partner"
+      "delete": "Delete partner",
+      "save": "Save partner",
+      "saving": "Saving...",
+      "chooseLogo": "Choose logo"
+    },
+    "modal": {
+      "addTitle": "Add a new partner",
+      "editTitle": "Edit partner"
+    },
+    "fields": {
+      "namePl": "Partner name (PL)",
+      "nameEn": "Partner name (EN)",
+      "nameEs": "Partner name (ES)",
+      "descriptionPl": "Short cooperation description (PL)",
+      "descriptionEn": "Short cooperation description (EN)",
+      "descriptionEs": "Short cooperation description (ES)",
+      "countryPl": "Country (PL)",
+      "countryEn": "Country (EN)",
+      "countryEs": "Country (ES)",
+      "logo": "Logo (optional)"
+    },
+    "placeholders": {
+      "namePl": "e.g. Fundacja Ogonki",
+      "nameEn": "e.g. Rat Rescue Europe",
+      "nameEs": "e.g. Clinica Veterinaria Amigos",
+      "descriptionPl": "E.g. Funds life-saving surgeries for our residents.",
+      "descriptionEn": "Short description of the cooperation (in English).",
+      "descriptionEs": "Short description of the cooperation (in Spanish).",
+      "countryPl": "e.g. Polska",
+      "countryEn": "e.g. Germany",
+      "countryEs": "e.g. España",
+      "logo": "No file selected"
+    },
+    "hints": {
+      "logo": "Preferably a square logo in PNG, JPG or SVG format (max. 5 MB)."
+    },
+    "errors": {
+      "namePlRequired": "Please enter the partner name in Polish.",
+      "namePlMin": "Partner name (PL) must be at least {{min}} characters long.",
+      "namePlMax": "Partner name (PL) may be at most {{max}} characters long.",
+      "descriptionPlRequired": "Please provide a short cooperation description in Polish.",
+      "descriptionPlMin": "Cooperation description (PL) must be at least {{min}} characters long.",
+      "descriptionPlMax": "Cooperation description (PL) may be at most {{max}} characters long.",
+      "countryPlRequired": "Please enter the country in Polish.",
+      "countryPlMin": "Country (PL) must be at least {{min}} characters long.",
+      "countryPlMax": "Country (PL) may be at most {{max}} characters long.",
+      "nameEnRequired": "Please enter the partner name in English.",
+      "nameEnMin": "Partner name (EN) must be at least {{min}} characters long.",
+      "nameEnMax": "Partner name (EN) may be at most {{max}} characters long.",
+      "descriptionEnRequired": "Please provide a short cooperation description in English.",
+      "descriptionEnMin": "Cooperation description (EN) must be at least {{min}} characters long.",
+      "descriptionEnMax": "Cooperation description (EN) may be at most {{max}} characters long.",
+      "countryEnRequired": "Please enter the country in English.",
+      "countryEnMin": "Country (EN) must be at least {{min}} characters long.",
+      "countryEnMax": "Country (EN) may be at most {{max}} characters long.",
+      "nameEsRequired": "Please enter the partner name in Spanish.",
+      "nameEsMin": "Partner name (ES) must be at least {{min}} characters long.",
+      "nameEsMax": "Partner name (ES) may be at most {{max}} characters long.",
+      "descriptionEsRequired": "Please provide a short cooperation description in Spanish.",
+      "descriptionEsMin": "Cooperation description (ES) must be at least {{min}} characters long.",
+      "descriptionEsMax": "Cooperation description (ES) may be at most {{max}} characters long.",
+      "countryEsRequired": "Please enter the country in Spanish.",
+      "countryEsMin": "Country (ES) must be at least {{min}} characters long.",
+      "countryEsMax": "Country (ES) may be at most {{max}} characters long.",
+      "logoType": "Logo must be an image file.",
+      "logoSize": "Logo is too large (maximum 5 MB)."
     }
   },
   "status": {
@@ -70,7 +148,10 @@
     "no": "No"
   },
   "common": {
-    "years": "years"
+    "years": "years",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "ok": "OK"
   },
   "form": {
     "sections": {

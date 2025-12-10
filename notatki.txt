@@ -1,5 +1,4 @@
 - paginacja
-- confirm dialog
 - min vh sprawdzic 
 - dodac wszedzie error state
 
