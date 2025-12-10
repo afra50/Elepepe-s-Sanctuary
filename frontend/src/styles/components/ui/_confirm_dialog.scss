@@ -1,0 +1,100 @@
+.confirm-root {
+  position: fixed;
+  top: clamp(4.5rem, 9vh, 5.5rem);
+  left: 0;
+  right: 0;
+  z-index: 2100;
+
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.confirm {
+  pointer-events: auto;
+
+  max-width: min(92vw, 460px);
+
+  display: flex;
+  flex-direction: column; // <--- KOLUMNA
+  align-items: stretch;
+  gap: 0.75rem;
+
+  padding: 0.9rem 1.3rem;
+  border-radius: 1rem; // mniej „piguła”, bardziej karta
+
+  background-color: $color-white;
+  box-shadow: $shadow-md;
+  border: 1px solid $color-border;
+
+  font-family: $font-body;
+  font-size: 0.95rem;
+  color: $color-secondary;
+
+  opacity: 0;
+  transform: translateY(-8px);
+  animation: confirm-fade-in 0.22s ease-out forwards;
+}
+
+.confirm__text {
+  text-align: left;
+  line-height: 1.5;
+}
+
+/* Przyciski na dole */
+.confirm__actions {
+  margin-top: 0.25rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* STARE STYLE confirm__btn możesz spokojnie wywalić,
+   bo teraz używamy .btn z Button.jsx */
+
+/* ==== WARIANTY ==== */
+
+.confirm--danger {
+  border-color: rgba($color-error, 0.6);
+  background-color: lighten($color-error, 45%);
+}
+
+.confirm--success {
+  border-color: rgba($color-primary, 0.6);
+  background-color: lighten($color-primary, 45%);
+}
+
+.confirm--info {
+  border-color: rgba($color-accent, 0.6);
+  background-color: lighten($color-accent, 40%);
+}
+
+/* Telefon */
+@media (max-width: 600px) {
+  .confirm {
+    font-size: 0.9rem;
+    padding: 0.75rem 0.95rem;
+  }
+
+  .confirm__actions {
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 0.4rem;
+
+    .btn {
+      padding-inline: 0.9rem;
+    }
+  }
+}
+
+@keyframes confirm-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

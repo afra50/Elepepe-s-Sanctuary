@@ -59,6 +59,7 @@
 @import "./components/ui/search_bar";
 @import "./components/ui/filter_bar";
 @import "./components/ui/modal";
+@import "./components/ui/confirm_dialog";
 
 @import "./pages/home_page";
 @import "./pages/not_found_page";
@@ -72,6 +73,7 @@
 @import "./components/admin/admin_requests";
 @import "./components/admin/request_card";
 @import "./components/admin/admin_partnerships";
+@import "./components/admin/admin_partner_modal";
 
 * {
   margin: 0;
