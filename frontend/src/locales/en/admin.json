@@ -28,7 +28,7 @@
     "fetchError": "Failed to fetch requests."
   },
   "partnerships": {
-    "subtitle": "Manage partners supporting Elepepe’s Sanctuary — their logos will appear on the website.",
+    "subtitle": "Manage partners supporting Elepepe’s Sanctuary – information about them will appear on the website.",
     "current": "Current partners",
     "countLabel": "partners",
     "empty": "No partners have been added yet. Click \"Add partner\" to add the first one.",

@@ -28,7 +28,7 @@
     "fetchError": "Error al recuperar las solicitudes."
   },
   "partnerships": {
-    "subtitle": "Gestiona los socios que apoyan Elepepe’s Sanctuary: sus logotipos aparecerán en el sitio web.",
+    "subtitle": "Gestionar los socios que apoyan Elepepe's Sanctuary: la información sobre ellos aparecerá en el sitio web.",
     "current": "Socios actuales",
     "countLabel": "socios",
     "empty": "Aún no se ha añadido ningún socio. Haz clic en \"Añadir socio\" para agregar el primero.",

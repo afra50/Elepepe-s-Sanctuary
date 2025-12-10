@@ -2,7 +2,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
-import ProgressBar from "../components/ui/ProgressBar";
 import Banner from "../components/Banner";
 import FundraiserCard from "../components/FundraiserCard";
 
