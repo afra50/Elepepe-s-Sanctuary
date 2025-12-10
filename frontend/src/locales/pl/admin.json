@@ -87,39 +87,30 @@
       "namePlRequired": "Podaj nazwę partnera po polsku.",
       "namePlMin": "Nazwa partnera (PL) musi mieć co najmniej {{min}} znaki.",
       "namePlMax": "Nazwa partnera (PL) może mieć maksymalnie {{max}} znaków.",
-
       "descriptionPlRequired": "Podaj krótki opis współpracy po polsku.",
       "descriptionPlMin": "Opis współpracy (PL) musi mieć co najmniej {{min}} znaków.",
       "descriptionPlMax": "Opis współpracy (PL) może mieć maksymalnie {{max}} znaków.",
-
       "countryPlRequired": "Podaj kraj po polsku.",
       "countryPlMin": "Kraj (PL) musi mieć co najmniej {{min}} znaki.",
       "countryPlMax": "Kraj (PL) może mieć maksymalnie {{max}} znaków.",
-
       "nameEnRequired": "Podaj nazwę partnera po angielsku.",
       "nameEnMin": "Nazwa partnera (EN) musi mieć co najmniej {{min}} znaki.",
       "nameEnMax": "Nazwa partnera (EN) może mieć maksymalnie {{max}} znaków.",
-
       "descriptionEnRequired": "Podaj krótki opis współpracy po angielsku.",
       "descriptionEnMin": "Opis współpracy (EN) musi mieć co najmniej {{min}} znaków.",
       "descriptionEnMax": "Opis współpracy (EN) może mieć maksymalnie {{max}} znaków.",
-
       "countryEnRequired": "Podaj kraj po angielsku.",
       "countryEnMin": "Kraj (EN) musi mieć co najmniej {{min}} znaki.",
       "countryEnMax": "Kraj (EN) może mieć maksymalnie {{max}} znaków.",
-
       "nameEsRequired": "Podaj nazwę partnera po hiszpańsku.",
       "nameEsMin": "Nazwa partnera (ES) musi mieć co najmniej {{min}} znaki.",
       "nameEsMax": "Nazwa partnera (ES) może mieć maksymalnie {{max}} znaków.",
-
       "descriptionEsRequired": "Podaj krótki opis współpracy po hiszpańsku.",
       "descriptionEsMin": "Opis współpracy (ES) musi mieć co najmniej {{min}} znaków.",
       "descriptionEsMax": "Opis współpracy (ES) może mieć maksymalnie {{max}} znaków.",
-
       "countryEsRequired": "Podaj kraj po hiszpańsku.",
       "countryEsMin": "Kraj (ES) musi mieć co najmniej {{min}} znaki.",
       "countryEsMax": "Kraj (ES) może mieć maksymalnie {{max}} znaków.",
-
       "logoType": "Logo musi być plikiem graficznym.",
       "logoSize": "Logo jest za duże (maksymalnie 5 MB)."
     }
@@ -127,7 +118,12 @@
   "status": {
     "pending": "Oczekujące",
     "approved": "Zatwierdzone",
-    "rejected": "Odrzucone"
+    "rejected": "Odrzucone",
+    "confirmApprove": "Czy na pewno chcesz zatwierdzić ten wniosek?",
+    "confirmReject": "Czy na pewno chcesz odrzucić ten wniosek?",
+    "confirmPending": "Czy chcesz przywrócić ten wniosek do oczekujących?",
+    "successMessage": "Status został pomyślnie zaktualizowany.",
+    "errorMessage": "Wystąpił błąd podczas zmiany statusu."
   },
   "actions": {
     "filter": "Filtry",
@@ -136,7 +132,10 @@
     "close": "Zamknij",
     "openLink": "Otwórz link",
     "approve": "Zatwierdź",
-    "reject": "Odrzuć"
+    "reject": "Odrzuć",
+    "yes": "Tak",
+    "cancel": "Anuluj",
+    "no": "Nie"
   },
   "common": {
     "years": "lat"
