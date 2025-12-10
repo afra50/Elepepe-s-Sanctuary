@@ -1,8 +1,15 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-// Dodano 'X' do importów
-import { Filter, ExternalLink, Check, Minus, Download, X } from "lucide-react";
-import Button from "../ui/Button";
+import {
+  Filter,
+  ExternalLink,
+  Check,
+  Minus,
+  Download,
+  X,
+  RotateCcw,
+} from "lucide-react";
+import Button from "../../components/ui/Button";
 import Loader from "../../components/ui/Loader";
 import RequestCard from "../../components/admin/RequestCard";
 import api from "../../utils/api";
@@ -10,8 +17,9 @@ import { formatDate } from "../../utils/dateUtils";
 import SearchBar from "../ui/SearchBar";
 import FilterBar from "../ui/FilterBar";
 import Modal from "../ui/Modal";
+import ErrorState from "..//ui/ErrorState";
 
-// ... (initialFilters, getLanguageLabel bez zmian) ...
+// Stan początkowy filtrów
 const initialFilters = {
   search: "",
   sortBy: "createdAt",
@@ -37,36 +45,47 @@ const AdminRequests = () => {
   const [requests, setRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [detailsError, setDetailsError] = useState(null);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [requestDetails, setRequestDetails] = useState(null);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
   const [filters, setFilters] = useState(initialFilters);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
-  // ... (useEffect, fetchRequests, handleOpenDetails, handleCloseDetails bez zmian) ...
-  useEffect(() => {
-    const fetchRequests = async () => {
-      setIsLoading(true);
-      try {
-        const response = await api.get("/requests");
-        setRequests(response.data);
-      } catch (err) {
-        setError(t("requests.fetchError") || "Error fetching requests");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRequests();
+  // --- 1. POBIERANIE LISTY (useCallback, by użyć w odświeżaniu) ---
+  const fetchRequests = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await api.get("/requests");
+      setRequests(response.data);
+    } catch (err) {
+      setError(t("requests.fetchError") || "Error fetching requests");
+    } finally {
+      setIsLoading(false);
+    }
   }, [t]);
 
+  useEffect(() => {
+    fetchRequests();
+  }, [fetchRequests]);
+
+  // --- 2. SZCZEGÓŁY ---
   const handleOpenDetails = async (req) => {
     setSelectedRequest(req);
     setIsDetailsLoading(true);
+    setDetailsError(null); // Resetujemy błąd przed nową próbą
+    setRequestDetails(null); // Czyścimy stare szczegóły
+
     try {
       const response = await api.get(`/requests/${req.id}`);
       setRequestDetails(response.data);
     } catch (err) {
-      setRequestDetails(req);
+      console.error("Błąd pobierania szczegółów:", err);
+      // Ustawiamy treść błędu
+      setDetailsError(
+        t("requests.fetchError") || "Nie udało się pobrać szczegółów."
+      );
     } finally {
       setIsDetailsLoading(false);
     }
@@ -77,20 +96,38 @@ const AdminRequests = () => {
     setRequestDetails(null);
   };
 
-  // --- NOWE HANDLERY AKCJI ---
-  const handleApprove = () => {
+  // --- 3. ZMIANA STATUSU (NOWE) ---
+  const updateStatus = async (newStatus) => {
     if (!selectedRequest) return;
-    console.log("Zatwierdzam wniosek:", selectedRequest.id);
-    // Tu dodasz logikę API później
+
+    // Opcjonalnie: Dodaj confirm()
+    if (
+      !window.confirm(
+        `Czy na pewno chcesz zmienić status na: ${t(`status.${newStatus}`)}?`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await api.patch(`/requests/${selectedRequest.id}/status`, {
+        status: newStatus,
+      });
+
+      // Sukces: Zamknij modal i odśwież listę
+      handleCloseDetails();
+      fetchRequests();
+    } catch (err) {
+      console.error("Błąd zmiany statusu:", err);
+      alert("Wystąpił błąd podczas zmiany statusu.");
+    }
   };
 
-  const handleReject = () => {
-    if (!selectedRequest) return;
-    console.log("Odrzucam wniosek:", selectedRequest.id);
-    // Tu dodasz logikę API później
-  };
+  const handleApprove = () => updateStatus("approved");
+  const handleReject = () => updateStatus("rejected");
+  const handlePending = () => updateStatus("pending");
 
-  // ... (handleFilterChange, processedRequests, sortOptions, BooleanStatus bez zmian) ...
+  // --- FILTRY I SORTOWANIE ---
   const handleFilterChange = (name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
@@ -149,9 +186,77 @@ const AdminRequests = () => {
     </span>
   );
 
+  const modalFooter =
+    !isDetailsLoading && !detailsError && requestDetails ? (
+      <>
+        <Button variant="ghost" onClick={handleCloseDetails}>
+          {t("actions.close")}
+        </Button>
+
+        {/* SCENARIUSZ 1: OCZEKUJĄCE */}
+        {selectedRequest?.status === "pending" && (
+          <>
+            <Button
+              variant="accent"
+              icon={<X size={18} />}
+              onClick={handleReject}
+            >
+              {t("actions.reject")}
+            </Button>
+            <Button
+              variant="primary"
+              icon={<Check size={18} />}
+              onClick={handleApprove}
+            >
+              {t("actions.approve")}
+            </Button>
+          </>
+        )}
+
+        {/* SCENARIUSZ 2: ZATWIERDZONE */}
+        {selectedRequest?.status === "approved" && (
+          <>
+            <Button
+              variant="secondary"
+              icon={<RotateCcw size={18} />}
+              onClick={handlePending}
+            >
+              {t("status.pending")}
+            </Button>
+            <Button
+              variant="accent"
+              icon={<X size={18} />}
+              onClick={handleReject}
+            >
+              {t("actions.reject")}
+            </Button>
+          </>
+        )}
+
+        {/* SCENARIUSZ 3: ODRZUCONE */}
+        {selectedRequest?.status === "rejected" && (
+          <>
+            <Button
+              variant="secondary"
+              icon={<RotateCcw size={18} />}
+              onClick={handlePending}
+            >
+              {t("status.pending")}
+            </Button>
+            <Button
+              variant="primary"
+              icon={<Check size={18} />}
+              onClick={handleApprove}
+            >
+              {t("actions.approve")}
+            </Button>
+          </>
+        )}
+      </>
+    ) : null; // Jeśli błąd lub ładowanie -> brak stopki
+
   return (
     <div className="admin-requests-page">
-      {/* ... (Header, FilterBar, Tabs, List - wszystko bez zmian do momentu Modala) ... */}
       <header className="page-header">
         <div>
           <h1 className="page-title">{t("menu.requests")}</h1>
@@ -256,12 +361,22 @@ const AdminRequests = () => {
       <div className="requests-content">
         {isLoading ? (
           <Loader size="lg" variant="center" />
+        ) : error ? (
+          // --- NOWE: Jeśli jest błąd, wyświetl ErrorState ---
+          <ErrorState
+            title={t("requests.fetchError") || "Wystąpił błąd"} // Tytuł (opcjonalny)
+            message={error} // Wiadomość błędu ze stanu
+            onRetry={fetchRequests} // Funkcja do ponowienia próby
+          />
         ) : processedRequests.length === 0 ? (
+          // --- STARE: Jeśli nie ma błędu, ale lista pusta ---
           <div className="empty-state">
+            {/* Tutaj możesz też dodać jakąś ikonę, np. <inbox size={48} /> */}
             <h3>{t("requests.noRequestsFound")}</h3>
             <p>{t("requests.allDone")}</p>
           </div>
         ) : (
+          // --- STARE: Jeśli są dane ---
           <div className="requests-grid">
             {processedRequests.map((req) => (
               <RequestCard
@@ -283,41 +398,18 @@ const AdminRequests = () => {
             : ""
         }
         size="lg"
-        // --- ZMIENIONY FOOTER ---
-        footer={
-          <>
-            <Button variant="ghost" onClick={handleCloseDetails}>
-              {t("actions.close")}
-            </Button>
-
-            {/* Wyświetlamy przyciski akcji tylko dla oczekujących */}
-            {selectedRequest?.status === "pending" && (
-              <>
-                <Button
-                  variant="accent"
-                  icon={<X size={18} />}
-                  onClick={handleReject}
-                >
-                  {t("actions.reject")}
-                </Button>
-                <Button
-                  variant="primary"
-                  icon={<Check size={18} />}
-                  onClick={handleApprove}
-                >
-                  {t("actions.approve")}
-                </Button>
-              </>
-            )}
-          </>
-        }
+        footer={modalFooter} // <--- PRZEKAZUJEMY ZMIENNĄ
       >
-        {isDetailsLoading || !requestDetails ? (
+        {isDetailsLoading ? (
           <Loader size="md" variant="center" />
-        ) : (
+        ) : detailsError ? (
+          <ErrorState
+            message={detailsError}
+            onRetry={() => handleOpenDetails(selectedRequest)}
+          />
+        ) : requestDetails ? (
           <div className="request-details-view">
-            {/* ... CAŁA ZAWARTOŚĆ MODALA BEZ ZMIAN ... */}
-            {/* (Kod w środku jest identyczny jak w poprzedniej odpowiedzi) */}
+            {/* SEKCJA 1: WNIOSKODAWCY */}
             <section>
               <h3 className="detail-header">
                 {t("requests.sections.applicantData")}
@@ -382,6 +474,7 @@ const AdminRequests = () => {
 
             <hr className="detail-divider" />
 
+            {/* SEKCJA 2: O ZWIERZAKU */}
             <section>
               <h3 className="detail-header">
                 {t("requests.sections.requestDetails")}
@@ -489,6 +582,7 @@ const AdminRequests = () => {
 
             <hr className="detail-divider" />
 
+            {/* SEKCJA 3: PLIKI */}
             <section>
               <h3 className="detail-header">
                 {t("requests.sections.attachments")}
@@ -546,6 +640,7 @@ const AdminRequests = () => {
 
             <hr className="detail-divider" />
 
+            {/* SEKCJA 4: WYPŁATA */}
             <details className="payout-details-group">
               <summary>{t("requests.sections.payoutData")}</summary>
               <div className="detail-grid">
@@ -587,7 +682,7 @@ const AdminRequests = () => {
               </div>
             </details>
           </div>
-        )}
+        ) : null}
       </Modal>
     </div>
   );

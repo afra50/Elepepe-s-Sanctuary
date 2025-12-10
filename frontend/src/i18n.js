@@ -26,6 +26,9 @@ import esRequest from "./locales/es/request.json";
 import plAdmin from "./locales/pl/admin.json";
 import enAdmin from "./locales/en/admin.json";
 import esAdmin from "./locales/es/admin.json";
+import plCommon from "./locales/pl/common.json";
+import enCommon from "./locales/en/common.json";
+import esCommon from "./locales/es/common.json";
 
 i18n
   // Wykrywa język użytkownika (z localStorage, przeglądarki itp.)
@@ -42,6 +45,7 @@ i18n
         notFound: enNotFound,
         login: enLogin,
         admin: enAdmin,
+        common: enCommon,
       },
       pl: {
         header: plHeader,
@@ -52,6 +56,7 @@ i18n
         notFound: plNotFound,
         login: plLogin,
         admin: plAdmin,
+        common: plCommon,
       },
       es: {
         header: esHeader,
@@ -62,6 +67,7 @@ i18n
         notFound: esNotFound,
         login: esLogin,
         admin: esAdmin,
+        common: esCommon,
       },
     },
     fallbackLng: "en", // Język zapasowy zostaje (używany, gdy detekcja zawiedzie)

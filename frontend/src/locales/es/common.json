@@ -1,0 +1,7 @@
+{
+  "errorState": {
+    "title": "Ocurrió un error",
+    "message": "No se pudieron cargar los datos. Comprueba tu conexión e inténtalo de nuevo.",
+    "retry": "Intentar de nuevo"
+  }
+}

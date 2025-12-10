@@ -1,0 +1,7 @@
+{
+  "errorState": {
+    "title": "An error occurred",
+    "message": "Failed to load data. Check your connection and try again.",
+    "retry": "Try again"
+  }
+}

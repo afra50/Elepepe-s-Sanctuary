@@ -117,10 +117,18 @@ const getFilesByRequestId = async (connection, requestId) => {
   return rows;
 };
 
+const updateStatus = async (connection, id, newStatus) => {
+  const sql = `UPDATE requests SET status = ? WHERE id = ?`;
+  const [result] = await connection.query(sql, [newStatus, id]);
+  // Zwracamy true jeśli zaktualizowano wiersz, false jeśli nie znaleziono ID
+  return result.affectedRows > 0;
+};
+
 module.exports = {
   createRequest,
   addFiles,
   getRequests,
   getRequestById,
   getFilesByRequestId,
+  updateStatus,
 };

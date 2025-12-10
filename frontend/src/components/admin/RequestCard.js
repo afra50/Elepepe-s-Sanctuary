@@ -9,7 +9,7 @@ import {
   Stethoscope,
   MapPin,
 } from "lucide-react";
-import { formatDate } from "../../utils/dateUtils"; // <--- 1. Import formatera
+import { formatDate } from "../../utils/dateUtils";
 
 // Pomocniczy komponent flagi
 const LanguageFlag = ({ langCode }) => {
@@ -39,10 +39,8 @@ const getApplicantIcon = (type) => {
 };
 
 const RequestCard = ({ req, onClick }) => {
-  // 2. Pobieramy i18n, aby znać aktualny język
   const { t, i18n } = useTranslation("admin");
 
-  // 3. Formatujemy daty "w locie" przy wyświetlaniu
   const formattedCreated = formatDate(req.createdAt, i18n.language);
   const formattedDeadline = formatDate(req.deadline, i18n.language);
 
@@ -73,7 +71,6 @@ const RequestCard = ({ req, onClick }) => {
           </span>
 
           <span className="date-info">
-            {/* Wyświetlamy sformatowaną datę utworzenia */}
             {t("requests.sentDate") || "Wysłano"}: {formattedCreated}
           </span>
         </div>
@@ -81,7 +78,8 @@ const RequestCard = ({ req, onClick }) => {
         <div className="info-grid">
           <div className="info-item">
             <span className="label">
-              <Coins size={14} /> {t("form.fields.amount.label") || "Kwota"}
+              {/* POPRAWKA: Usunięto .label z klucza */}
+              <Coins size={14} /> {t("form.fields.amount")}
             </span>
             <span className="value money">
               {req.amount} {req.currency}
@@ -90,10 +88,9 @@ const RequestCard = ({ req, onClick }) => {
 
           <div className="info-item">
             <span className="label">
-              <Calendar size={14} />{" "}
-              {t("form.fields.deadline.label") || "Termin"}
+              {/* POPRAWKA: Usunięto .label z klucza */}
+              <Calendar size={14} /> {t("form.fields.deadline")}
             </span>
-            {/* Wyświetlamy sformatowany termin */}
             <span className="value">{formattedDeadline}</span>
           </div>
 
@@ -102,13 +99,10 @@ const RequestCard = ({ req, onClick }) => {
               <PawPrint size={14} /> {t("form.sections.animal") || "Zwierzak"}
             </span>
             <span className="value">
-              {/* LOGIKA WYŚWIETLANIA GATUNKU */}
-              {
-                req.species === "other" && req.speciesOther
-                  ? req.speciesOther // Jeśli 'other', pokaż wpisany tekst (np. "Królik")
-                  : t(`form.fields.species.options.${req.species}`) ||
-                    req.species // W przeciwnym razie tłumaczenie
-              }
+              {req.species === "other" && req.speciesOther
+                ? req.speciesOther
+                : t(`form.fields.species.options.${req.species}`) ||
+                  req.species}
 
               {req.animalsCount > 1 && ` (x${req.animalsCount})`}
             </span>
