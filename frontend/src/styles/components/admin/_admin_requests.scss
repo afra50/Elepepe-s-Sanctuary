@@ -180,163 +180,274 @@
             color: $brown-700;
         }
     }
+}
 
-    .request-details-view {
-        font-family: $font-body;
-        color: $color-secondary;
+.request-details-view {
+    font-family: $font-body;
+    color: #374151;
 
-        .section-title {
-            font-family: $font-heading;
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: $primary-600;
-            border-bottom: 2px solid rgba($primary-600, 0.1);
-            padding-bottom: 0.5rem;
+    /* Nagłówki sekcji */
+    .detail-header {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+        color: #9ca3af;
+        margin-bottom: 1.25rem;
+        border-left: 3px solid $color-primary;
+        padding-left: 0.75rem;
+    }
+
+    /* Separatory */
+    .detail-divider {
+        margin: 2rem 0;
+        border: 0;
+        border-top: 1px dashed #e5e7eb;
+    }
+
+    /* Grid Layout - Pełna responsywność */
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.5rem 2rem;
+
+        .info-group.full-width {
+            grid-column: 1 / -1;
+        }
+    }
+
+    /* Pojedyncza grupa informacji */
+    .info-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+
+        .info-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
         }
 
-        .divider {
-            margin: 2rem 0;
-            border: 0;
-            border-top: 1px solid rgba($color-border, 0.6);
-        }
+        .info-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #111827;
+            word-break: break-word;
 
-        /* Grid do układania pól obok siebie */
-        .details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.25rem;
-
-            .full-width {
-                grid-column: 1 / -1;
+            &.fw-bold {
+                font-weight: 700;
             }
-        }
 
-        /* Stylizacja pola "Read Only" - naśladuje .form-field z forms.scss */
-        .form-field.read-only {
-            // Dziedziczy layout z .form-field z forms.scss
-
-            .value {
-                // Wygląd wartości (zamiast inputa)
-                background-color: transparent;
-                border: 1px solid transparent; // Rezerwujemy miejsce żeby nie skakało
-                padding: 0.4rem 0;
-                font-size: 0.95rem;
-                color: $color-secondary;
-                word-break: break-word;
-                font-weight: 500;
-
-                &.money {
-                    font-weight: 700;
-                    color: darken($color-accent, 10%);
-                    font-size: 1.1rem;
-
-                    .meta {
-                        font-size: 0.8rem;
-                        color: $secondary-muted;
-                        font-weight: 400;
-                        margin-left: 0.5rem;
-                    }
-                }
-
-                &.text-block {
-                    white-space: pre-wrap; // Zachowuje akapity
-                    line-height: 1.6;
-                    background-color: #f9f5f1; // Delikatne tło dla długiego tekstu
-                    padding: 1rem;
-                    border-radius: 0.5rem;
-                    border: 1px solid rgba($color-border, 0.5);
-                }
-
-                &.font-mono {
-                    font-family: monospace;
-                    letter-spacing: 0.05em;
-                    background-color: rgba(0, 0, 0, 0.03);
-                    padding: 0.2rem 0.5rem;
-                    border-radius: 4px;
-                    display: inline-block;
-                }
-
-                a {
-                    color: $color-primary;
-                    text-decoration: underline;
-                    text-underline-offset: 3px;
-
-                    &:hover {
-                        color: darken($color-primary, 10%);
-                    }
-
-                    &.flex-link {
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 5px;
-                    }
-                }
+            &.font-mono {
+                font-family: monospace;
+                letter-spacing: 0.05em;
+                background: #f3f4f6;
+                padding: 2px 6px;
+                border-radius: 4px;
+                width: fit-content;
             }
-        }
 
-        /* Flagi (Leczenie w toku itp.) */
-        .flags-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-
-            .flag-item {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                font-size: 0.9rem;
-                padding: 0.4rem 0.8rem;
-                border-radius: 999px;
-                background-color: rgba($color-border, 0.3);
-                color: $secondary-muted;
-
-                &.active {
-                    background-color: rgba($color-accent, 0.15);
-                    color: darken($color-accent, 15%);
-                    font-weight: 600;
-                }
-            }
-        }
-
-        /* Sekcja Payout (Rozwijana) */
-        .payout-details-group {
-            border: 1px solid rgba($color-border, 0.6);
-            border-radius: 0.5rem;
-            padding: 0.5rem 1rem;
-            background-color: rgba(#fff, 0.5);
-
-            summary {
-                cursor: pointer;
-                font-weight: 600;
-                color: $brown-700;
-                padding: 0.5rem 0;
+            .link {
+                color: $color-primary;
+                text-decoration: none;
 
                 &:hover {
-                    color: $color-primary;
+                    text-decoration: underline;
                 }
+            }
+
+            .flex-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                color: $color-primary;
             }
         }
 
-        /* Helpers */
-        .mt-2 {
-            margin-top: 0.5rem;
+        /* Długi tekst */
+        .text-block {
+            background-color: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #f3f4f6;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+            color: #4b5563;
+        }
+    }
+
+    /* Finanse */
+    .highlight-box {
+        background-color: rgba($color-primary, 0.05);
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid rgba($color-primary, 0.1);
+
+        .money-display {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: darken($color-primary, 10%);
         }
 
-        .mt-3 {
-            margin-top: 1rem;
+        .info-sub {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+    }
+
+    /* Data */
+    .date-badge {
+        display: inline-block;
+        background: #eef2ff;
+        color: #4f46e5;
+        padding: 0.25rem 0.75rem;
+        border-radius: 99px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    /* Tagi Statusów (Checkboxy) */
+    .tags-container {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px; // Lżejszy wygląd niż "pill"
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+
+            /* Stan NIE (Neutralny zamiast czerwonego X) */
+            &.neutral {
+                background-color: #f9fafb;
+                color: #9ca3af;
+                border-color: #e5e7eb;
+            }
+
+            /* Stan TAK (Zielony) */
+            &.positive {
+                background-color: #ecfdf5;
+                color: #059669;
+                border-color: #d1fae5;
+            }
+        }
+    }
+
+    /* Pliki */
+    .file-previews {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+
+        .file-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.2s;
+            }
+
+            &:hover img {
+                transform: scale(1.05);
+            }
+        }
+    }
+
+    .file-list-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .simple-file-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: $color-secondary;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.3rem 0;
+
+            &:hover {
+                color: $color-primary;
+            }
+        }
+    }
+
+    /* Akordeon wypłat */
+    details.payout-details-group {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        overflow: hidden;
+
+        summary {
+            padding: 0.85rem 1rem;
+            background: #f8fafc;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+
+            &:hover {
+                background: #f1f5f9;
+            }
+
+            &::after {
+                content: '+';
+                font-size: 1.2rem;
+                font-weight: 400;
+                color: #64748b;
+            }
         }
 
-        .mb-2 {
-            margin-bottom: 0.5rem;
+        &[open] summary::after {
+            content: '-';
         }
 
-        .mb-3 {
-            margin-bottom: 1rem;
+        &[open] summary {
+            border-bottom: 1px solid #e5e7eb;
         }
 
-        .d-block {
-            display: block;
+        .detail-grid {
+            padding: 1.5rem 1rem;
         }
+    }
+
+    // Utility helpers
+    .d-block {
+        display: block;
+    }
+
+    .mb-2 {
+        margin-bottom: 0.5rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+
+    .mt-3 {
+        margin-top: 1rem;
+    }
+
+    .mt-4 {
+        margin-top: 1.5rem;
     }
 }
