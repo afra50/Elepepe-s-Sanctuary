@@ -3,7 +3,7 @@ const router = express.Router();
 const requestController = require("../controllers/requestController");
 const upload = require("../middleware/uploadMiddleware");
 
-// 1. Importujemy Twoje middleware (zakładam, że plik nazywa się authMiddleware.js)
+// 1. Importujemy Twoje middleware
 const { auth, adminOnly } = require("../middleware/authMiddleware");
 
 // Konfiguracja Multera
@@ -20,10 +20,17 @@ router.post("/", uploadFields, requestController.createRequest);
 // === TRASY CHRONIONE (TYLKO ADMIN) ===
 
 // GET /api/requests - Lista zgłoszeń
-// Najpierw sprawdzamy token (auth), potem rolę (adminOnly), na końcu wykonujemy kontroler
 router.get("/", auth, adminOnly, requestController.getRequests);
 
 // GET /api/requests/:id - Szczegóły zgłoszenia
 router.get("/:id", auth, adminOnly, requestController.getRequestDetails);
+
+// PATCH /api/requests/:id/status - Zmiana statusu (pending/approved/rejected)
+router.patch(
+  "/:id/status",
+  auth,
+  adminOnly,
+  requestController.updateRequestStatus
+);
 
 module.exports = router;

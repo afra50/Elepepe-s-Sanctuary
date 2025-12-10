@@ -1,8 +1,7 @@
 - paginacja
-- sortowanie, filtry + wyszukiwarka - uzyc kompoenntu checkbox
 - confirm dialog
-- komponent na brak polaczenia z backednem
 - min vh sprawdzic 
+- dodac wszedzie error state
 - TLUMACZENIA KAZDEJ ODPOWIEDZI Z BACKENDU
 
 HOME
@@ -19,7 +18,9 @@ FOOTER
 
 ADMIN
 1. Requests
-    - zmiana statusu - przyski odrzuc, zaakcpetuj -> anuluj potwierdz
+    - zaakcpetuj otwiera edycje i tworzy zbiorke
+2. RequestCard
+    - alerty + confirm dialog
 
 BACKEND
 - crony - jakie?: 1. usuwanie request i związanych plików po zakończeniu zbiórki lub po odrzuceniu (1 mies po)

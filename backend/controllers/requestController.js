@@ -323,8 +323,46 @@ const getRequestDetails = async (req, res) => {
   }
 };
 
+const updateRequestStatus = async (req, res) => {
+  const connection = await db.getConnection();
+  const { id } = req.params;
+  const { status } = req.body;
+
+  // 1. Walidacja statusu
+  const allowedStatuses = ["pending", "approved", "rejected"];
+  if (!status || !allowedStatuses.includes(status)) {
+    return res.status(400).json({
+      message: "Invalid status. Allowed: pending, approved, rejected",
+    });
+  }
+
+  try {
+    // TODO: W przyszłości tutaj dodamy logikę dla statusu 'approved'
+    // np. if (status === 'approved') { createProjectFromRequest(...) }
+
+    // 2. Aktualizacja w bazie
+    const updated = await RequestModel.updateStatus(connection, id, status);
+
+    if (!updated) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+
+    res.status(200).json({
+      message: `Request status updated to ${status}`,
+      id: id,
+      newStatus: status,
+    });
+  } catch (error) {
+    console.error("Error updating request status:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    connection.release();
+  }
+};
+
 module.exports = {
   createRequest,
   getRequests,
   getRequestDetails,
+  updateRequestStatus,
 };
