@@ -40,11 +40,89 @@
     "current": "Socios actuales",
     "countLabel": "socios",
     "empty": "Aún no se ha añadido ningún socio. Haz clic en \"Añadir socio\" para agregar el primero.",
+    "loading": "Cargando socios...",
+    "fetchError": "Error al recuperar la lista de socios.",
+    "fetchErrorTitle": "Algo salió mal al cargar socios",
+    "deleteError": "No se pudo eliminar al socio. Inténtalo de nuevo.",
     "confirmDelete": "¿Seguro que deseas eliminar a este socio?",
+    "confirmDeleteNamed": "¿Seguro que deseas eliminar al socio \"{{name}}\"?",
+    "alerts": {
+      "createSuccess": "Se ha añadido un nuevo socio.",
+      "updateSuccess": "Los datos del socio se han actualizado.",
+      "deleteSuccess": "El socio se ha eliminado correctamente.",
+      "deleteError": "No se pudo eliminar al socio. Inténtalo de nuevo.",
+      "saveError": "No se pudo guardar al socio. Inténtalo de nuevo.",
+      "validationError": "El formulario del socio contiene errores. Revisa los campos e inténtalo de nuevo."
+    },
     "buttons": {
       "addNew": "Añadir socio",
       "edit": "Editar socio",
-      "delete": "Eliminar socio"
+      "delete": "Eliminar socio",
+      "save": "Guardar socio",
+      "saving": "Guardando...",
+      "chooseLogo": "Elegir logo"
+    },
+    "modal": {
+      "addTitle": "Añadir nuevo socio",
+      "editTitle": "Editar socio"
+    },
+    "fields": {
+      "namePl": "Nombre del socio (PL)",
+      "nameEn": "Nombre del socio (EN)",
+      "nameEs": "Nombre del socio (ES)",
+      "descriptionPl": "Breve descripción de la colaboración (PL)",
+      "descriptionEn": "Breve descripción de la colaboración (EN)",
+      "descriptionEs": "Breve descripción de la colaboración (ES)",
+      "countryPl": "País (PL)",
+      "countryEn": "País (EN)",
+      "countryEs": "País (ES)",
+      "logo": "Logo (opcional)"
+    },
+    "placeholders": {
+      "namePl": "p.ej. Fundacja Ogonki",
+      "nameEn": "e.g. Rat Rescue Europe",
+      "nameEs": "p.ej. Clinica Veterinaria Amigos",
+      "descriptionPl": "P.ej. Financia cirugías que salvan la vida de nuestros protegidos.",
+      "descriptionEn": "Short description of the cooperation (in English).",
+      "descriptionEs": "Descripción corta de la cooperación (en español).",
+      "countryPl": "p.ej. Polska",
+      "countryEn": "e.g. Germany",
+      "countryEs": "p.ej. España",
+      "logo": "Ningún archivo seleccionado"
+    },
+    "hints": {
+      "logo": "Preferiblemente un logo cuadrado en formato PNG, JPG o SVG (máx. 5 MB)."
+    },
+    "errors": {
+      "namePlRequired": "Introduce el nombre del socio en polaco.",
+      "namePlMin": "El nombre del socio (PL) debe tener al menos {{min}} caracteres.",
+      "namePlMax": "El nombre del socio (PL) puede tener como máximo {{max}} caracteres.",
+      "descriptionPlRequired": "Introduce una breve descripción de la colaboración en polaco.",
+      "descriptionPlMin": "La descripción de la colaboración (PL) debe tener al menos {{min}} caracteres.",
+      "descriptionPlMax": "La descripción de la colaboración (PL) puede tener como máximo {{max}} caracteres.",
+      "countryPlRequired": "Introduce el país en polaco.",
+      "countryPlMin": "El país (PL) debe tener al menos {{min}} caracteres.",
+      "countryPlMax": "El país (PL) puede tener como máximo {{max}} caracteres.",
+      "nameEnRequired": "Introduce el nombre del socio en inglés.",
+      "nameEnMin": "El nombre del socio (EN) debe tener al menos {{min}} caracteres.",
+      "nameEnMax": "El nombre del socio (EN) puede tener como máximo {{max}} caracteres.",
+      "descriptionEnRequired": "Introduce una breve descripción de la colaboración en inglés.",
+      "descriptionEnMin": "La descripción de la colaboración (EN) debe tener al menos {{min}} caracteres.",
+      "descriptionEnMax": "La descripción de la colaboración (EN) puede tener como máximo {{max}} caracteres.",
+      "countryEnRequired": "Introduce el país en inglés.",
+      "countryEnMin": "El país (EN) debe tener al menos {{min}} caracteres.",
+      "countryEnMax": "El país (EN) puede tener como máximo {{max}} caracteres.",
+      "nameEsRequired": "Introduce el nombre del socio en español.",
+      "nameEsMin": "El nombre del socio (ES) debe tener al menos {{min}} caracteres.",
+      "nameEsMax": "El nombre del socio (ES) puede tener como máximo {{max}} caracteres.",
+      "descriptionEsRequired": "Introduce una breve descripción de la colaboración en español.",
+      "descriptionEsMin": "La descripción de la colaboración (ES) debe tener al menos {{min}} caracteres.",
+      "descriptionEsMax": "La descripción de la colaboración (ES) puede tener como máximo {{max}} caracteres.",
+      "countryEsRequired": "Introduce el país en español.",
+      "countryEsMin": "El país (ES) debe tener al menos {{min}} caracteres.",
+      "countryEsMax": "El país (ES) puede tener como máximo {{max}} caracteres.",
+      "logoType": "El logo debe ser un archivo de imagen.",
+      "logoSize": "El logo es demasiado grande (máximo 5 MB)."
     }
   },
   "status": {
@@ -62,7 +140,10 @@
     "reject": "Rechazar"
   },
   "common": {
-    "years": "años"
+    "years": "años",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "ok": "OK"
   },
   "form": {
     "sections": {

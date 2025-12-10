@@ -1,3 +1,4 @@
+// src/components/admin/AdminPartnerModal.jsx
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "../../components/ui/Modal";
@@ -21,7 +22,13 @@ const MAX_DESC_LEN = 255;
 const MAX_COUNTRY_LEN = 100;
 const MAX_LOGO_SIZE = 5 * 1024 * 1024; // 5 MB
 
-const AdminPartnerModal = ({ isOpen, onClose, onSaved, initialData }) => {
+const AdminPartnerModal = ({
+  isOpen,
+  onClose,
+  onSaved,
+  onError, // ⬅️ NOWE
+  initialData,
+}) => {
   const { t } = useTranslation("admin");
   const isEdit = !!(initialData && initialData.id);
 
@@ -48,8 +55,8 @@ const AdminPartnerModal = ({ isOpen, onClose, onSaved, initialData }) => {
         countryEs: initialData.countryEs || "",
       });
 
-      // podgląd istniejącego logo, jeśli masz pełny URL tu – możesz dodać
-      if (initialData.logoPath && initialData.logoPath.startsWith("http")) {
+      // ⬅️ przy edycji pokazujemy logo jeśli dostaniemy pełny URL
+      if (initialData.logoPath) {
         setLogoPreview(initialData.logoPath);
       } else {
         setLogoPreview("");
@@ -230,9 +237,8 @@ const AdminPartnerModal = ({ isOpen, onClose, onSaved, initialData }) => {
 
       let response;
       if (isEdit) {
-        // TODO: jak będzie endpoint PUT, zamienić na update
-        // response = await partnersApi.update(initialData.id, formData);
-        response = await partnersApi.create(formData);
+        // ✅ prawdziwa edycja
+        response = await partnersApi.update(initialData.id, formData);
       } else {
         response = await partnersApi.create(formData);
       }
@@ -251,13 +257,33 @@ const AdminPartnerModal = ({ isOpen, onClose, onSaved, initialData }) => {
         countryEn: form.countryEn.trim(),
         countryEs: form.countryEs.trim(),
         logoPath:
-          logoPath !== undefined ? logoPath : initialData?.logoPath || null,
+          logoPath !== undefined
+            ? logoPath
+            : initialData?.logoPathRelative || null,
       };
 
-      onSaved?.(fullPartner);
+      onSaved?.(fullPartner, isEdit);
     } catch (err) {
       console.error("Failed to save partner:", err);
-      // TODO: toast
+
+      // 🔴 obsługa błędów z backendu
+      let msg;
+
+      const status = err?.response?.status;
+      const data = err?.response?.data;
+
+      if (status === 400) {
+        // walidacja z Joi
+        msg =
+          t("partnerships.alerts.validationError") ||
+          "Formularz partnera zawiera błędy. Sprawdź pola i spróbuj ponownie.";
+      } else {
+        msg =
+          t("partnerships.alerts.saveError") ||
+          "Nie udało się zapisać partnera. Spróbuj ponownie.";
+      }
+
+      onError?.(msg);
     } finally {
       setIsSubmitting(false);
     }

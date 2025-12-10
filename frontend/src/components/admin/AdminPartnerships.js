@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
+// src/components/admin/AdminPartnerships.jsx
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../../components/ui/Button";
 import { Edit2, Trash2, Plus } from "lucide-react";
 import { partnersApi, FILES_BASE_URL } from "../../utils/api";
 import AdminPartnerModal from "./AdminPartnerModal";
 import ConfirmDialog from "../ui/ConfirmDialog";
+import Alert from "../ui/Alert";
+import ErrorState from "../ui/ErrorState";
+import Loader from "../ui/Loader"; // ⬅️ NOWE
 
 const mapPartnerToUi = (p, lang) => {
   const pickByLang = (pl, en, es) => {
@@ -36,39 +40,44 @@ const mapPartnerToUi = (p, lang) => {
 const AdminPartnerships = () => {
   const { t, i18n } = useTranslation("admin");
 
-  const [partners, setPartners] = useState([]); // surowe dane z backendu
+  const [partners, setPartners] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingPartner, setEditingPartner] = useState(null); // pełny obiekt z backendu
+  const [editingPartner, setEditingPartner] = useState(null);
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [partnerToDelete, setPartnerToDelete] = useState(null);
 
+  const [alertConfig, setAlertConfig] = useState(null);
+
+  const showAlert = (variant, message) => {
+    setAlertConfig({ variant, message });
+  };
+
   // --- POBRANIE LISTY PARTNERÓW Z BACKENDU ---
-  useEffect(() => {
-    const fetchPartners = async () => {
-      setIsLoading(true);
-      setError(null);
+  const fetchPartners = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const response = await partnersApi.getAll();
-        const data = response.data || [];
-        setPartners(data); // zapisujemy raw dane
-      } catch (err) {
-        console.error("Failed to fetch partners:", err);
-        setError(
-          t("partnerships.fetchError") ||
-            "Nie udało się pobrać listy partnerów."
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPartners();
+    try {
+      const response = await partnersApi.getAll();
+      const data = response.data || [];
+      setPartners(data);
+    } catch (err) {
+      console.error("Failed to fetch partners:", err);
+      setError(
+        t("partnerships.fetchError") || "Nie udało się pobrać listy partnerów."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   }, [t]);
+
+  useEffect(() => {
+    fetchPartners();
+  }, [fetchPartners]);
 
   const handleAddPartner = () => {
     setEditingPartner(null);
@@ -76,7 +85,7 @@ const AdminPartnerships = () => {
   };
 
   const handleEdit = (partner) => {
-    setEditingPartner(partner); // pełny obiekt (pl/en/es)
+    setEditingPartner(partner); // pełny obiekt z backendu
     setIsModalOpen(true);
   };
 
@@ -91,10 +100,19 @@ const AdminPartnerships = () => {
     try {
       await partnersApi.delete(partnerToDelete.id);
       setPartners((prev) => prev.filter((p) => p.id !== partnerToDelete.id));
+
+      showAlert(
+        "success",
+        t("partnerships.alerts.deleteSuccess") ||
+          "Partner został pomyślnie usunięty."
+      );
     } catch (err) {
       console.error("Failed to delete partner:", err);
-      alert(
-        t("partnerships.deleteError") ||
+
+      showAlert(
+        "error",
+        t("partnerships.alerts.deleteError") ||
+          t("partnerships.deleteError") ||
           "Nie udało się usunąć partnera. Spróbuj ponownie."
       );
     } finally {
@@ -113,18 +131,83 @@ const AdminPartnerships = () => {
     setEditingPartner(null);
   };
 
-  // partnerFromApi – pełny obiekt z modala (z polami *_Pl/_En/_Es, logoPath itd.)
-  const handlePartnerSaved = (partnerFromApi) => {
+  // 🔴 błędy z create/update z modala
+  const handlePartnerError = (message) => {
+    showAlert(
+      "error",
+      message ||
+        t("partnerships.alerts.saveError") ||
+        "Nie udało się zapisać partnera. Spróbuj ponownie."
+    );
+  };
+
+  // partnerFromApi – pełny obiekt z modala, isEdit – czy to była edycja
+  const handlePartnerSaved = (partnerFromApi, isEdit) => {
     setPartners((prev) => {
       const without = prev.filter((p) => p.id !== partnerFromApi.id);
-      return [partnerFromApi, ...without];
+
+      return [
+        {
+          ...partnerFromApi,
+          logoPath: partnerFromApi.logoPath || "",
+        },
+        ...without,
+      ];
     });
+
+    if (isEdit) {
+      showAlert(
+        "success",
+        t("partnerships.alerts.updateSuccess") ||
+          "Dane partnera zostały zaktualizowane."
+      );
+    } else {
+      showAlert(
+        "success",
+        t("partnerships.alerts.createSuccess") || "Nowy partner został dodany."
+      );
+    }
 
     handleModalClose();
   };
 
+  const confirmMessage =
+    partnerToDelete &&
+    (partnerToDelete.namePl || partnerToDelete.nameEn || partnerToDelete.nameEs)
+      ? t("partnerships.confirmDeleteNamed", {
+          name:
+            partnerToDelete.namePl ||
+            partnerToDelete.nameEn ||
+            partnerToDelete.nameEs,
+        })
+      : t("partnerships.confirmDelete") ||
+        "Czy na pewno chcesz usunąć tego partnera?";
+
+  // Dane do modala przy edycji: pełne pola + pełny URL logo
+  const modalInitialData =
+    editingPartner != null
+      ? {
+          ...editingPartner,
+          logoPathRelative: editingPartner.logoPath || null,
+          logoPath: editingPartner.logoPath
+            ? `${FILES_BASE_URL}${editingPartner.logoPath}`
+            : "",
+        }
+      : null;
+
   return (
     <div className="admin-partnerships-page">
+      {/* ALERT (globalny na tej podstronie) */}
+      {alertConfig && (
+        <Alert
+          variant={alertConfig.variant}
+          autoClose={4000}
+          onClose={() => setAlertConfig(null)}
+        >
+          {alertConfig.message}
+        </Alert>
+      )}
+
       {/* NAGŁÓWEK STRONY */}
       <header className="page-header">
         <div>
@@ -159,12 +242,24 @@ const AdminPartnerships = () => {
         </span>
       </div>
 
-      {/* STANY ŁADOWANIA / BŁĘDU */}
+      {/* STANY ŁADOWANIA / BŁĘDU / PUSTA LISTA / LISTA */}
       {isLoading ? (
-        <p>{t("partnerships.loading") || "Ładowanie partnerów..."}</p>
+        <div className="partners-loading">
+          <Loader variant="center" size="md" />
+          <p className="partners-loading__text">
+            {t("partnerships.loading") || "Ładowanie partnerów..."}
+          </p>
+        </div>
       ) : error ? (
         <div className="partners-empty">
-          <p>{error}</p>
+          <ErrorState
+            title={
+              t("partnerships.fetchErrorTitle") ||
+              "Coś poszło nie tak przy ładowaniu partnerów"
+            }
+            message={error}
+            onRetry={fetchPartners}
+          />
         </div>
       ) : partners.length === 0 ? (
         <div className="partners-empty">
@@ -179,7 +274,6 @@ const AdminPartnerships = () => {
             const ui = mapPartnerToUi(partner, i18n.language);
             return (
               <article key={partner.id} className="partner-card">
-                {/* GÓRNA CZĘŚĆ – DUŻE LOGO NA CAŁĄ SZEROKOŚĆ */}
                 <div className="partner-card__logo">
                   {ui.logoUrl ? (
                     <img src={ui.logoUrl} alt={ui.name} />
@@ -190,7 +284,6 @@ const AdminPartnerships = () => {
                   )}
                 </div>
 
-                {/* DOLNA CZĘŚĆ – NAZWA, KRAJ, OPIS + IKONY NA DOLE */}
                 <div className="partner-card__body">
                   <h3 className="partner-name">{ui.name}</h3>
 
@@ -212,7 +305,7 @@ const AdminPartnerships = () => {
                     <button
                       type="button"
                       className="icon-btn icon-btn--danger"
-                      onClick={() => handleDeleteClick(partner)} // ⬅ przekazujemy cały obiekt
+                      onClick={() => handleDeleteClick(partner)}
                       aria-label={
                         t("partnerships.buttons.delete") || "Usuń partnera"
                       }
@@ -232,23 +325,15 @@ const AdminPartnerships = () => {
         isOpen={isModalOpen}
         onClose={handleModalClose}
         onSaved={handlePartnerSaved}
-        initialData={editingPartner || null}
+        onError={handlePartnerError}
+        initialData={modalInitialData}
       />
 
+      {/* POTWIERDZENIE USUNIĘCIA */}
       <ConfirmDialog
         isOpen={isConfirmOpen}
         variant="danger"
-        message={
-          t("partnerships.confirmDelete") ||
-          (partnerToDelete
-            ? `Czy na pewno chcesz usunąć partnera "${
-                partnerToDelete.namePl ||
-                partnerToDelete.nameEn ||
-                partnerToDelete.nameEs ||
-                ""
-              }"?`
-            : "Czy na pewno chcesz usunąć tego partnera?")
-        }
+        message={confirmMessage}
         confirmLabel={t("common.confirm") || "Usuń"}
         cancelLabel={t("common.cancel") || "Anuluj"}
         onConfirm={handleConfirmDelete}

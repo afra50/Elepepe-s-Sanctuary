@@ -42,8 +42,18 @@
     "empty": "Nie dodano jeszcze żadnych partnerów. Kliknij „Dodaj partnera”, aby dodać pierwszego.",
     "loading": "Ładowanie partnerów...",
     "fetchError": "Nie udało się pobrać listy partnerów.",
+    "fetchErrorTitle": "Coś poszło nie tak przy ładowaniu partnerów",
     "deleteError": "Nie udało się usunąć partnera. Spróbuj ponownie.",
     "confirmDelete": "Czy na pewno chcesz usunąć tego partnera?",
+    "confirmDeleteNamed": "Czy na pewno chcesz usunąć partnera \"{{name}}\"?",
+    "alerts": {
+      "createSuccess": "Nowy partner został dodany.",
+      "updateSuccess": "Dane partnera zostały zaktualizowane.",
+      "deleteSuccess": "Partner został pomyślnie usunięty.",
+      "deleteError": "Nie udało się usunąć partnera. Spróbuj ponownie.",
+      "saveError": "Nie udało się zapisać partnera. Spróbuj ponownie.",
+      "validationError": "Formularz partnera zawiera błędy. Sprawdź pola i spróbuj ponownie."
+    },
     "buttons": {
       "addNew": "Dodaj partnera",
       "edit": "Edytuj partnera",
@@ -87,39 +97,30 @@
       "namePlRequired": "Podaj nazwę partnera po polsku.",
       "namePlMin": "Nazwa partnera (PL) musi mieć co najmniej {{min}} znaki.",
       "namePlMax": "Nazwa partnera (PL) może mieć maksymalnie {{max}} znaków.",
-
       "descriptionPlRequired": "Podaj krótki opis współpracy po polsku.",
       "descriptionPlMin": "Opis współpracy (PL) musi mieć co najmniej {{min}} znaków.",
       "descriptionPlMax": "Opis współpracy (PL) może mieć maksymalnie {{max}} znaków.",
-
       "countryPlRequired": "Podaj kraj po polsku.",
       "countryPlMin": "Kraj (PL) musi mieć co najmniej {{min}} znaki.",
       "countryPlMax": "Kraj (PL) może mieć maksymalnie {{max}} znaków.",
-
       "nameEnRequired": "Podaj nazwę partnera po angielsku.",
       "nameEnMin": "Nazwa partnera (EN) musi mieć co najmniej {{min}} znaki.",
       "nameEnMax": "Nazwa partnera (EN) może mieć maksymalnie {{max}} znaków.",
-
       "descriptionEnRequired": "Podaj krótki opis współpracy po angielsku.",
       "descriptionEnMin": "Opis współpracy (EN) musi mieć co najmniej {{min}} znaków.",
       "descriptionEnMax": "Opis współpracy (EN) może mieć maksymalnie {{max}} znaków.",
-
       "countryEnRequired": "Podaj kraj po angielsku.",
       "countryEnMin": "Kraj (EN) musi mieć co najmniej {{min}} znaki.",
       "countryEnMax": "Kraj (EN) może mieć maksymalnie {{max}} znaków.",
-
       "nameEsRequired": "Podaj nazwę partnera po hiszpańsku.",
       "nameEsMin": "Nazwa partnera (ES) musi mieć co najmniej {{min}} znaki.",
       "nameEsMax": "Nazwa partnera (ES) może mieć maksymalnie {{max}} znaków.",
-
       "descriptionEsRequired": "Podaj krótki opis współpracy po hiszpańsku.",
       "descriptionEsMin": "Opis współpracy (ES) musi mieć co najmniej {{min}} znaków.",
       "descriptionEsMax": "Opis współpracy (ES) może mieć maksymalnie {{max}} znaków.",
-
       "countryEsRequired": "Podaj kraj po hiszpańsku.",
       "countryEsMin": "Kraj (ES) musi mieć co najmniej {{min}} znaki.",
       "countryEsMax": "Kraj (ES) może mieć maksymalnie {{max}} znaków.",
-
       "logoType": "Logo musi być plikiem graficznym.",
       "logoSize": "Logo jest za duże (maksymalnie 5 MB)."
     }
@@ -139,7 +140,10 @@
     "reject": "Odrzuć"
   },
   "common": {
-    "years": "lat"
+    "years": "lat",
+    "confirm": "Potwierdź",
+    "cancel": "Anuluj",
+    "ok": "OK"
   },
   "form": {
     "sections": {
