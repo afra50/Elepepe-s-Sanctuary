@@ -1,34 +1,30 @@
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5); // Półprzezroczyste tło
-    backdrop-filter: blur(4px); // Efekt rozmycia tła
+    inset: 0; // Zastępuje top/left/width/height: 100%
+    background-color: rgba(0, 0, 0, 0.65); // Nieco ciemniejsze tło
+    backdrop-filter: blur(5px);
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    animation: fadeIn 0.2s ease-out;
+    animation: fadeIn 0.2s ease-out forwards;
 }
 
 .modal-container {
-    // Używamy zmiennych projektowych
-    background-color: $color-white;
-    border-radius: 0.75rem; // Zgodnie z $radius-lg lub podobnym z Twojego forms.scss
-    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.15); // Mocniejszy cień dla modala
-    border: 1px solid rgba($color-border, 0.5); // Subtelna ramka
+    background-color: #ffffff;
+    border-radius: 1rem; // Bardziej nowoczesne zaokrąglenie
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
     display: flex;
     flex-direction: column;
-    max-height: 90vh;
+    max-height: 90vh; // Ważne dla scrolla w środku
     width: 100%;
     position: relative;
-    animation: slideUp 0.3s ease-out;
+    overflow: hidden; // Żeby header nie wychodził poza border-radius
+    animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 
-    // Warianty rozmiarów
+    // Rozmiary
     &.modal--sm {
         max-width: 400px;
     }
@@ -40,68 +36,67 @@
     &.modal--lg {
         max-width: 800px;
     }
-
-    &.modal--full {
-        max-width: 95vw;
-        height: 90vh;
-    }
 }
 
 .modal-header {
+    flex-shrink: 0; // Nie zgniataj headera
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid rgba($color-border, 0.5);
-    background-color: #f9f5f1; // Delikatne tło nagłówka (pasuje do Twojego stylu)
-    border-top-left-radius: 0.75rem;
-    border-top-right-radius: 0.75rem;
+    background-color: #fff;
+    border-bottom: 1px solid #e5e7eb;
 
     .modal-title {
         margin: 0;
         font-size: 1.25rem;
         font-weight: 700;
-        font-family: $font-heading;
-        color: $color-secondary;
+        color: #1f2937;
+        line-height: 1.2;
     }
 
     .modal-close-btn {
-        background: none;
+        background: transparent;
         border: none;
-        color: $brown-700; // Używamy zmiennej
+        color: #6b7280;
         cursor: pointer;
-        padding: 6px;
-        border-radius: 50%;
-        transition: background 0.2s;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.2s;
         display: flex;
+        align-items: center;
+        justify-content: center;
 
         &:hover {
-            background-color: rgba($color-secondary, 0.1);
-            color: $color-secondary;
+            background-color: #f3f4f6;
+            color: #111827;
         }
     }
 }
 
 .modal-content {
+    flex: 1; // Zajmij resztę miejsca
+    overflow-y: auto; // Scrolluj TYLKO ten element
     padding: 1.5rem;
-    overflow-y: auto;
-    font-family: $font-body;
-    color: $color-secondary;
+    color: #374151;
+    font-size: 0.95rem;
     line-height: 1.6;
 }
 
 .modal-footer {
+    flex-shrink: 0; // Nie zgniataj stopki
     padding: 1rem 1.5rem;
-    border-top: 1px solid rgba($color-border, 0.5);
-    background-color: #f9f5f1; // Spójne tło ze stopką
-    border-bottom-left-radius: 0.75rem;
-    border-bottom-right-radius: 0.75rem;
+    background-color: #f9fafb; // Szare tło na dole
+    border-top: 1px solid #e5e7eb;
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
+    gap: 0.75rem;
+
+    @media (max-width: 767px) {
+        flex-direction: column;
+    }
 }
 
-// Animacje
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -112,27 +107,14 @@
     }
 }
 
-@keyframes slideUp {
+@keyframes scaleIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: scale(0.95) translateY(10px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-// Mobile adjust
-@media (max-width: 640px) {
-    .modal-container {
-        max-height: 95vh;
-
-        &.modal--sm,
-        &.modal--md,
-        &.modal--lg {
-            max-width: 100%;
-        }
+        transform: scale(1) translateY(0);
     }
 }

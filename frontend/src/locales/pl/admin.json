@@ -25,7 +25,15 @@
     "unknownCountry": "Nieznany kraj",
     "noRequestsFound": "Brak zgłoszeń w tej sekcji",
     "allDone": "Wszystkie zgłoszenia zostały już obsłużone.",
-    "fetchError": "Nie udało się pobrać zgłoszeń."
+    "fetchError": "Nie udało się pobrać zgłoszeń.",
+    "detailsTitle": "Szczegóły zgłoszenia",
+    "noAttachments": "Brak załączników",
+    "sections": {
+      "applicantData": "Dane wnioskodawcy",
+      "requestDetails": "Szczegóły zgłoszenia",
+      "attachments": "Załączniki",
+      "payoutData": "Dane do przelewu"
+    }
   },
   "partnerships": {
     "subtitle": "Zarządzaj partnerami wspierającymi Elepepe’s Sanctuary – informacje o nich pojawią się na stronie.",
@@ -47,20 +55,53 @@
   "actions": {
     "filter": "Filtry",
     "sort": "Sortuj",
-    "details": "Szczegóły"
+    "details": "Szczegóły",
+    "close": "Zamknij",
+    "openLink": "Otwórz link",
+    "approve": "Zatwierdź",
+    "reject": "Odrzuć"
+  },
+  "common": {
+    "years": "lat"
   },
   "form": {
     "sections": {
-      "animal": "Zwierzak"
+      "animal": "Zwierzak",
+      "payoutData": "Dane do przelewu",
+      "requestDetails": "Szczegóły zgłoszenia",
+      "attachments": "Załączniki",
+      "applicantData": "Dane wnioskodawcy"
     },
     "fields": {
-      "amount": {
-        "label": "Kwota"
-      },
-      "deadline": {
-        "label": "Termin"
+      "sentDate": "Data wysłania",
+      "submissionLanguage": "Język",
+      "otherHelp": "Inna pomoc (opis)",
+      "fullName": "Imię i nazwisko / Nazwa",
+      "contact": "Kontakt",
+      "location": "Lokalizacja",
+      "animalName": "Imię zwierzaka",
+      "animalsCount": "Liczba zwierząt",
+      "description": "Opis sytuacji",
+      "treatmentOngoing": "Leczenie w toku",
+      "needsInstallments": "Wymagane raty",
+      "otherFundraiserLink": "Link do innej zbiórki",
+      "photos": "Zdjęcia",
+      "documents": "Dokumenty",
+      "payoutName": "Właściciel konta",
+      "bankName": "Nazwa banku",
+      "iban": "Numer IBAN",
+      "swift": "Kod SWIFT/BIC",
+      "address": "Adres właściciela",
+      "amount": "Wnioskowana kwota",
+      "deadline": "Termin (Deadline)",
+      "amountType": {
+        "options": {
+          "exact": "Kwota dokładna",
+          "estimated": "Kwota szacunkowa"
+        }
       },
       "applicantType": {
+        "label": "Typ wnioskodawcy",
         "options": {
           "person": "Osoba prywatna",
           "organization": "Organizacja",

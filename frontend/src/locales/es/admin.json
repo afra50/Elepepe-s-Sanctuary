@@ -25,7 +25,15 @@
     "unknownCountry": "País desconocido",
     "noRequestsFound": "No hay solicitudes en esta sección",
     "allDone": "Todas las solicitudes han sido gestionadas.",
-    "fetchError": "Error al recuperar las solicitudes."
+    "fetchError": "Error al recuperar las solicitudes.",
+    "detailsTitle": "Detalles de la solicitud",
+    "noAttachments": "Sin archivos adjuntos",
+    "sections": {
+      "applicantData": "Datos del solicitante",
+      "requestDetails": "Detalles de la solicitud",
+      "attachments": "Archivos adjuntos",
+      "payoutData": "Información de pago"
+    }
   },
   "partnerships": {
     "subtitle": "Gestionar los socios que apoyan Elepepe's Sanctuary: la información sobre ellos aparecerá en el sitio web.",
@@ -47,20 +55,49 @@
   "actions": {
     "filter": "Filtros",
     "sort": "Ordenar",
-    "details": "Detalles"
+    "details": "Detalles",
+    "close": "Cerrar",
+    "openLink": "Abrir enlace",
+    "approve": "Aprobar",
+    "reject": "Rechazar"
+  },
+  "common": {
+    "years": "años"
   },
   "form": {
     "sections": {
       "animal": "Mascota"
     },
     "fields": {
-      "amount": {
-        "label": "Importe"
-      },
-      "deadline": {
-        "label": "Fecha límite"
+      "fullName": "Nombre / Nombre de la organización",
+      "contact": "Contacto",
+      "location": "Ubicación",
+      "animalName": "Nombre de la mascota",
+      "animalsCount": "Número de animales",
+      "description": "Descripción de la situación",
+      "treatmentOngoing": "Tratamiento en curso",
+      "needsInstallments": "Pago a plazos necesario",
+      "otherFundraiserLink": "Enlace a otra recaudación",
+      "photos": "Fotos",
+      "documents": "Documentos",
+      "payoutName": "Titular de la cuenta",
+      "bankName": "Nombre del banco",
+      "iban": "IBAN",
+      "swift": "Código SWIFT/BIC",
+      "address": "Dirección",
+      "sentDate": "Fecha de envío",
+      "submissionLanguage": "Idioma",
+      "otherHelp": "Otra ayuda (descripción)",
+      "amount": "Importe solicitado",
+      "deadline": "Fecha límite",
+      "amountType": {
+        "options": {
+          "exact": "Importe exacto",
+          "estimated": "Importe estimado"
+        }
       },
       "applicantType": {
+        "label": "Tipo de solicitante",
         "options": {
           "person": "Particular",
           "organization": "Organización",

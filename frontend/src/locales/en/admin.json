@@ -25,7 +25,15 @@
     "unknownCountry": "Unknown country",
     "noRequestsFound": "No requests found in this section",
     "allDone": "All requests have been handled.",
-    "fetchError": "Failed to fetch requests."
+    "fetchError": "Failed to fetch requests.",
+    "detailsTitle": "Request Details",
+    "noAttachments": "No attachments",
+    "sections": {
+      "applicantData": "Applicant Data",
+      "requestDetails": "Request Details",
+      "attachments": "Attachments",
+      "payoutData": "Payout Information"
+    }
   },
   "partnerships": {
     "subtitle": "Manage partners supporting Elepepe’s Sanctuary – information about them will appear on the website.",
@@ -47,20 +55,49 @@
   "actions": {
     "filter": "Filter",
     "sort": "Sort",
-    "details": "Details"
+    "details": "Details",
+    "close": "Close",
+    "openLink": "Open Link",
+    "approve": "Approve",
+    "reject": "Reject"
+  },
+  "common": {
+    "years": "years"
   },
   "form": {
     "sections": {
       "animal": "Pet"
     },
     "fields": {
-      "amount": {
-        "label": "Amount"
-      },
-      "deadline": {
-        "label": "Deadline"
+      "fullName": "Name / Organization Name",
+      "contact": "Contact",
+      "location": "Location",
+      "animalName": "Pet Name",
+      "animalsCount": "Number of animals",
+      "description": "Situation description",
+      "treatmentOngoing": "Treatment in progress",
+      "needsInstallments": "Installments needed",
+      "otherFundraiserLink": "Link to another fundraiser",
+      "photos": "Photos",
+      "documents": "Documents",
+      "payoutName": "Account Holder",
+      "bankName": "Bank Name",
+      "iban": "IBAN",
+      "swift": "SWIFT/BIC Code",
+      "address": "Address",
+      "sentDate": "Submission Date",
+      "submissionLanguage": "Language",
+      "otherHelp": "Other help (description)",
+      "amount": "Requested Amount",
+      "deadline": "Deadline",
+      "amountType": {
+        "options": {
+          "exact": "Exact Amount",
+          "estimated": "Estimated Amount"
+        }
       },
       "applicantType": {
+        "label": "Applicant Type",
         "options": {
           "person": "Individual",
           "organization": "Organization",
