@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { createPortal } from "react-dom"; // <--- KLUCZOWY IMPORT DO NAPRAWY WIDOCZNOŚCI
 import { useTranslation } from "react-i18next";
 import {
   Filter,
@@ -9,15 +10,21 @@ import {
   X,
   RotateCcw,
 } from "lucide-react";
+
+// Importy UI
 import Button from "../../components/ui/Button";
 import Loader from "../../components/ui/Loader";
-import RequestCard from "../../components/admin/RequestCard";
-import api from "../../utils/api";
-import { formatDate } from "../../utils/dateUtils";
 import SearchBar from "../ui/SearchBar";
 import FilterBar from "../ui/FilterBar";
 import Modal from "../ui/Modal";
-import ErrorState from "..//ui/ErrorState";
+import ErrorState from "../ui/ErrorState";
+import Alert from "../../components/ui/Alert";
+import ConfirmDialog from "../../components/ui/ConfirmDialog";
+
+// Importy logiki/danych
+import RequestCard from "../../components/admin/RequestCard";
+import api from "../../utils/api";
+import { formatDate } from "../../utils/dateUtils";
 
 // Stan początkowy filtrów
 const initialFilters = {
@@ -41,18 +48,32 @@ const getLanguageLabel = (code) => {
 const AdminRequests = () => {
   const { t, i18n } = useTranslation("admin");
 
+  // --- STANY DANYCH ---
   const [activeTab, setActiveTab] = useState("pending");
   const [requests, setRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [detailsError, setDetailsError] = useState(null);
+
+  // --- STANY SZCZEGÓŁÓW ---
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [requestDetails, setRequestDetails] = useState(null);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
+  const [detailsError, setDetailsError] = useState(null);
+
+  // --- STANY FILTRÓW ---
   const [filters, setFilters] = useState(initialFilters);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
-  // --- 1. POBIERANIE LISTY (useCallback, by użyć w odświeżaniu) ---
+  // --- NOWE STANY: ALERT I CONFIRM ---
+  const [alert, setAlert] = useState(null); // { variant, message }
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    message: "",
+    variant: "info",
+    targetStatus: null,
+  });
+
+  // --- 1. POBIERANIE LISTY ---
   const fetchRequests = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -70,19 +91,18 @@ const AdminRequests = () => {
     fetchRequests();
   }, [fetchRequests]);
 
-  // --- 2. SZCZEGÓŁY ---
+  // --- 2. OBSŁUGA SZCZEGÓŁÓW ---
   const handleOpenDetails = async (req) => {
     setSelectedRequest(req);
     setIsDetailsLoading(true);
-    setDetailsError(null); // Resetujemy błąd przed nową próbą
-    setRequestDetails(null); // Czyścimy stare szczegóły
+    setDetailsError(null);
+    setRequestDetails(null);
 
     try {
       const response = await api.get(`/requests/${req.id}`);
       setRequestDetails(response.data);
     } catch (err) {
       console.error("Błąd pobierania szczegółów:", err);
-      // Ustawiamy treść błędu
       setDetailsError(
         t("requests.fetchError") || "Nie udało się pobrać szczegółów."
       );
@@ -96,38 +116,91 @@ const AdminRequests = () => {
     setRequestDetails(null);
   };
 
-  // --- 3. ZMIANA STATUSU (NOWE) ---
-  const updateStatus = async (newStatus) => {
+  // --- 3. LOGIKA ZMIANY STATUSU Z CONFIRM I ALERTEM ---
+
+  // Krok 1: Wywołanie okna potwierdzenia
+  const requestStatusChange = (newStatus) => {
     if (!selectedRequest) return;
 
-    // Opcjonalnie: Dodaj confirm()
-    if (
-      !window.confirm(
-        `Czy na pewno chcesz zmienić status na: ${t(`status.${newStatus}`)}?`
-      )
-    ) {
-      return;
+    let message = "";
+    let variant = "info";
+
+    switch (newStatus) {
+      case "approved":
+        message =
+          t("status.confirmApprove") ||
+          `Czy na pewno chcesz ZATWIERDZIĆ wniosek #${selectedRequest.id}?`;
+        variant = "success";
+        break;
+      case "rejected":
+        message =
+          t("status.confirmReject") ||
+          `Czy na pewno chcesz ODRZUCIĆ wniosek #${selectedRequest.id}?`;
+        variant = "danger";
+        break;
+      case "pending":
+        message =
+          t("status.confirmPending") ||
+          `Czy przywrócić wniosek #${selectedRequest.id} do oczekujących?`;
+        variant = "info";
+        break;
+      default:
+        message = `Zmienić status na ${newStatus}?`;
     }
+
+    setConfirmDialog({
+      isOpen: true,
+      message,
+      variant,
+      targetStatus: newStatus,
+    });
+  };
+
+  // Krok 2: Faktyczne wykonanie zmiany (po kliknięciu "Potwierdź")
+  const executeStatusChange = async () => {
+    const { targetStatus } = confirmDialog;
+
+    // Zamykamy dialog
+    setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+
+    if (!selectedRequest || !targetStatus) return;
 
     try {
       await api.patch(`/requests/${selectedRequest.id}/status`, {
-        status: newStatus,
+        status: targetStatus,
       });
 
-      // Sukces: Zamknij modal i odśwież listę
-      handleCloseDetails();
-      fetchRequests();
+      // SUKCES - Ustawiamy Alert
+      setAlert({
+        variant: "success",
+        message:
+          t("status.successMessage") || "Status został zmieniony pomyślnie!",
+      });
+
+      handleCloseDetails(); // Zamknij modal szczegółów
+      fetchRequests(); // Odśwież listę
     } catch (err) {
       console.error("Błąd zmiany statusu:", err);
-      alert("Wystąpił błąd podczas zmiany statusu.");
+      // BŁĄD - Ustawiamy Alert
+      setAlert({
+        variant: "error",
+        message:
+          t("status.errorMessage") || "Wystąpił błąd podczas zmiany statusu.",
+      });
     }
   };
 
-  const handleApprove = () => updateStatus("approved");
-  const handleReject = () => updateStatus("rejected");
-  const handlePending = () => updateStatus("pending");
+  // Funkcja anulowania dialogu
+  const cancelStatusChange = () => {
+    setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+  };
 
-  // --- FILTRY I SORTOWANIE ---
+  // Pomocnicze handlery podpinane pod przyciski
+  const handleApprove = () => requestStatusChange("approved");
+  const handleReject = () => requestStatusChange("rejected");
+  const handlePending = () => requestStatusChange("pending");
+
+  // --- 4. FILTRY I SORTOWANIE ---
   const handleFilterChange = (name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
@@ -186,6 +259,7 @@ const AdminRequests = () => {
     </span>
   );
 
+  // Stopka modala z przyciskami akcji
   const modalFooter =
     !isDetailsLoading && !detailsError && requestDetails ? (
       <>
@@ -193,7 +267,6 @@ const AdminRequests = () => {
           {t("actions.close")}
         </Button>
 
-        {/* SCENARIUSZ 1: OCZEKUJĄCE */}
         {selectedRequest?.status === "pending" && (
           <>
             <Button
@@ -213,7 +286,6 @@ const AdminRequests = () => {
           </>
         )}
 
-        {/* SCENARIUSZ 2: ZATWIERDZONE */}
         {selectedRequest?.status === "approved" && (
           <>
             <Button
@@ -233,7 +305,6 @@ const AdminRequests = () => {
           </>
         )}
 
-        {/* SCENARIUSZ 3: ODRZUCONE */}
         {selectedRequest?.status === "rejected" && (
           <>
             <Button
@@ -253,10 +324,55 @@ const AdminRequests = () => {
           </>
         )}
       </>
-    ) : null; // Jeśli błąd lub ładowanie -> brak stopki
+    ) : null;
 
   return (
     <div className="admin-requests-page">
+      {/* PORTALE: Przenoszą te elementy na sam koniec <body>,
+          dzięki czemu mają one najwyższy priorytet wyświetlania (z-index)
+          i nie są przykrywane przez Modal.
+      */}
+
+      {/* 1. ALERT (TOAST) */}
+      {alert &&
+        createPortal(
+          <div
+            style={{
+              position: "fixed",
+              top: "20px",
+              right: "20px",
+              zIndex: 99999, // Bardzo wysoki indeks, by być nad wszystkim
+            }}
+          >
+            <Alert
+              variant={alert.variant}
+              autoClose={5000}
+              onClose={() => setAlert(null)}
+            >
+              {alert.message}
+            </Alert>
+          </div>,
+          document.body
+        )}
+
+      {/* 2. CONFIRM DIALOG */}
+      {confirmDialog.isOpen &&
+        createPortal(
+          <div style={{ position: "relative", zIndex: 100000 }}>
+            <ConfirmDialog
+              isOpen={confirmDialog.isOpen}
+              message={confirmDialog.message}
+              variant={confirmDialog.variant}
+              confirmLabel={t("actions.yes") || "Tak"}
+              cancelLabel={t("actions.cancel") || "Anuluj"}
+              onConfirm={executeStatusChange}
+              onCancel={cancelStatusChange}
+            />
+          </div>,
+          document.body
+        )}
+
+      {/* --- GŁÓWNA ZAWARTOŚĆ STRONY --- */}
       <header className="page-header">
         <div>
           <h1 className="page-title">{t("menu.requests")}</h1>
@@ -362,21 +478,17 @@ const AdminRequests = () => {
         {isLoading ? (
           <Loader size="lg" variant="center" />
         ) : error ? (
-          // --- NOWE: Jeśli jest błąd, wyświetl ErrorState ---
           <ErrorState
-            title={t("requests.fetchError") || "Wystąpił błąd"} // Tytuł (opcjonalny)
-            message={error} // Wiadomość błędu ze stanu
-            onRetry={fetchRequests} // Funkcja do ponowienia próby
+            title={t("requests.fetchError") || "Wystąpił błąd"}
+            message={error}
+            onRetry={fetchRequests}
           />
         ) : processedRequests.length === 0 ? (
-          // --- STARE: Jeśli nie ma błędu, ale lista pusta ---
           <div className="empty-state">
-            {/* Tutaj możesz też dodać jakąś ikonę, np. <inbox size={48} /> */}
             <h3>{t("requests.noRequestsFound")}</h3>
             <p>{t("requests.allDone")}</p>
           </div>
         ) : (
-          // --- STARE: Jeśli są dane ---
           <div className="requests-grid">
             {processedRequests.map((req) => (
               <RequestCard
@@ -389,6 +501,7 @@ const AdminRequests = () => {
         )}
       </div>
 
+      {/* MODAL ZE SZCZEGÓŁAMI */}
       <Modal
         isOpen={!!selectedRequest}
         onClose={handleCloseDetails}
@@ -398,7 +511,7 @@ const AdminRequests = () => {
             : ""
         }
         size="lg"
-        footer={modalFooter} // <--- PRZEKAZUJEMY ZMIENNĄ
+        footer={modalFooter}
       >
         {isDetailsLoading ? (
           <Loader size="md" variant="center" />

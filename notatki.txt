@@ -1,7 +1,6 @@
 - paginacja
 - min vh sprawdzic 
 - dodac wszedzie error state
-- TLUMACZENIA KAZDEJ ODPOWIEDZI Z BACKENDU
 
 HOME
 - karuzela na najpilniejszych zbiorkach
@@ -18,8 +17,6 @@ FOOTER
 ADMIN
 1. Requests
     - zaakcpetuj otwiera edycje i tworzy zbiorke
-2. RequestCard
-    - alerty + confirm dialog
 
 BACKEND
 - crony - jakie?: 1. usuwanie request i związanych plików po zakończeniu zbiórki lub po odrzuceniu (1 mies po)

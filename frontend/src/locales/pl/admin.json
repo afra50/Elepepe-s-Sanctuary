@@ -128,7 +128,12 @@
   "status": {
     "pending": "Oczekujące",
     "approved": "Zatwierdzone",
-    "rejected": "Odrzucone"
+    "rejected": "Odrzucone",
+    "confirmApprove": "Czy na pewno chcesz zatwierdzić ten wniosek?",
+    "confirmReject": "Czy na pewno chcesz odrzucić ten wniosek?",
+    "confirmPending": "Czy chcesz przywrócić ten wniosek do oczekujących?",
+    "successMessage": "Status został pomyślnie zaktualizowany.",
+    "errorMessage": "Wystąpił błąd podczas zmiany statusu."
   },
   "actions": {
     "filter": "Filtry",
@@ -137,7 +142,10 @@
     "close": "Zamknij",
     "openLink": "Otwórz link",
     "approve": "Zatwierdź",
-    "reject": "Odrzuć"
+    "reject": "Odrzuć",
+    "yes": "Tak",
+    "cancel": "Anuluj",
+    "no": "Nie"
   },
   "common": {
     "years": "lat",
