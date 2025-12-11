@@ -1,46 +1,51 @@
+import Banner from "../components/Banner";
 function AboutPage() {
 	return (
 		<main className="page-about">
-			<header>
-				<h1 className="page-header">O nas</h1>
-			</header>
-			<p className="page-header">Kim jesteśmy?</p>
-
-			<ul>
-				<li>
-					<strong>Fundacja Elepepe’s Sanctuary</strong> powstała z potrzeby
-					serca – by pomagać szczurom w potrzebie i ich opiekunom, których
-					często nie stać na kosztowne leczenie. Chcemy dotrzeć do tych, którzy
-					najbardziej potrzebują wsparcia, ale nie zawsze wiemy, gdzie ich
-					znaleźć. Dlatego zwracamy się do Was – jeśli znacie szczurka
-					wymagającego pomocy lub właściciela, który nie może sobie poradzić z
-					kosztami opieki, napiszcie do nas.
-				</li>
-				<br />
-				<br />
-
-				<li>
-					<strong>Fundacja </strong> powstała z miłości do jednego szczura –
-					Elepepe. To on nauczył swojego opiekuna, że gryzonie to nie tylko
-					„małe zwierzątka w klatkach”, ale pełne uczuć istoty, które potrafią
-					kochać i zmieniać życie człowieka.Naszym celem jest pomoc szczurkom i
-					świnkom morskim, małym, często niedocenianym istotom, które zasługują
-					na miłość i troskę.
-				</li>
-				<br />
-				<br />
-				<li>
-					<strong>Elepepe’s Sanctuary</strong> to organizacja non-profit, której
-					misją jest wspieranie opiekunów szczurów i świnek morskich w
-					pokrywaniu kosztów leczenia weterynaryjnego, gdy nie są w stanie ich
-					udźwignąć, a zdrowie zwierząt jest zagrożone. Na ten moment naszym
-					głównym celem jest zebranie jak największej liczby osób w grupie, w
-					której można dodawać informacje o potrzebnej pomocy dla zwierząt —
-					swoich lub tych, o których słyszeliście.
-				</li>
-			</ul>
+			<Banner
+				image="/about-us-banner.jpg"
+				title={"Tytuł"}
+				text={"lorem ipsum"}
+				ctaLabel={"Dołącz do nas!"}
+				ctaLink="/"
+			/>
+			<section className="first-section">
+				<div className="left-side">
+					<h2 className="left-title">O nas</h2>
+					<div className="about-text">
+						<p>
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem
+							possimus iste ad facilis neque expedita. Ad magni veniam
+							cupiditate quos.
+						</p>
+						<p>
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem
+							possimus iste ad facilis neque expedita. Ad magni veniam
+							cupiditate quos.
+						</p>
+						<p>
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem
+							possimus iste ad facilis neque expedita. Ad magni veniam
+							cupiditate quos.
+						</p>
+					</div>
+				</div>
+				<div className="right-side">
+					<img src="/elepepe-photo.jpg" alt="zdjecie szczura o nas" />
+				</div>
+			</section>
 		</main>
 	);
 }
 
 export default AboutPage;
+
+// 2. Pod banerem nagłówek O nas
+
+// 3. Pod nagłówkiem tekst i obok zdjęcie
+
+// 4. Sekcja zobacz komu pomogliśmy + przycisk do /success-stories
+
+// 5. Sekcja więcej o nas z 2 kafelkami - 1 odnośnik na współpraca, 2 odnośnik na kontakt
+
+// Sekcje mogą mieć naprzemienne kolory. Komponent Baner masz zrobiony i jest do wykorzystania
