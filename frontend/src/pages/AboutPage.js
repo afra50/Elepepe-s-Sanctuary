@@ -30,19 +30,15 @@ function AboutPage() {
 						</p>
 					</div>
 				</div>
-				<div className="right-side">
-					<img src="/elepepe-photo.jpg" alt="zdjecie szczura o nas" />
-				</div>
+				<div
+					className="right-side right-img"
+					style={{ backgroundImage: "url('/elepepe-photo.jpg')" }}></div>
 			</section>
 		</main>
 	);
 }
 
 export default AboutPage;
-
-// 2. Pod banerem nagłówek O nas
-
-// 3. Pod nagłówkiem tekst i obok zdjęcie
 
 // 4. Sekcja zobacz komu pomogliśmy + przycisk do /success-stories
 

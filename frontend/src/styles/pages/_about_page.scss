@@ -3,14 +3,16 @@
 	.first-section {
 		max-width: 1200px;
 		display: flex;
-		padding: 4rem 0;
+		padding-inline: clamp(1rem, 3vw, 2rem);
+		padding-block: 5rem;
 		margin: 0 auto;
 		flex-wrap: wrap;
-		justify-content: space-evenly;
+		gap: 3rem;
 
 		.left-side {
 			width: 40%;
 			color: $color-secondary;
+			flex: 1;
 
 			.left-title {
 				margin-bottom: 2rem;
@@ -23,11 +25,51 @@
 		}
 
 		.right-side {
-			width: 40%;
+			flex: 1;
+			background-position: center;
+			background-size: cover;
+			background-repeat: no-repeat;
+			width: 100%;
+			height: 350px;
+			border-radius: 1rem;
+			transform: rotate(3deg);
+			box-shadow: $shadow-bg;
+			transition: transform 0.3s ease;
+			&:hover {
+				transform: rotate(0deg);
+			}
+		}
+	}
+}
 
-			img {
+@media (max-width: 992px) {
+	.page-about {
+		.first-section {
+			flex-direction: column;
+			gap: 2rem;
+			text-align: center;
+			align-items: center;
+			.left-side {
+				flex: auto;
+				width: 80%;
+			}
+
+			.right-side {
 				width: 100%;
-				border-radius: 2rem;
+				max-width: 500px;
+				flex: auto;
+				height: 300px;
+				transform: none;
+			}
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	.page-about {
+		.first-section {
+			.left-side {
+				width: 100%;
 			}
 		}
 	}
