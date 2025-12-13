@@ -1,4 +1,5 @@
 import Banner from "../components/Banner";
+import Button from "../components/ui/Button";
 function AboutPage() {
 	return (
 		<main className="page-about">
@@ -33,6 +34,35 @@ function AboutPage() {
 				<div
 					className="right-side right-img"
 					style={{ backgroundImage: "url('/elepepe-photo.jpg')" }}></div>
+			</section>
+
+			<section className="second-section color">
+				<div className="right-side-second">
+					<h2 className="right-title-second">
+						To nie jest tylko historia. To realna pomoc.
+					</h2>
+					<div className="right-text-second">
+						<p>
+							Od chwili powstania fundacji nasza codzienność to konkretne
+							działania: ratowanie, leczenie i opieka nad szczurami, które
+							znalazły się w trudnej sytuacji. Trafiają do nas zwierzęta chore,
+							porzucone, odebrane z nieodpowiednich warunków lub takie, którym
+							nikt wcześniej nie dał szansy. Każdy przypadek to osobna historia,
+							inne potrzeby i często długa droga do zdrowia. Zapewniamy opiekę
+							weterynaryjną, bezpieczne warunki, rehabilitację i gdy to możliwe
+							nowy, odpowiedzialny dom. Działamy spokojnie, uważnie i z myślą o
+							dobru zwierząt, a nie o statystykach. Efekty tej pracy widać
+							najlepiej w historiach szczurów, którym udało się pomóc- tych,
+							którzy odzyskali zdrowie, zaufanie i szansę na normalne życie.
+						</p>
+					</div>
+				</div>
+				<div
+					className="left-img-second"
+					style={{ backgroundImage: "url(/1-sample.jpg)" }}></div>
+				<Button variant="primary" size="lg" className="succes-stories">
+					lalala
+				</Button>
 			</section>
 		</main>
 	);
