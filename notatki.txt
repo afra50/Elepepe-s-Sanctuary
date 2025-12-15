@@ -18,10 +18,12 @@ ADMIN
 1. Requests
     - wydzielic modal ze szczegolami do komponentu osobnego
     - nie zamykac modala po kliknieciu poza niego,
-    - co ze zmiana statusu po zatwierdzeniu w request?
+    - po zatwierdzeniu request brak mozlwiosci zmiany statusu u admina (mozwliowsc edycji tylko zbiorki)
     - walidacja na froncie poprawic dokladnie
     - wywalic style inline do scss
-    - zdjecia nie zapisuja sie na dysk, zapisuja sie tylko nowo dodane
+    - zdjecia dodane przed admina powinny rodzielic sie na documents i photos w zaleznosci w ktorym miejscu je dodal (documents moga byc jako jpg itp)
+    - oryginalna nazwa pliku powinna sie zapisac
+
 
 BACKEND
 - Joi do walidacji requestów

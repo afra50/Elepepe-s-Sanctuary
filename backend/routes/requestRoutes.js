@@ -13,8 +13,10 @@ const uploadRequestFields = upload.fields([
 ]);
 
 // Konfiguracja Multera dla TWORZENIA PROJEKTU (admin)
-// React wysyła wszystko pod kluczem 'newFiles'
-const uploadProjectFields = upload.array("newFiles", 20);
+const uploadProjectFields = upload.fields([
+  { name: "newPhotos", maxCount: 10 },
+  { name: "newDocuments", maxCount: 10 },
+]);
 
 // === TRASY PUBLICZNE ===
 
@@ -34,7 +36,7 @@ router.patch(
   "/:id/status",
   auth,
   adminOnly,
-  uploadProjectFields, // <--- DODANO MIDDLEWARE OBSŁUGUJĄCY PLIKI
+  uploadProjectFields, // Teraz Multer szuka pól 'newPhotos' i 'newDocuments'
   requestController.updateRequestStatus
 );
 

@@ -243,12 +243,33 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
         selectedFileIds,
         coverSelection: finalCoverId,
       };
+
+      // JSON leci jako string w polu tekstowym
       data.append("projectData", JSON.stringify(projectPayload));
 
-      newPhotos.forEach((p) => data.append("newFiles", p.file, p.id));
-      newDocuments.forEach((d) => data.append("newFiles", d.file, d.id));
+      // --- DODAWANIE ZDJĘĆ Z HACKIEM NA NAZWĘ (ID + rozszerzenie) ---
+      newPhotos.forEach((p) => {
+        // Wyciągamy rozszerzenie z oryginalnego pliku (np. "jpg")
+        const extension = p.file.name.split(".").pop();
+        // Tworzymy nazwę: ID_z_frontu.rozszerzenie (np. "x7z9q2w.jpg")
+        const fileNameToSend = `${p.id}.${extension}`;
 
-      await api.patch(`/requests/${request.id}/status`, data);
+        // Klucz "newPhotos" musi pasować do routera upload.fields([{ name: 'newPhotos' }])
+        data.append("newPhotos", p.file, fileNameToSend);
+      });
+
+      // --- DODAWANIE DOKUMENTÓW ---
+      newDocuments.forEach((d) => {
+        const extension = d.file.name.split(".").pop();
+        const fileNameToSend = `${d.id}.${extension}`;
+
+        // Klucz "newDocuments" musi pasować do routera
+        data.append("newDocuments", d.file, fileNameToSend);
+      });
+
+      await api.patch(`/requests/${request.id}/status`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       onSuccess();
       onClose();
