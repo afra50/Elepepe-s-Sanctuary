@@ -35,6 +35,55 @@
       "payoutData": "Dane do przelewu"
     }
   },
+  "projects": {
+    "createTitle": "Kreator Zbiórki",
+    "createSubtitle": "Zweryfikuj dane i dodaj tłumaczenia przed utworzeniem zbiórki. Zgłoszenie zostanie automatycznie zatwierdzone.",
+    "sections": {
+      "basicData": "Dane Podstawowe",
+      "configuration": "Konfiguracja Zbiórki",
+      "content": "Treści i Tłumaczenia",
+      "finance": "Finanse i Termin",
+      "applicantData": "Dane Wnioskodawcy",
+      "media": "Zdjęcia i Dokumenty"
+    },
+    "fields": {
+      "animalName": "Imię zwierzaka",
+      "species": "Gatunek",
+      "speciesOther": "Gatunek (Inne - Nazwa)",
+      "animalsCount": "Liczba zwierząt",
+      "city": "Miasto",
+      "slug": "Link (Slug)",
+      "slugHint": "https://elepepes-sanctuary.org/projects/{{slug}}",
+      "isUrgent": "Oznacz jako PILNE",
+      "status": "Status początkowy",
+      "statusOptions": {
+        "draft": "Szkic (Niepubliczna)",
+        "active": "Aktywna (Publiczna)"
+      },
+      "title": "Tytuł zbiórki",
+      "titlePlaceholder": "Np. Pomoc dla...",
+      "description": "Opis",
+      "country": "Kraj",
+      "age": "Wiek",
+      "amountTarget": "Kwota Docelowa",
+      "deadline": "Termin (Deadline)",
+      "amountCollected": "Zebrano (Startowo)"
+    },
+    "alerts": {
+      "titleRequired": "Tytuł jest wymagany!",
+      "noCoverPhoto": "Nie wybrano zdjęcia głównego. Czy kontynuować bez okładki?",
+      "noPhotos": "Brak zdjęć w zgłoszeniu."
+    },
+    "errors": {
+      "animalNameRequired": "Imię zwierzaka jest wymagane.",
+      "fullNameRequired": "Imię i nazwisko wnioskodawcy jest wymagane.",
+      "slugRequired": "Slug jest wymagany.",
+      "amountTargetPositive": "Kwota docelowa musi być większa od 0.",
+      "deadlineRequired": "Termin (Deadline) jest wymagany.",
+      "fieldRequiredInLang": "Pole \"{{field}}\" jest wymagane w języku {{lang}}.",
+      "speciesOtherRequiredInLang": "Pole \"{{field}}\" (Gatunek - Inne) jest wymagane w języku {{lang}}."
+    }
+  },
   "partnerships": {
     "subtitle": "Zarządzaj partnerami wspierającymi Elepepe’s Sanctuary – informacje o nich pojawią się na stronie.",
     "current": "Aktualni partnerzy",
@@ -133,7 +182,8 @@
     "confirmReject": "Czy na pewno chcesz odrzucić ten wniosek?",
     "confirmPending": "Czy chcesz przywrócić ten wniosek do oczekujących?",
     "successMessage": "Status został pomyślnie zaktualizowany.",
-    "errorMessage": "Wystąpił błąd podczas zmiany statusu."
+    "errorMessage": "Wystąpił błąd podczas zmiany statusu.",
+    "projectCreatedSuccess": "Zbiórka została utworzona!"
   },
   "actions": {
     "filter": "Filtry",
@@ -145,7 +195,11 @@
     "reject": "Odrzuć",
     "yes": "Tak",
     "cancel": "Anuluj",
-    "no": "Nie"
+    "no": "Nie",
+    "createProject": "Utwórz Zbiórkę",
+    "addFiles": "Dodaj pliki",
+    "addPhotos": "Dodaj zdjęcia",
+    "addDocuments": "Dodaj dokumenty"
   },
   "common": {
     "years": "lat",
