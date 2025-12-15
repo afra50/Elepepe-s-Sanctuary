@@ -23,6 +23,7 @@ import ConfirmDialog from "../../components/ui/ConfirmDialog";
 
 // Importy logiki/danych
 import RequestCard from "../../components/admin/RequestCard";
+import CreateProjectModal from "../../components/admin/CreateProjectModal";
 import api from "../../utils/api";
 import { formatDate } from "../../utils/dateUtils";
 
@@ -72,6 +73,8 @@ const AdminRequests = () => {
     variant: "info",
     targetStatus: null,
   });
+
+  const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
 
   // --- 1. POBIERANIE LISTY ---
   const fetchRequests = useCallback(async () => {
@@ -195,8 +198,26 @@ const AdminRequests = () => {
     setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
   };
 
-  // Pomocnicze handlery podpinane pod przyciski
-  const handleApprove = () => requestStatusChange("approved");
+  const handleApprove = () => {
+    // Zamiast ConfirmDialog, otwieramy kreator zbiórki
+    setIsCreateProjectOpen(true);
+    // (Możesz zamknąć modal szczegółów, jeśli chcesz, ale lepiej zostawić otwarty "pod spodem" lub zamknąć go)
+    // Tutaj decydujesz: czy kreator jest "na wierzchu" szczegółów?
+    // Jeśli tak, to użyj Portalu w CreateProjectModal (jest w kodzie Modala).
+  };
+
+  const handleProjectCreatedSuccess = () => {
+    // Ta funkcja wykona się po sukcesie w modalu
+    setAlert({
+      variant: "success",
+      message:
+        t("status.projectCreatedSuccess") || "Zbiórka została utworzona!",
+    });
+    fetchRequests(); // Odśwież listę
+    handleCloseDetails(); // Zamknij modal szczegółów
+    // CreateProjectModal zamknie się sam w swoim kodzie (onClose)
+  };
+
   const handleReject = () => requestStatusChange("rejected");
   const handlePending = () => requestStatusChange("pending");
 
@@ -500,6 +521,13 @@ const AdminRequests = () => {
           </div>
         )}
       </div>
+
+      <CreateProjectModal
+        isOpen={isCreateProjectOpen}
+        onClose={() => setIsCreateProjectOpen(false)}
+        request={requestDetails || selectedRequest} // Fallback to list data if details aren't loaded
+        onSuccess={handleProjectCreatedSuccess}
+      />
 
       {/* MODAL ZE SZCZEGÓŁAMI */}
       <Modal

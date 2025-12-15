@@ -17,7 +17,7 @@
     "donationsDesc": "Historial completo de donaciones. Explora y busca transacciones.",
     "foundationSupportDesc": "Registro de aportaciones propias de la fundación a las recaudaciones.",
     "payoutsDesc": "Registro de transferencias salientes a los beneficiarios.",
-    "partnershipsDesc": "Gestionar socios y organizaciones que apoyan Elepepe’s Sanctuary"
+    "partnershipsDesc": "Gestionar socios y organizaciones que apoyan Elepepe's Sanctuary"
   },
   "requests": {
     "subtitle": "Gestionar solicitudes de apoyo entrantes",
@@ -35,24 +35,73 @@
       "payoutData": "Información de pago"
     }
   },
+  "projects": {
+    "createTitle": "Creador de Recaudación",
+    "createSubtitle": "Verifica los datos y añade traducciones antes de crear la recaudación. La solicitud se aprobará automáticamente.",
+    "sections": {
+      "basicData": "Datos Básicos",
+      "configuration": "Configuración de la Recaudación",
+      "content": "Contenido y Traducciones",
+      "finance": "Finanzas y Plazo",
+      "applicantData": "Datos del solicitante",
+      "media": "Fotos y Documentos"
+    },
+    "fields": {
+      "animalName": "Nombre de la mascota",
+      "species": "Especie",
+      "speciesOther": "Especie (Otra - Nombre)",
+      "animalsCount": "Número de animales",
+      "city": "Ciudad",
+      "slug": "Enlace (Slug)",
+      "slugHint": "https://elepepes-sanctuary.org/projects/{{slug}}",
+      "isUrgent": "Marcar como URGENTE",
+      "status": "Estado inicial",
+      "statusOptions": {
+        "draft": "Borrador (No público)",
+        "active": "Activa (Pública)"
+      },
+      "title": "Título de la recaudación",
+      "titlePlaceholder": "p.ej. Ayuda para...",
+      "description": "Descripción",
+      "country": "País",
+      "age": "Edad",
+      "amountTarget": "Importe Objetivo",
+      "deadline": "Fecha límite",
+      "amountCollected": "Recaudado (Inicial)"
+    },
+    "alerts": {
+      "titleRequired": "¡El título es obligatorio!",
+      "noCoverPhoto": "No se ha seleccionado foto principal. ¿Continuar sin portada?",
+      "noPhotos": "No hay fotos en la solicitud."
+    },
+    "errors": {
+      "animalNameRequired": "El nombre del animal es obligatorio.",
+      "fullNameRequired": "El nombre completo del solicitante es obligatorio.",
+      "slugRequired": "El slug es obligatorio.",
+      "amountTargetPositive": "El importe objetivo debe ser mayor que 0.",
+      "deadlineRequired": "La fecha límite es obligatoria.",
+      "fieldRequiredInLang": "El campo \"{{field}}\" es obligatorio en {{lang}}.",
+      "speciesOtherRequiredInLang": "El campo \"{{field}}\" (Especie - Otro) es obligatorio en {{lang}}."
+    }
+  },
   "partnerships": {
     "subtitle": "Gestionar los socios que apoyan Elepepe's Sanctuary: la información sobre ellos aparecerá en el sitio web.",
     "current": "Socios actuales",
     "countLabel": "socios",
     "empty": "Aún no se ha añadido ningún socio. Haz clic en \"Añadir socio\" para agregar el primero.",
     "loading": "Cargando socios...",
-    "fetchError": "Error al recuperar la lista de socios.",
-    "fetchErrorTitle": "Algo salió mal al cargar socios",
+    "fetchError": "Error al cargar la lista de socios.",
+    "fetchErrorTitle": "Algo salió mal al cargar los socios",
     "deleteError": "No se pudo eliminar al socio. Inténtalo de nuevo.",
     "confirmDelete": "¿Seguro que deseas eliminar a este socio?",
     "confirmDeleteNamed": "¿Seguro que deseas eliminar al socio \"{{name}}\"?",
     "alerts": {
-      "createSuccess": "Se ha añadido un nuevo socio.",
-      "updateSuccess": "Los datos del socio se han actualizado.",
-      "deleteSuccess": "El socio se ha eliminado correctamente.",
+      "createSuccess": "Nuevo socio añadido.",
+      "updateSuccess": "Datos del socio actualizados.",
+      "deleteSuccess": "Socio eliminado correctamente.",
       "deleteError": "No se pudo eliminar al socio. Inténtalo de nuevo.",
-      "saveError": "No se pudo guardar al socio. Inténtalo de nuevo.",
-      "validationError": "El formulario del socio contiene errores. Revisa los campos e inténtalo de nuevo."
+      "saveError": "No se pudo guardar el socio. Inténtalo de nuevo.",
+      "validationError": "El formulario contiene errores. Revisa los campos e inténtalo de nuevo."
     },
     "buttons": {
       "addNew": "Añadir socio",
@@ -70,9 +119,9 @@
       "namePl": "Nombre del socio (PL)",
       "nameEn": "Nombre del socio (EN)",
       "nameEs": "Nombre del socio (ES)",
-      "descriptionPl": "Breve descripción de la colaboración (PL)",
-      "descriptionEn": "Breve descripción de la colaboración (EN)",
-      "descriptionEs": "Breve descripción de la colaboración (ES)",
+      "descriptionPl": "Descripción corta (PL)",
+      "descriptionEn": "Descripción corta (EN)",
+      "descriptionEs": "Descripción corta (ES)",
       "countryPl": "País (PL)",
       "countryEn": "País (EN)",
       "countryEs": "País (ES)",
@@ -80,49 +129,49 @@
     },
     "placeholders": {
       "namePl": "p.ej. Fundacja Ogonki",
-      "nameEn": "e.g. Rat Rescue Europe",
+      "nameEn": "p.ej. Rat Rescue Europe",
       "nameEs": "p.ej. Clinica Veterinaria Amigos",
-      "descriptionPl": "P.ej. Financia cirugías que salvan la vida de nuestros protegidos.",
-      "descriptionEn": "Short description of the cooperation (in English).",
+      "descriptionPl": "p.ej. Financia operaciones que salvan vidas.",
+      "descriptionEn": "Descripción corta de la cooperación (en inglés).",
       "descriptionEs": "Descripción corta de la cooperación (en español).",
-      "countryPl": "p.ej. Polska",
-      "countryEn": "e.g. Germany",
+      "countryPl": "p.ej. Polonia",
+      "countryEn": "p.ej. Alemania",
       "countryEs": "p.ej. España",
       "logo": "Ningún archivo seleccionado"
     },
     "hints": {
-      "logo": "Preferiblemente un logo cuadrado en formato PNG, JPG o SVG (máx. 5 MB)."
+      "logo": "Mejor: logo cuadrado en formato PNG, JPG o SVG (máx. 5 MB)."
     },
     "errors": {
       "namePlRequired": "Introduce el nombre del socio en polaco.",
-      "namePlMin": "El nombre del socio (PL) debe tener al menos {{min}} caracteres.",
-      "namePlMax": "El nombre del socio (PL) puede tener como máximo {{max}} caracteres.",
-      "descriptionPlRequired": "Introduce una breve descripción de la colaboración en polaco.",
-      "descriptionPlMin": "La descripción de la colaboración (PL) debe tener al menos {{min}} caracteres.",
-      "descriptionPlMax": "La descripción de la colaboración (PL) puede tener como máximo {{max}} caracteres.",
+      "namePlMin": "El nombre (PL) debe tener al menos {{min}} caracteres.",
+      "namePlMax": "El nombre (PL) no puede superar {{max}} caracteres.",
+      "descriptionPlRequired": "Introduce una descripción corta en polaco.",
+      "descriptionPlMin": "La descripción (PL) debe tener al menos {{min}} caracteres.",
+      "descriptionPlMax": "La descripción (PL) no puede superar {{max}} caracteres.",
       "countryPlRequired": "Introduce el país en polaco.",
       "countryPlMin": "El país (PL) debe tener al menos {{min}} caracteres.",
-      "countryPlMax": "El país (PL) puede tener como máximo {{max}} caracteres.",
+      "countryPlMax": "El país (PL) no puede superar {{max}} caracteres.",
       "nameEnRequired": "Introduce el nombre del socio en inglés.",
-      "nameEnMin": "El nombre del socio (EN) debe tener al menos {{min}} caracteres.",
-      "nameEnMax": "El nombre del socio (EN) puede tener como máximo {{max}} caracteres.",
-      "descriptionEnRequired": "Introduce una breve descripción de la colaboración en inglés.",
-      "descriptionEnMin": "La descripción de la colaboración (EN) debe tener al menos {{min}} caracteres.",
-      "descriptionEnMax": "La descripción de la colaboración (EN) puede tener como máximo {{max}} caracteres.",
+      "nameEnMin": "El nombre (EN) debe tener al menos {{min}} caracteres.",
+      "nameEnMax": "El nombre (EN) no puede superar {{max}} caracteres.",
+      "descriptionEnRequired": "Introduce una descripción corta en inglés.",
+      "descriptionEnMin": "La descripción (EN) debe tener al menos {{min}} caracteres.",
+      "descriptionEnMax": "La descripción (EN) no puede superar {{max}} caracteres.",
       "countryEnRequired": "Introduce el país en inglés.",
       "countryEnMin": "El país (EN) debe tener al menos {{min}} caracteres.",
-      "countryEnMax": "El país (EN) puede tener como máximo {{max}} caracteres.",
+      "countryEnMax": "El país (EN) no puede superar {{max}} caracteres.",
       "nameEsRequired": "Introduce el nombre del socio en español.",
-      "nameEsMin": "El nombre del socio (ES) debe tener al menos {{min}} caracteres.",
-      "nameEsMax": "El nombre del socio (ES) puede tener como máximo {{max}} caracteres.",
-      "descriptionEsRequired": "Introduce una breve descripción de la colaboración en español.",
-      "descriptionEsMin": "La descripción de la colaboración (ES) debe tener al menos {{min}} caracteres.",
-      "descriptionEsMax": "La descripción de la colaboración (ES) puede tener como máximo {{max}} caracteres.",
+      "nameEsMin": "El nombre (ES) debe tener al menos {{min}} caracteres.",
+      "nameEsMax": "El nombre (ES) no puede superar {{max}} caracteres.",
+      "descriptionEsRequired": "Introduce una descripción corta en español.",
+      "descriptionEsMin": "La descripción (ES) debe tener al menos {{min}} caracteres.",
+      "descriptionEsMax": "La descripción (ES) no puede superar {{max}} caracteres.",
       "countryEsRequired": "Introduce el país en español.",
       "countryEsMin": "El país (ES) debe tener al menos {{min}} caracteres.",
-      "countryEsMax": "El país (ES) puede tener como máximo {{max}} caracteres.",
+      "countryEsMax": "El país (ES) no puede superar {{max}} caracteres.",
       "logoType": "El logo debe ser un archivo de imagen.",
-      "logoSize": "El logo es demasiado grande (máximo 5 MB)."
+      "logoSize": "El logo es demasiado grande (máx. 5 MB)."
     }
   },
   "status": {
@@ -133,7 +182,8 @@
     "confirmReject": "¿Estás seguro de que deseas rechazar esta solicitud?",
     "confirmPending": "¿Deseas devolver esta solicitud a pendientes?",
     "successMessage": "El estado se ha actualizado correctamente.",
-    "errorMessage": "Ocurrió un error al actualizar el estado."
+    "errorMessage": "Ocurrió un error al actualizar el estado.",
+    "projectCreatedSuccess": "¡Recaudación creada con éxito!"
   },
   "actions": {
     "filter": "Filtros",
@@ -145,7 +195,11 @@
     "reject": "Rechazar",
     "yes": "Sí",
     "cancel": "Cancelar",
-    "no": "No"
+    "no": "No",
+    "createProject": "Crear Recaudación",
+    "addFiles": "Añadir archivos",
+    "addPhotos": "Añadir fotos",
+    "addDocuments": "Añadir documentos"
   },
   "common": {
     "years": "años",
@@ -155,9 +209,16 @@
   },
   "form": {
     "sections": {
-      "animal": "Mascota"
+      "animal": "Mascota",
+      "payoutData": "Información de pago",
+      "requestDetails": "Detalles de la solicitud",
+      "attachments": "Archivos adjuntos",
+      "applicantData": "Datos del solicitante"
     },
     "fields": {
+      "sentDate": "Fecha de envío",
+      "submissionLanguage": "Idioma",
+      "otherHelp": "Otra ayuda (descripción)",
       "fullName": "Nombre / Nombre de la organización",
       "contact": "Contacto",
       "location": "Ubicación",
@@ -174,9 +235,6 @@
       "iban": "IBAN",
       "swift": "Código SWIFT/BIC",
       "address": "Dirección",
-      "sentDate": "Fecha de envío",
-      "submissionLanguage": "Idioma",
-      "otherHelp": "Otra ayuda (descripción)",
       "amount": "Importe solicitado",
       "deadline": "Fecha límite",
       "amountType": {
