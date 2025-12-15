@@ -1,9 +1,19 @@
 - paginacja
 - min vh sprawdzic 
 - dodac wszedzie error state
+- wesprzyj na zbiórkach ma coś robić
 
 HOME
-- karuzela na najpilniejszych zbiorkach
+- karuzela na najpilniejszych zbiorkach, a jak nie ma to zwykłe
+
+AKTYWNE ZBIÓRKI
+- paginacja
+- tłumaczenia
+- filtry + wyszukiwarka
+- Loader
+- Error State
+- podpiąć backend
+- najpilniejsze na początku, potem reszta
 
 KONTAKT
 - loader

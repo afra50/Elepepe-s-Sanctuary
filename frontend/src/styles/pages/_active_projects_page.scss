@@ -1,0 +1,71 @@
+.active-projects-page {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background-color: rgba($color-background, 0.35);
+}
+
+.active-projects-header {
+  max-width: 720px;
+  margin-bottom: 2.5rem;
+  h1 {
+    font-family: $font-heading;
+    font-size: clamp(1.9rem, 3vw, 2.4rem);
+    color: $color-secondary;
+  }
+  p {
+    margin-top: 0.75rem;
+    color: $secondary-muted;
+    line-height: 1.6;
+  }
+}
+
+.active-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+/* === OZNACZENIE PILNEJ ZBIÓRKI === */
+.active-project-wrapper.is-urgent {
+  position: relative;
+
+  &::before {
+    content: "PILNE";
+    position: absolute;
+    top: 0.9rem;
+    left: 0.9rem;
+    z-index: 3;
+
+    font-family: $font-accent;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+
+    background-color: $color-error;
+    color: $color-white;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+
+    transform: rotate(-2deg);
+    box-shadow: $shadow-sm;
+  }
+
+  .fundraiser-card {
+    border: 2px solid rgba($color-error, 0.5);
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(
+        90deg,
+        $color-error,
+        lighten($color-error, 12%)
+      );
+    }
+  }
+}
