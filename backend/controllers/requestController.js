@@ -319,7 +319,7 @@ const updateRequestStatus = async (req, res) => {
     }
   }
 
-  // 2. Walidacja statusu
+  // 2. Walidacja statusu (bez zmian)
   const allowedStatuses = ["pending", "approved", "rejected"];
   if (!status || !allowedStatuses.includes(status)) {
     connection.release();
@@ -353,14 +353,7 @@ const updateRequestStatus = async (req, res) => {
         });
       }
 
-      // 4. Tworzenie Projektu
-      const lang = requestData.submission_language;
-      const makeDefaultJson = (c) => ({
-        pl: lang === "pl" ? c : "",
-        en: lang === "en" ? c : "",
-        es: lang === "es" ? c : "",
-      });
-
+      // 4. Tworzenie Projektu (bez zmian)
       const newProjectData = {
         requestId: requestData.id,
         applicantType: validatedProject.applicantType,
@@ -393,26 +386,23 @@ const updateRequestStatus = async (req, res) => {
       const filesToInsert = [];
       let coverSet = false;
 
-      // A. KOPIOWANIE ISTNIEJĄCYCH PLIKÓW (z bazy)
+      // ==================================================
+      // A. STARE PLIKI (Z Requesta) - (bez zmian)
+      // ==================================================
       const requestFiles = await RequestModel.getFilesByRequestId(
         connection,
         id
       );
-
-      // Upewniamy się, że selectedFileIds to tablica liczb (lub stringów, zależnie od bazy, ale bezpieczniej rzutować na String do porównania)
       const selectedFileIds = (validatedProject.selectedFileIds || []).map(
         String
       );
 
       if (requestFiles.length > 0) {
-        // Filtrujemy, rzutując ID pliku na String dla pewności porównania
         const filesToProcess = requestFiles.filter((f) =>
           selectedFileIds.includes(String(f.id))
         );
-
         for (const file of filesToProcess) {
           let isCover = 0;
-          // Sprawdzamy okładkę (też bezpieczne porównanie ID)
           if (
             validatedProject.coverSelection?.type === "existing" &&
             String(validatedProject.coverSelection.id) === String(file.id)
@@ -420,10 +410,9 @@ const updateRequestStatus = async (req, res) => {
             isCover = 1;
             coverSet = true;
           }
-
           filesToInsert.push([
             newProjectId,
-            file.file_path, // Kopiujemy ścieżkę do starego pliku
+            file.file_path,
             file.file_type,
             file.original_name,
             isCover,
@@ -431,71 +420,89 @@ const updateRequestStatus = async (req, res) => {
         }
       }
 
-      // B. ZAPISYWANIE NOWYCH PLIKÓW (Upload)
-      if (req.files && req.files.length > 0) {
-        const projectUploadDir = path.join(
-          __dirname,
-          "..",
-          "uploads",
-          "projects",
-          String(newProjectId)
-        );
-        await fs.mkdir(projectUploadDir, { recursive: true });
+      // ==================================================
+      // B. NOWE PLIKI (Upload) - ZMODYFIKOWANE
+      // ==================================================
+      // Teraz req.files to obiekt { newPhotos: [], newDocuments: [] }
+      if (req.files) {
+        // Łączymy obie tablice w jedną listę do przetworzenia
+        const newPhotos = req.files["newPhotos"] || [];
+        const newDocuments = req.files["newDocuments"] || [];
+        const allNewFiles = [...newPhotos, ...newDocuments];
 
-        for (const file of req.files) {
-          const tempId = file.originalname; // Front wysyła ID jako nazwę pliku
+        if (allNewFiles.length > 0) {
+          const projectUploadDir = path.join(
+            process.cwd(),
+            "uploads",
+            "projects",
+            String(newProjectId)
+          );
+          await fs.mkdir(projectUploadDir, { recursive: true });
 
-          let isCover = 0;
-          if (
-            validatedProject.coverSelection?.type === "new" &&
-            validatedProject.coverSelection.id === tempId
-          ) {
-            isCover = 1;
-            coverSet = true;
+          for (const file of allNewFiles) {
+            // ODZYSKIWANIE ID: Nazwa pliku to np. "abc12345.jpg".
+            // Bierzemy wszystko przed ostatnią kropką jako tempId.
+            const tempId =
+              file.originalname.substring(
+                0,
+                file.originalname.lastIndexOf(".")
+              ) || file.originalname;
+
+            let isCover = 0;
+            // Sprawdzamy czy to ten plik ma być okładką (porównujemy ID z frontu z nazwą pliku)
+            if (
+              validatedProject.coverSelection?.type === "new" &&
+              validatedProject.coverSelection.id === tempId
+            ) {
+              isCover = 1;
+              coverSet = true;
+            }
+
+            const isImage = file.mimetype.startsWith("image/");
+            let extension = "";
+
+            if (isImage) {
+              extension = ".webp";
+            } else {
+              if (file.mimetype === "application/pdf") extension = ".pdf";
+              else if (file.mimetype.includes("word")) extension = ".docx";
+              else if (file.mimetype.includes("text")) extension = ".txt";
+              else extension = path.extname(file.originalname) || ".bin";
+            }
+
+            const uniqueName = `${uuidv4()}${extension}`;
+
+            // Fizyczny zapis
+            if (isImage) {
+              await sharp(file.buffer)
+                .resize({ width: 1200, withoutEnlargement: true })
+                .webp({ quality: 80 })
+                .toFile(path.join(projectUploadDir, uniqueName));
+            } else {
+              await fs.writeFile(
+                path.join(projectUploadDir, uniqueName),
+                file.buffer
+              );
+            }
+
+            const relativePath = `/uploads/projects/${newProjectId}/${uniqueName}`;
+
+            // UWAGA: Jako original_name zapisujemy "New File" lub ewentualnie prawdziwą nazwę,
+            // jeśli przekażesz ją w inny sposób. Tutaj file.originalname to ID.
+            // Możemy ewentualnie zostawić samo ID, żeby user wiedział co to.
+            filesToInsert.push([
+              newProjectId,
+              relativePath,
+              isImage ? "photo" : "document",
+              "Uploaded File", // lub file.originalname jeśli chcesz zachować ID w nazwie w panelu
+              isCover,
+            ]);
           }
-
-          const isImage = file.mimetype.startsWith("image/");
-
-          // Ustalanie rozszerzenia
-          let extension = "";
-          if (isImage) {
-            extension = ".webp";
-          } else {
-            if (file.mimetype === "application/pdf") extension = ".pdf";
-            else if (file.mimetype.includes("word")) extension = ".docx";
-            else if (file.mimetype.includes("text")) extension = ".txt";
-            else extension = ".bin";
-          }
-
-          const uniqueName = `${uuidv4()}${extension}`;
-
-          // Fizyczny zapis
-          if (isImage) {
-            await sharp(file.buffer)
-              .resize({ width: 1200, withoutEnlargement: true })
-              .webp({ quality: 80 })
-              .toFile(path.join(projectUploadDir, uniqueName));
-          } else {
-            await fs.writeFile(
-              path.join(projectUploadDir, uniqueName),
-              file.buffer
-            );
-          }
-
-          const relativePath = `/uploads/projects/${newProjectId}/${uniqueName}`;
-
-          filesToInsert.push([
-            newProjectId,
-            relativePath,
-            isImage ? "photo" : "document",
-            "New File", // Możesz tu dać np. `file.originalname` jeśli chcesz zachować ID, albo statyczny tekst
-            isCover,
-          ]);
         }
       }
 
-      // C. FALLBACK OKŁADKI
-      if (!coverSet) {
+      // C. FALLBACK OKŁADKI (bez zmian)
+      if (!coverSet && filesToInsert.length > 0) {
         const firstPhotoIndex = filesToInsert.findIndex(
           (f) => f[2] === "photo"
         );
@@ -504,7 +511,7 @@ const updateRequestStatus = async (req, res) => {
         }
       }
 
-      // D. INSERT DO BAZY (Wszystkie pliki na raz)
+      // D. INSERT DO BAZY
       if (filesToInsert.length > 0) {
         await ProjectModel.addProjectFiles(connection, filesToInsert);
       }
@@ -514,23 +521,19 @@ const updateRequestStatus = async (req, res) => {
     const updated = await RequestModel.updateStatus(connection, id, status);
     if (!updated) {
       await connection.rollback();
-      return res
-        .status(404)
-        .json({
-          code: "REQUEST_NOT_FOUND",
-          message: "Request not found during update",
-        });
+      return res.status(404).json({
+        code: "REQUEST_NOT_FOUND",
+        message: "Request not found during update",
+      });
     }
 
     await connection.commit();
-    res
-      .status(200)
-      .json({
-        code: "STATUS_UPDATED",
-        message: `Request status updated to ${status}`,
-        id,
-        newStatus: status,
-      });
+    res.status(200).json({
+      code: "STATUS_UPDATED",
+      message: `Request status updated to ${status}`,
+      id,
+      newStatus: status,
+    });
   } catch (error) {
     await connection.rollback();
     console.error("Error updating request status:", error);
