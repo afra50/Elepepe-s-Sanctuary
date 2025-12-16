@@ -27,11 +27,8 @@ FOOTER
 ADMIN
 1. Requests
     - wydzielic modal ze szczegolami do komponentu osobnego
-    - nie zamykac modala po kliknieciu poza niego,
     - po zatwierdzeniu request brak mozlwiosci zmiany statusu u admina (mozwliowsc edycji tylko zbiorki)
-    - walidacja na froncie poprawic dokladnie
-    - wywalic style inline do scss
-
+    - walidacja createmodal na froncie poprawic dokladnie
 
 BACKEND
 - Joi do walidacji requestów

@@ -1,9 +1,51 @@
+// Plik: _createProjectModal.scss (lub odpowiedni dla Ciebie)
+
+/* --- STYLE DLA PORTALI (Alerts/Confirms) --- */
+/* Muszą być poza .create-project-form, bo renderują się w body */
+.portal-alert-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+}
+
+.portal-confirm-container {
+    position: relative;
+    z-index: 100000;
+}
+
+/* --- GŁÓWNY FORMULARZ --- */
 .create-project-form {
     font-family: $font-body;
     color: #374151;
     padding: 0.5rem 0;
 
-    /* --- GÓRNA BELKA PLIKÓW --- */
+    /* UTILITIES WEWNĘTRZNE */
+    .mb-0 {
+        margin-bottom: 0 !important;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+
+    .mt-0 {
+        margin-top: 0 !important;
+    }
+
+    .mt-4 {
+        margin-top: 1.5rem;
+    }
+
+    .text-muted {
+        color: #6b7280;
+        font-size: 0.85rem;
+    }
+
     .d-flex {
         display: flex;
     }
@@ -14,6 +56,15 @@
 
     .align-items-center {
         align-items: center;
+    }
+
+    /* --- SECTION HEADERS & LABELS --- */
+    .section-label {
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 0;
     }
 
     .btn-upload {
@@ -95,11 +146,37 @@
         }
     }
 
+    /* --- KONFIGURACJA (Szary Box) --- */
+    .configuration-box {
+        background-color: #f9fafb;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+
+        h4 {
+            border: 0;
+            padding: 0;
+            margin: 0;
+            // Nadpisujemy margin-bottom z ogólnego h4
+            margin-bottom: 1.25rem !important;
+        }
+    }
+
     /* --- INPUTY --- */
     .form-group {
         display: flex;
         flex-direction: column;
         gap: 0.35rem;
+
+        // Specjalny układ dla Amount + Currency
+        .amount-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .currency-select {
+            width: 80px;
+        }
 
         .form-label {
             font-size: 0.75rem;
@@ -134,10 +211,23 @@
             }
         }
 
+        .form-input.font-mono {
+            font-family: monospace;
+            font-size: 0.9em;
+            letter-spacing: 0.05em;
+            background-color: #f9fafb;
+            color: #4b5563;
+        }
+
         .form-textarea {
             resize: vertical;
             min-height: 120px;
             line-height: 1.6;
+        }
+
+        .slug-hint {
+            font-size: 0.75rem;
+            color: #6b7280; // text-muted equivalent
         }
     }
 
@@ -146,6 +236,7 @@
         flex-direction: row !important;
         align-items: center;
         gap: 0.5rem;
+        margin: 1.5rem 0;
 
         input[type="checkbox"] {
             width: 1.2rem;
@@ -160,6 +251,11 @@
             cursor: pointer;
             display: flex;
             align-items: center;
+
+            .urgent-icon {
+                display: inline;
+                margin-right: 4px;
+            }
         }
     }
 
@@ -267,6 +363,10 @@
 
     /* --- DOKUMENTY LISTA --- */
     .documents-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
         .document-item {
             display: flex;
             align-items: center;
@@ -274,57 +374,58 @@
             padding: 0.75rem;
             border: 1px solid #e5e7eb;
             border-radius: 6px;
-            background-color: #fff;
+            background-color: #f9fafb;
+            opacity: 0.6;
             transition: all 0.2s;
             cursor: pointer;
+
+            &.selected {
+                background-color: #fff;
+                opacity: 1;
+            }
 
             &.new-file {
                 background-color: #eff6ff;
                 border: 1px dashed #3b82f6;
                 cursor: default;
+                opacity: 1;
             }
 
-            button {
+            .doc-checkbox {
+                width: 1.2em;
+                height: 1.2em;
+                cursor: pointer;
+            }
+
+            .doc-name {
+                flex: 1;
+                font-weight: 500;
+                color: #374151;
+            }
+
+            .doc-icon-wrapper {
+                width: 1.2em;
+                display: flex;
+                justify-content: center;
+            }
+
+            .doc-size-text {
+                font-size: 0.8em;
+                color: #60a5fa;
+            }
+
+            .btn-trash {
                 background: none;
                 border: none;
                 cursor: pointer;
                 padding: 4px;
                 display: flex;
             }
+
+            .empty-docs-msg {
+                font-style: italic;
+                margin: 0;
+            }
         }
-    }
-
-    /* UTILITIES */
-    .mb-0 {
-        margin-bottom: 0 !important;
-    }
-
-    .mb-3 {
-        margin-bottom: 1rem;
-    }
-
-    .mb-4 {
-        margin-bottom: 1.5rem;
-    }
-
-    .mt-0 {
-        margin-top: 0 !important;
-    }
-
-    .mt-4 {
-        margin-top: 1.5rem;
-    }
-
-    .text-muted {
-        color: #6b7280;
-        font-size: 0.85rem;
-    }
-
-    .font-mono {
-        font-family: monospace;
-        font-size: 0.9em;
-        letter-spacing: 0.05em;
-        background-color: #f9fafb;
-        color: #4b5563;
     }
 }

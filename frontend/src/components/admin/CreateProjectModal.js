@@ -6,7 +6,6 @@ import {
   AlertTriangle,
   FileText,
   Download,
-  Plus,
   Upload,
   Trash2,
   Paperclip,
@@ -57,7 +56,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
     description: { pl: "", en: "", es: "" },
     country: { pl: "", en: "", es: "" },
     speciesOther: { pl: "", en: "", es: "" },
-    age: { pl: "", en: "", es: "" }, // Age jest opcjonalny
+    age: { pl: "", en: "", es: "" },
     slug: "",
     isUrgent: false,
     status: "draft",
@@ -66,7 +65,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
     animalName: "",
     animalsCount: 1,
     species: "rat",
-    city: "", // City jest opcjonalne
+    city: "",
     amountTarget: 0,
     amountCollected: 0,
     currency: "EUR",
@@ -220,7 +219,6 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
   };
 
   // --- LOGIKA WYSYŁKI ---
-
   const executeSubmit = async () => {
     setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
     setIsSubmitting(true);
@@ -238,37 +236,30 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
       const data = new FormData();
       data.append("status", "approved");
 
-      // --- NOWE: Tworzymy mapę oryginalnych nazw plików ---
-      // Klucz to ID (które leci w nazwie pliku), Wartość to prawdziwa nazwa (np. "paragon.jpg")
+      // Mapa nazw
       const newFileNamesMap = {};
-
       newPhotos.forEach((p) => {
         newFileNamesMap[p.id] = p.file.name;
       });
       newDocuments.forEach((d) => {
         newFileNamesMap[d.id] = d.file.name;
       });
-      // ----------------------------------------------------
 
       const projectPayload = {
         ...formData,
         selectedFileIds,
         coverSelection: finalCoverId,
-        newFileNames: newFileNamesMap, // Dodajemy mapę do JSONa
+        newFileNames: newFileNamesMap,
       };
 
-      // JSON leci jako string w polu tekstowym
       data.append("projectData", JSON.stringify(projectPayload));
 
-      // --- DODAWANIE ZDJĘĆ (bez zmian logicznych, ale komentarz dla jasności) ---
       newPhotos.forEach((p) => {
         const extension = p.file.name.split(".").pop();
-        // Wysyłamy ID jako nazwę pliku, żeby backend wiedział która to okładka
         const fileNameToSend = `${p.id}.${extension}`;
         data.append("newPhotos", p.file, fileNameToSend);
       });
 
-      // --- DODAWANIE DOKUMENTÓW ---
       newDocuments.forEach((d) => {
         const extension = d.file.name.split(".").pop();
         const fileNameToSend = `${d.id}.${extension}`;
@@ -296,38 +287,26 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
   const handlePreSubmit = () => {
     const showErr = (msg) => setAlert({ variant: "error", message: msg });
 
-    // A. Walidacja Globalna
     if (!formData.animalName.trim())
       return showErr(t("projects.errors.animalNameRequired"));
-
     if (!formData.fullName.trim())
       return showErr(t("projects.errors.fullNameRequired"));
-
     if (!formData.slug.trim())
       return showErr(t("projects.errors.slugRequired"));
-
     if (!formData.amountTarget || formData.amountTarget <= 0)
       return showErr(t("projects.errors.amountTargetPositive"));
-
     if (!formData.deadline)
       return showErr(t("projects.errors.deadlineRequired"));
 
-    // B. Walidacja Tłumaczeń (dla WSZYSTKICH języków)
     const languages = ["pl", "en", "es"];
     const requiredTransFields = ["title", "description", "country"];
 
     for (const lang of languages) {
-      // Helper to get lang label for error message (e.g. "PL", "EN")
       const langLabel = lang.toUpperCase();
-
-      // Sprawdź podstawowe pola (Tytuł, Opis, Kraj)
       for (const field of requiredTransFields) {
         if (!formData[field][lang]?.trim()) {
-          setActiveLang(lang); // Automatycznie przełącz na zakładkę z błędem
-
-          // Pobieramy przetłumaczoną nazwę pola (np. "Tytuł zbiórki")
+          setActiveLang(lang);
           const fieldName = t(`projects.fields.${field}`);
-
           showErr(
             t("projects.errors.fieldRequiredInLang", {
               field: fieldName,
@@ -337,14 +316,10 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
           return;
         }
       }
-
-      // Sprawdź 'speciesOther' tylko jeśli wybrano Inne
       if (formData.species === "other") {
         if (!formData.speciesOther[lang]?.trim()) {
           setActiveLang(lang);
-
           const fieldName = t("projects.fields.speciesOther");
-
           showErr(
             t("projects.errors.speciesOtherRequiredInLang", {
               field: fieldName,
@@ -356,7 +331,6 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
       }
     }
 
-    // C. Walidacja Zdjęć (This translation key already existed in your previous file)
     const hasPhotos =
       request.petPhotos?.some((p) => selectedFileIds.includes(p.id)) ||
       newPhotos.length > 0;
@@ -378,17 +352,10 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
 
   return (
     <>
-      {/* PORTALE */}
+      {/* PORTALE - Style przeniesione do SCSS (klasy .portal-*-container) */}
       {alert &&
         createPortal(
-          <div
-            style={{
-              position: "fixed",
-              top: "20px",
-              right: "20px",
-              zIndex: 99999,
-            }}
-          >
+          <div className="portal-alert-container">
             <Alert
               variant={alert.variant}
               autoClose={5000}
@@ -402,7 +369,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
 
       {confirmDialog.isOpen &&
         createPortal(
-          <div style={{ position: "relative", zIndex: 100000 }}>
+          <div className="portal-confirm-container">
             <ConfirmDialog
               isOpen={confirmDialog.isOpen}
               message={confirmDialog.message}
@@ -424,6 +391,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
         onClose={onClose}
         title={t("projects.createTitle")}
         size="lg"
+        closeOnOverlayClick={false}
         footer={
           <>
             <Button variant="ghost" onClick={onClose} disabled={isSubmitting}>
@@ -545,20 +513,8 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
           </div>
 
           {/* 3. KONFIGURACJA */}
-          <div
-            className="form-section mb-4"
-            style={{
-              backgroundColor: "#f9fafb",
-              padding: "1rem",
-              borderRadius: "8px",
-            }}
-          >
-            <h4
-              className="full-width mb-0 mt-0"
-              style={{ border: 0, padding: 0, margin: 0 }}
-            >
-              {t("projects.sections.configuration")}
-            </h4>
+          <div className="configuration-box">
+            <h4>{t("projects.sections.configuration")}</h4>
             <div className="form-group full-width">
               <label className="form-label">{t("projects.fields.slug")}</label>
               <input
@@ -569,7 +525,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                   setIsSlugManuallyEdited(true);
                 }}
               />
-              <span className="text-muted" style={{ fontSize: "0.75rem" }}>
+              <span className="slug-hint">
                 {t("projects.fields.slugHint", { slug: formData.slug })}
               </span>
             </div>
@@ -582,11 +538,8 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                   handleGlobalChange("isUrgent", e.target.checked)
                 }
               />
-              <label htmlFor="isUrgent" className="form-label mb-0">
-                <AlertTriangle
-                  size={14}
-                  style={{ display: "inline", marginRight: 4 }}
-                />
+              <label htmlFor="isUrgent" className="form-label">
+                <AlertTriangle size={14} className="urgent-icon" />
                 {t("projects.fields.isUrgent")}
               </label>
             </div>
@@ -701,7 +654,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
               <label className="form-label">
                 {t("projects.fields.amountTarget")}
               </label>
-              <div style={{ display: "flex", gap: "0.5rem" }}>
+              <div className="amount-row">
                 <input
                   type="number"
                   className="form-input"
@@ -711,8 +664,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                   }
                 />
                 <select
-                  className="form-input"
-                  style={{ width: "80px" }}
+                  className="form-input currency-select"
                   value={formData.currency}
                   onChange={(e) =>
                     handleGlobalChange("currency", e.target.value)
@@ -754,15 +706,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
 
           {/* --- 6. ZDJĘCIA --- */}
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <label
-              className="form-label mb-0"
-              style={{
-                fontWeight: 700,
-                fontSize: "0.8rem",
-                textTransform: "uppercase",
-                color: "#6b7280",
-              }}
-            >
+            <label className="section-label mb-0">
               {t("form.fields.photos")}
             </label>
             <label className="btn-upload">
@@ -843,15 +787,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
           {/* --- 7. DOKUMENTY --- */}
           <div className="mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <label
-                className="form-label mb-0"
-                style={{
-                  fontWeight: 700,
-                  fontSize: "0.8rem",
-                  textTransform: "uppercase",
-                  color: "#6b7280",
-                }}
-              >
+              <label className="section-label mb-0">
                 {t("form.fields.documents")}
               </label>
               <label className="btn-upload">
@@ -865,49 +801,23 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
               </label>
             </div>
 
-            <div
-              className="documents-list"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.5rem",
-              }}
-            >
+            <div className="documents-list">
               {request.documents?.map((doc) => {
                 const isSelected = selectedFileIds.includes(doc.id);
                 return (
                   <div
                     key={doc.id}
-                    className="document-item"
+                    className={`document-item ${isSelected ? "selected" : ""}`}
                     onClick={() => toggleExistingFile(doc.id)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      padding: "0.75rem",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: "6px",
-                      backgroundColor: isSelected ? "#fff" : "#f9fafb",
-                      opacity: isSelected ? 1 : 0.6,
-                      cursor: "pointer",
-                    }}
                   >
                     <input
                       type="checkbox"
+                      className="doc-checkbox"
                       checked={isSelected}
                       readOnly
-                      style={{
-                        width: "1.2em",
-                        height: "1.2em",
-                        cursor: "pointer",
-                      }}
                     />
                     <FileText size={20} color="#6b7280" />
-                    <span
-                      style={{ flex: 1, fontWeight: 500, color: "#374151" }}
-                    >
-                      {doc.originalName}
-                    </span>
+                    <span className="doc-name">{doc.originalName}</span>
                     <a
                       href={doc.url}
                       target="_blank"
@@ -922,43 +832,18 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
               })}
 
               {newDocuments.map((doc) => (
-                <div
-                  key={doc.id}
-                  className="document-item new-file"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    padding: "0.75rem",
-                    border: "1px dashed #3b82f6",
-                    borderRadius: "6px",
-                    backgroundColor: "#eff6ff",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "1.2em",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
+                <div key={doc.id} className="document-item new-file">
+                  <div className="doc-icon-wrapper">
                     <Upload size={16} color="#3b82f6" />
                   </div>
                   <FileText size={20} color="#3b82f6" />
-                  <span style={{ flex: 1, fontWeight: 500, color: "#1e3a8a" }}>
-                    {doc.file.name}{" "}
-                    <span
-                      style={{ fontSize: "0.8em", color: "#60a5fa" }}
-                    ></span>
+                  <span className="doc-name" style={{ color: "#1e3a8a" }}>
+                    {doc.file.name}
+                    <span className="doc-size-text"></span>
                   </span>
                   <button
+                    className="btn-trash"
                     onClick={() => removeNewDocument(doc.id)}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      padding: 4,
-                    }}
                   >
                     <Trash2 size={16} color="#ef4444" />
                   </button>
@@ -966,12 +851,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
               ))}
 
               {request.documents?.length === 0 && newDocuments.length === 0 && (
-                <p
-                  className="text-muted"
-                  style={{ fontStyle: "italic", margin: 0 }}
-                >
-                  -
-                </p>
+                <p className="text-muted empty-docs-msg">-</p>
               )}
             </div>
           </div>

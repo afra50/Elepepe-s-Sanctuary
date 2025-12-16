@@ -8,9 +8,10 @@ const Modal = ({
   title,
   children,
   footer,
-  size = "md", // "sm" | "md" | "lg" | "full"
+  size = "md",
+  closeOnOverlayClick = false,
 }) => {
-  // 1. Obsługa klawisza ESC
+  // Obsługa klawisza ESC (możesz to też chcieć zablokować, ale zazwyczaj ESC zostaje)
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") onClose();
@@ -18,7 +19,6 @@ const Modal = ({
 
     if (isOpen) {
       window.addEventListener("keydown", handleEsc);
-      // Blokada scrollowania tła
       document.body.style.overflow = "hidden";
     }
 
@@ -30,12 +30,15 @@ const Modal = ({
 
   if (!isOpen) return null;
 
-  // 2. Używamy Portalu, aby wyrzucić modal do body
   return ReactDOM.createPortal(
-    <div className="modal-overlay" onClick={onClose}>
+    <div
+      className="modal-overlay"
+      // 2. Tutaj zmiana: sprawdzamy prop przed wywołaniem onClose
+      onClick={closeOnOverlayClick ? onClose : undefined}
+    >
       <div
         className={`modal-container modal--${size}`}
-        onClick={(e) => e.stopPropagation()} // Zapobiega zamykaniu przy kliknięciu w środek
+        onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
@@ -47,10 +50,10 @@ const Modal = ({
           </button>
         </div>
 
-        {/* BODY (Scrollable) */}
+        {/* BODY */}
         <div className="modal-content">{children}</div>
 
-        {/* FOOTER (Optional) */}
+        {/* FOOTER */}
         {footer && <div className="modal-footer">{footer}</div>}
       </div>
     </div>,
