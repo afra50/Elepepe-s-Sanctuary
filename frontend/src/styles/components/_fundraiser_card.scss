@@ -68,12 +68,21 @@
   }
 
   &__days-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+
     font-size: 0.78rem;
     font-weight: 600;
     padding: 0.25rem 0.6rem;
     border-radius: 999px;
+
     background-color: rgba($color-primary, 0.08);
     color: $color-primary;
+
+    svg {
+      opacity: 0.85;
+    }
   }
 
   &__stats {

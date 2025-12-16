@@ -3,6 +3,9 @@ import { useTranslation } from "react-i18next";
 import Button from "./ui/Button";
 import ProgressBar from "./ui/ProgressBar";
 
+import { Calendar } from "lucide-react";
+// albo: import { Clock } from "lucide-react";
+
 function getDaysLeft(endDate) {
   if (!endDate) return null;
 
@@ -49,8 +52,9 @@ function FundraiserCard({ project, onCardClick, onDonateClick }) {
         {typeof daysLeft === "number" && (
           <div className="fundraiser-card__meta">
             <span className="fundraiser-card__days-left">
+              <Calendar size={14} strokeWidth={2} />
               {daysLeft > 0
-                ? t("urgent.daysLeft", { count: daysLeft }) // dodasz w JSON
+                ? t("urgent.daysLeft", { count: daysLeft })
                 : t("urgent.daysLeftFinished")}
             </span>
           </div>
