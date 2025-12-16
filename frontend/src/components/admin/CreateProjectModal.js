@@ -238,23 +238,33 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
       const data = new FormData();
       data.append("status", "approved");
 
+      // --- NOWE: Tworzymy mapę oryginalnych nazw plików ---
+      // Klucz to ID (które leci w nazwie pliku), Wartość to prawdziwa nazwa (np. "paragon.jpg")
+      const newFileNamesMap = {};
+
+      newPhotos.forEach((p) => {
+        newFileNamesMap[p.id] = p.file.name;
+      });
+      newDocuments.forEach((d) => {
+        newFileNamesMap[d.id] = d.file.name;
+      });
+      // ----------------------------------------------------
+
       const projectPayload = {
         ...formData,
         selectedFileIds,
         coverSelection: finalCoverId,
+        newFileNames: newFileNamesMap, // Dodajemy mapę do JSONa
       };
 
       // JSON leci jako string w polu tekstowym
       data.append("projectData", JSON.stringify(projectPayload));
 
-      // --- DODAWANIE ZDJĘĆ Z HACKIEM NA NAZWĘ (ID + rozszerzenie) ---
+      // --- DODAWANIE ZDJĘĆ (bez zmian logicznych, ale komentarz dla jasności) ---
       newPhotos.forEach((p) => {
-        // Wyciągamy rozszerzenie z oryginalnego pliku (np. "jpg")
         const extension = p.file.name.split(".").pop();
-        // Tworzymy nazwę: ID_z_frontu.rozszerzenie (np. "x7z9q2w.jpg")
+        // Wysyłamy ID jako nazwę pliku, żeby backend wiedział która to okładka
         const fileNameToSend = `${p.id}.${extension}`;
-
-        // Klucz "newPhotos" musi pasować do routera upload.fields([{ name: 'newPhotos' }])
         data.append("newPhotos", p.file, fileNameToSend);
       });
 
@@ -262,8 +272,6 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
       newDocuments.forEach((d) => {
         const extension = d.file.name.split(".").pop();
         const fileNameToSend = `${d.id}.${extension}`;
-
-        // Klucz "newDocuments" musi pasować do routera
         data.append("newDocuments", d.file, fileNameToSend);
       });
 

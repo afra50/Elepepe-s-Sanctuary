@@ -421,83 +421,105 @@ const updateRequestStatus = async (req, res) => {
       }
 
       // ==================================================
-      // B. NOWE PLIKI (Upload) - ZMODYFIKOWANE
+      // B. NOWE PLIKI (Upload) - MODYFIKACJA FOLDERÓW
       // ==================================================
-      // Teraz req.files to obiekt { newPhotos: [], newDocuments: [] }
       if (req.files) {
-        // Łączymy obie tablice w jedną listę do przetworzenia
+        // Główny folder projektu
+        const baseProjectDir = path.join(
+          process.cwd(),
+          "uploads",
+          "projects",
+          String(newProjectId)
+        );
+
+        // Definicja podfolderów
+        const photosDir = path.join(baseProjectDir, "photos");
+        const documentsDir = path.join(baseProjectDir, "documents");
+
+        // Tworzenie folderów (tylko jeśli są pliki danego typu)
+        if (req.files["newPhotos"]?.length > 0) {
+          await fs.mkdir(photosDir, { recursive: true });
+        }
+        if (req.files["newDocuments"]?.length > 0) {
+          await fs.mkdir(documentsDir, { recursive: true });
+        }
+
+        // Mapa nazw przesłana z frontu
+        const fileNameMap = validatedProject.newFileNames || {};
+
+        // --- 1. PRZETWARZANIE ZDJĘĆ (Galeria) -> do folderu /photos ---
         const newPhotos = req.files["newPhotos"] || [];
-        const newDocuments = req.files["newDocuments"] || [];
-        const allNewFiles = [...newPhotos, ...newDocuments];
+        for (const file of newPhotos) {
+          const tempId =
+            file.originalname.substring(
+              0,
+              file.originalname.lastIndexOf(".")
+            ) || file.originalname;
+          const realOriginalName = fileNameMap[tempId] || file.originalname;
 
-        if (allNewFiles.length > 0) {
-          const projectUploadDir = path.join(
-            process.cwd(),
-            "uploads",
-            "projects",
-            String(newProjectId)
-          );
-          await fs.mkdir(projectUploadDir, { recursive: true });
-
-          for (const file of allNewFiles) {
-            // ODZYSKIWANIE ID: Nazwa pliku to np. "abc12345.jpg".
-            // Bierzemy wszystko przed ostatnią kropką jako tempId.
-            const tempId =
-              file.originalname.substring(
-                0,
-                file.originalname.lastIndexOf(".")
-              ) || file.originalname;
-
-            let isCover = 0;
-            // Sprawdzamy czy to ten plik ma być okładką (porównujemy ID z frontu z nazwą pliku)
-            if (
-              validatedProject.coverSelection?.type === "new" &&
-              validatedProject.coverSelection.id === tempId
-            ) {
-              isCover = 1;
-              coverSet = true;
-            }
-
-            const isImage = file.mimetype.startsWith("image/");
-            let extension = "";
-
-            if (isImage) {
-              extension = ".webp";
-            } else {
-              if (file.mimetype === "application/pdf") extension = ".pdf";
-              else if (file.mimetype.includes("word")) extension = ".docx";
-              else if (file.mimetype.includes("text")) extension = ".txt";
-              else extension = path.extname(file.originalname) || ".bin";
-            }
-
-            const uniqueName = `${uuidv4()}${extension}`;
-
-            // Fizyczny zapis
-            if (isImage) {
-              await sharp(file.buffer)
-                .resize({ width: 1200, withoutEnlargement: true })
-                .webp({ quality: 80 })
-                .toFile(path.join(projectUploadDir, uniqueName));
-            } else {
-              await fs.writeFile(
-                path.join(projectUploadDir, uniqueName),
-                file.buffer
-              );
-            }
-
-            const relativePath = `/uploads/projects/${newProjectId}/${uniqueName}`;
-
-            // UWAGA: Jako original_name zapisujemy "New File" lub ewentualnie prawdziwą nazwę,
-            // jeśli przekażesz ją w inny sposób. Tutaj file.originalname to ID.
-            // Możemy ewentualnie zostawić samo ID, żeby user wiedział co to.
-            filesToInsert.push([
-              newProjectId,
-              relativePath,
-              isImage ? "photo" : "document",
-              "Uploaded File", // lub file.originalname jeśli chcesz zachować ID w nazwie w panelu
-              isCover,
-            ]);
+          let isCover = 0;
+          if (
+            validatedProject.coverSelection?.type === "new" &&
+            validatedProject.coverSelection.id === tempId
+          ) {
+            isCover = 1;
+            coverSet = true;
           }
+
+          const uniqueName = `${uuidv4()}.webp`;
+
+          // ZAPIS: Używamy photosDir
+          await sharp(file.buffer)
+            .resize({ width: 1200, withoutEnlargement: true })
+            .webp({ quality: 80 })
+            .toFile(path.join(photosDir, uniqueName));
+
+          // BAZA: Dodajemy /photos/ do ścieżki
+          const relativePath = `/uploads/projects/${newProjectId}/photos/${uniqueName}`;
+
+          filesToInsert.push([
+            newProjectId,
+            relativePath,
+            "photo",
+            realOriginalName,
+            isCover,
+          ]);
+        }
+
+        // --- 2. PRZETWARZANIE DOKUMENTÓW -> do folderu /documents ---
+        const newDocuments = req.files["newDocuments"] || [];
+        for (const file of newDocuments) {
+          const tempId =
+            file.originalname.substring(
+              0,
+              file.originalname.lastIndexOf(".")
+            ) || file.originalname;
+          const realOriginalName = fileNameMap[tempId] || file.originalname;
+
+          const isCover = 0;
+
+          let extension = path.extname(realOriginalName);
+          if (!extension) {
+            if (file.mimetype === "application/pdf") extension = ".pdf";
+            else if (file.mimetype.includes("image")) extension = ".jpg";
+            else extension = ".bin";
+          }
+
+          const uniqueName = `${uuidv4()}${extension}`;
+
+          // ZAPIS: Używamy documentsDir
+          await fs.writeFile(path.join(documentsDir, uniqueName), file.buffer);
+
+          // BAZA: Dodajemy /documents/ do ścieżki
+          const relativePath = `/uploads/projects/${newProjectId}/documents/${uniqueName}`;
+
+          filesToInsert.push([
+            newProjectId,
+            relativePath,
+            "document",
+            realOriginalName,
+            isCover,
+          ]);
         }
       }
 
