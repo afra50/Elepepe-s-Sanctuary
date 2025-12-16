@@ -199,7 +199,8 @@
     "createProject": "Utwórz Zbiórkę",
     "addFiles": "Dodaj pliki",
     "addPhotos": "Dodaj zdjęcia",
-    "addDocuments": "Dodaj dokumenty"
+    "addDocuments": "Dodaj dokumenty",
+    "viewProject": "Zobacz zbiórkę"
   },
   "common": {
     "years": "lat",

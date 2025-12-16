@@ -26,9 +26,7 @@ FOOTER
 
 ADMIN
 1. Requests
-    - wydzielic modal ze szczegolami do komponentu osobnego
-    - po zatwierdzeniu request brak mozlwiosci zmiany statusu u admina (mozwliowsc edycji tylko zbiorki)
-    - walidacja createmodal na froncie poprawic dokladnie
+    - przekierowanie na zbiorke
 
 BACKEND
 - Joi do walidacji requestów

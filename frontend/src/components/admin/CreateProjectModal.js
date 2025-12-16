@@ -287,16 +287,47 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
   const handlePreSubmit = () => {
     const showErr = (msg) => setAlert({ variant: "error", message: msg });
 
+    // --- POPRAWKI DŁUGOŚCI (VARCHAR) ---
     if (!formData.animalName.trim())
       return showErr(t("projects.errors.animalNameRequired"));
+    if (formData.animalName.length > 100)
+      return showErr("Imię zwierzaka jest za długie (max 100 znaków)."); // VARCHAR(100)
+
     if (!formData.fullName.trim())
       return showErr(t("projects.errors.fullNameRequired"));
+    if (formData.fullName.length > 255)
+      return showErr("Imię i nazwisko jest za długie (max 255 znaków)."); // VARCHAR(255)
+
     if (!formData.slug.trim())
       return showErr(t("projects.errors.slugRequired"));
+    if (formData.slug.length > 255)
+      return showErr("Slug jest za długi (max 255 znaków)."); // VARCHAR(255)
+
+    if (formData.city && formData.city.length > 100)
+      return showErr("Nazwa miasta jest za długa (max 100 znaków)."); // VARCHAR(100)
+
+    // --- POPRAWKI LICZBOWE ---
     if (!formData.amountTarget || formData.amountTarget <= 0)
       return showErr(t("projects.errors.amountTargetPositive"));
+
+    // Zabezpieczenie przed ujemną liczbą zwierząt
+    if (formData.animalsCount < 1)
+      return showErr("Liczba zwierząt musi wynosić minimum 1.");
+
+    // Zabezpieczenie przed ujemną kwotą zebraną
+    if (formData.amountCollected < 0)
+      return showErr("Zebrana kwota nie może być ujemna.");
+
+    // --- POPRAWKI DATY ---
     if (!formData.deadline)
       return showErr(t("projects.errors.deadlineRequired"));
+
+    // Sprawdzenie czy data nie jest z przeszłości
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selectedDate = new Date(formData.deadline);
+    if (selectedDate < today)
+      return showErr("Termin zbiórki nie może być datą z przeszłości.");
 
     const languages = ["pl", "en", "es"];
     const requiredTransFields = ["title", "description", "country"];
@@ -349,6 +380,12 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
   };
 
   if (!isOpen || !request) return null;
+
+  const preventMinus = (e) => {
+    if (e.key === "-" || e.key === "e") {
+      e.preventDefault();
+    }
+  };
 
   return (
     <>
@@ -500,6 +537,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                 onChange={(e) =>
                   handleGlobalChange("animalsCount", e.target.value)
                 }
+                onKeyDown={preventMinus}
               />
             </div>
             <div className="form-group">
@@ -657,11 +695,13 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
               <div className="amount-row">
                 <input
                   type="number"
+                  min="0"
                   className="form-input"
                   value={formData.amountTarget}
                   onChange={(e) =>
                     handleGlobalChange("amountTarget", e.target.value)
                   }
+                  onKeyDown={preventMinus}
                 />
                 <select
                   className="form-input currency-select"
@@ -692,11 +732,13 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
               </label>
               <input
                 type="number"
+                min="0"
                 className="form-input"
                 value={formData.amountCollected}
                 onChange={(e) =>
                   handleGlobalChange("amountCollected", e.target.value)
                 }
+                onKeyDown={preventMinus}
               />
             </div>
           </div>
