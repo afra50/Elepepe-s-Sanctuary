@@ -199,7 +199,8 @@
     "createProject": "Create Fundraiser",
     "addFiles": "Add files",
     "addPhotos": "Add photos",
-    "addDocuments": "Add documents"
+    "addDocuments": "Add documents",
+    "viewProject": "View project"
   },
   "common": {
     "years": "years",

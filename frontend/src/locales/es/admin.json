@@ -199,7 +199,8 @@
     "createProject": "Crear Recaudación",
     "addFiles": "Añadir archivos",
     "addPhotos": "Añadir fotos",
-    "addDocuments": "Añadir documentos"
+    "addDocuments": "Añadir documentos",
+    "viewProject": "Ver proyecto"
   },
   "common": {
     "years": "años",
