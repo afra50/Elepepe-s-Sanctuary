@@ -71,8 +71,39 @@ const getActiveProjects = async (connection) => {
   return rows;
 };
 
+const getAllProjects = async (connection) => {
+  const sql = `
+    SELECT 
+      p.*, 
+      pf.file_path AS cover_image
+    FROM projects p
+    LEFT JOIN project_files pf ON pf.project_id = p.id AND pf.is_cover = 1
+    ORDER BY p.created_at DESC
+  `;
+  // Pobieramy "p.*" bo admin potrzebuje wszystkiego (applicant_type, animal_name itp.)
+
+  const [rows] = await connection.query(sql);
+
+  // Opcjonalnie: Jeśli potrzebujesz WSZYSTKICH plików dla każdego projektu w widoku listy,
+  // to musiałbyś zrobić dodatkowe zapytanie lub GROUP_CONCAT.
+  // Ale na liście zazwyczaj wystarczy okładka (cover_image).
+  // Pełne pliki dociągniemy w szczegółach (osobnym endpointem) lub tutaj jeśli lista nie jest ogromna.
+  // W tym podejściu pobieramy tylko okładkę do listy.
+
+  return rows;
+};
+
+// --- FUNKCJA DO POBRANIA PLIKÓW DLA PROJEKTU ---
+const getProjectFiles = async (connection, projectId) => {
+  const sql = `SELECT * FROM project_files WHERE project_id = ?`;
+  const [rows] = await connection.query(sql, [projectId]);
+  return rows;
+};
+
 module.exports = {
   createProject,
   addProjectFiles,
-  getActiveProjects, // Eksportujemy nową funkcję
+  getActiveProjects,
+  getAllProjects,
+  getProjectFiles,
 };

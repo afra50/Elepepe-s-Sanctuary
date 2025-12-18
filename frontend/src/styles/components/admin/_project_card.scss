@@ -1,135 +1,144 @@
 .project-card {
-    background: $color-white;
-    border: 1px solid rgba($color-border, 0.6);
-    border-radius: $radius-md;
-    box-shadow: $shadow-sm;
+    background-color: $color-white;
+    font-family: $font-body;
+    height: 100%;
+    border-radius: 1rem;
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    box-shadow: $shadow-md;
     display: flex;
     flex-direction: column;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
 
-    // Klasa dla klikalności
-    &.clickable {
-        cursor: pointer;
-    }
-
+    // --- Efekt Hover ---
     &:hover {
+        box-shadow: $shadow-bg;
         transform: translateY(-4px);
-        box-shadow: $shadow-md;
-        border-color: $color-border;
+
+        .project-card__img {
+            transform: scale(1.025);
+        }
+
+        // Ciemniejsza nakładka na zdjęciu po najechaniu
+        .project-card__header::after {
+            opacity: 1;
+        }
     }
 
-    // --- HEADER (OBRAZEK) ---
+    // --- HEADER (OBRAZEK + BADGE) ---
     &__header {
         position: relative;
-        height: 160px;
-        background-color: #f3f4f6;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        height: 220px; // Taka sama wysokość jak w FundraiserCard
         overflow: hidden;
+        background-color: #f3f4f6; // Tło dla placeholderów
 
         .project-card__img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        &:hover .project-card__img {
-            transform: scale(1.05);
-        }
-
+        // Placeholder gdy brak zdjęcia
         .project-card__placeholder {
-            color: #9ca3af;
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            height: 100%;
+            color: #9ca3af;
         }
 
-        // Badge statusu
+        // Ciemna warstwa na zdjęciu (domyślnie ukryta)
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        // Badge Statusu
         .project-card__badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 12px;
+            right: 12px;
             padding: 4px 10px;
-            border-radius: 6px;
+            border-radius: 99px;
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
             z-index: 2;
 
             &.status-active {
                 color: #2563eb;
-                border: 1px solid #2563eb;
             }
 
             &.status-draft {
                 color: #6b7280;
-                border: 1px solid #6b7280;
             }
 
             &.status-completed {
                 color: #059669;
-                border: 1px solid #059669;
             }
 
             &.status-cancelled {
                 color: #ef4444;
-                border: 1px solid #ef4444;
             }
         }
 
         // Ikona PILNE
         .project-card__urgent {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
+            top: 12px;
+            left: 12px;
             background: #ef4444;
-            color: #ef4444;
-            width: 26px;
-            height: 26px;
+            color: white;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             z-index: 2;
         }
     }
 
-    // --- BODY ---
+    // --- BODY (TREŚĆ) ---
     &__body {
-        padding: 1.25rem;
+        padding: 1rem 1.5rem 1.5rem;
         display: flex;
         flex-direction: column;
         flex: 1;
-        gap: 0.75rem;
     }
 
     &__title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin: 0;
+        font-size: 1.25rem;
         color: $color-secondary;
-        line-height: 1.3;
-        // 2 linie tekstu z kropkami
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+        font-weight: 700;
+
+        // Ograniczenie do 2 linii
         display: -webkit-box;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
 
+    // Meta (Miasto, ID)
     &__meta {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
         font-size: 0.85rem;
-        color: $brown-700;
+        color: lighten($color-secondary, 20%);
 
         .meta-item {
             display: flex;
@@ -139,38 +148,44 @@
         }
 
         .meta-id {
-            color: lighten($color-secondary, 20%);
             font-family: monospace;
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
         }
     }
 
+    // Sekcja statystyk (Pasek postępu)
     &__progress-wrapper {
-        margin-top: 0.5rem;
+        margin-top: auto;
+        margin-bottom: 1.1rem;
 
         .money-labels {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8rem;
-            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: $brown-700;
+            margin-bottom: 0.35rem;
 
             .collected {
-                font-weight: 700;
                 color: $color-primary;
+                font-weight: 700;
             }
 
             .target {
-                color: lighten($color-secondary, 20%);
+                color: lighten($color-secondary, 30%);
+                font-size: 0.85rem;
             }
         }
 
-        // Style dla progress bara są w Twoim komponencie, 
-        // ale wrapper pozycjonuje go w karcie.
+        // ProgressBar styluje się sam wewnątrz
     }
 
+    // Footer (Data, Zwierzak)
     &__footer {
-        margin-top: auto;
-        padding-top: 0.75rem;
-        border-top: 1px dashed rgba($color-border, 0.5);
+        padding-top: 0.8rem;
+        border-top: 1px dashed rgba($color-border, 0.6);
         display: flex;
         justify-content: space-between;
         font-size: 0.8rem;
@@ -180,6 +195,7 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            font-weight: 500;
         }
     }
 }

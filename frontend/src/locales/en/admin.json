@@ -58,7 +58,9 @@
       "status": "Initial Status",
       "statusOptions": {
         "draft": "Draft (Private)",
-        "active": "Active (Public)"
+        "active": "Active (Public)",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
       },
       "title": "Fundraiser Title",
       "titlePlaceholder": "e.g. Help for...",
@@ -67,7 +69,7 @@
       "age": "Age",
       "amountTarget": "Target Amount",
       "deadline": "Deadline",
-      "amountCollected": "Collected (Initial)"
+      "amountCollected": "Amount Collected"
     },
     "alerts": {
       "titleRequired": "Title is required!",
@@ -267,10 +269,14 @@
     "allSpecies": "All species",
     "allTypes": "All applicants",
     "allLanguages": "All languages",
+    "allPriorities": "All Priorities",
+    "normalPriority": "Normal",
+    "importantPriority": "Urgent",
     "sortOptions": {
       "date": "Date added",
       "deadline": "Deadline",
-      "amount": "Amount"
+      "amount": "Amount",
+      "progress": "Percentage Complete"
     }
   }
 }
