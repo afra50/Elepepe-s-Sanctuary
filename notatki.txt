@@ -1,4 +1,3 @@
-- paginacja
 - min vh sprawdzic wszedzie
 - dodac wszedzie error state
 - wesprzyj na zbiórkach ma coś robić
@@ -7,9 +6,7 @@
 HOME
 - karuzela na najpilniejszych zbiorkach, a jak nie albo malo to uzupelnic tymi co sie czas konczy
 
-AKTYWNE ZBIÓRKI
-- sprawdzic paginacje na wiekszej ilosci zbiorek
-- podstrony zbiórek
+PODSTRONA ZBIÓRKI
 
 KONTAKT
 - loader
