@@ -1,7 +1,6 @@
 // backend/models/projectModel.js
 
 const createProject = async (connection, data) => {
-  // Dodałem 'is_urgent' do zapytania SQL
   const sql = `
     INSERT INTO projects (
       request_id, status, slug, is_urgent,
@@ -13,22 +12,18 @@ const createProject = async (connection, data) => {
 
   const values = [
     data.requestId,
-    data.status, // Teraz dynamicznie: 'draft' lub 'active' z formularza
-    data.slug, // Teraz dynamicznie: slug z formularza
-    data.isUrgent, // Nowe pole: 1 lub 0
-
+    data.status,
+    data.slug,
+    data.isUrgent,
     data.applicantType,
     data.fullName,
     data.animalName,
     data.animalsCount,
     data.species,
     data.city,
-
     data.amountTarget,
     data.currency,
     data.deadline,
-
-    // JSONy (już przygotowane jako stringi w kontrolerze)
     data.title,
     data.description,
     data.country,
@@ -52,7 +47,32 @@ const addProjectFiles = async (connection, filesData) => {
   return result;
 };
 
+// --- NOWA FUNKCJA ---
+const getActiveProjects = async (connection) => {
+  const sql = `
+    SELECT 
+      p.id,
+      p.slug,
+      p.is_urgent,
+      p.amount_target,
+      p.amount_collected,
+      p.currency,
+      p.deadline,
+      p.title,
+      pf.file_path AS cover_image
+    FROM projects p
+    LEFT JOIN project_files pf 
+      ON pf.project_id = p.id AND pf.is_cover = 1
+    WHERE p.status = 'active'
+    ORDER BY p.is_urgent DESC, p.created_at DESC
+  `;
+
+  const [rows] = await connection.query(sql);
+  return rows;
+};
+
 module.exports = {
   createProject,
   addProjectFiles,
+  getActiveProjects, // Eksportujemy nową funkcję
 };
