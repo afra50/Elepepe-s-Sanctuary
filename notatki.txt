@@ -2,6 +2,7 @@
 - min vh sprawdzic 
 - dodac wszedzie error state
 - wesprzyj na zbiórkach ma coś robić
+- filtry pomiedzy tel i laptopem jak sa widoczne to przycisk "Filtry" jest widoczny i nie dziala
 
 HOME
 - karuzela na najpilniejszych zbiorkach, a jak nie ma to zwykłe
@@ -27,6 +28,14 @@ FOOTER
 ADMIN
 1. Requests
     - przekierowanie na zbiorke
+2. Zbiórki
+    - edycja, zmiana statusow, danych z komponentu createprojectmodal jakos
+    - loader, error state, alert, button
+    - w zaleznosci od jezyka, taki wyswietlac skrot zbiorki
+    - podpiac backend
+    - tlumaczenia
+    - zweryfikowac czy sa wszystkie dane + na modalu
+    - sortowanie po tym ile zebrano juz
 
 BACKEND
 - Joi do walidacji requestów
