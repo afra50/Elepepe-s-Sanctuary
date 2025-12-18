@@ -1,0 +1,30 @@
+{
+  "activeTitle": "Aktywne zbiórki",
+  "activeSubtitle": "Za każdą z tych zbiórek stoi konkretna historia i realna potrzeba leczenia małego podopiecznego.",
+
+  "search": "Szukaj zbiórki...",
+
+  "clear": "Wyczyść",
+
+  "sort": {
+    "default": "Domyślne",
+    "date": "Najnowsze / najstarsze",
+    "deadline": "Dni do końca",
+    "completion": "% ukończenia"
+  },
+
+  "empty": {
+    "title": "Brak aktywnych zbiórek",
+    "message": "Obecnie nie prowadzimy żadnych aktywnych zbiórek. Zajrzyj ponownie później lub zgłoś potrzebę pomocy."
+  },
+
+  "emptySearch": {
+    "title": "Nie znaleziono zbiórek",
+    "message": "Nie ma zbiórek pasujących do Twojego wyszukiwania. Spróbuj zmienić frazę lub wyczyścić filtry."
+  },
+
+  "error": {
+    "title": "Nie udało się pobrać zbiórek",
+    "message": "Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie."
+  }
+}

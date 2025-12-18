@@ -3,5 +3,18 @@
     "title": "Wystąpił błąd",
     "message": "Nie udało się pobrać danych. Sprawdź połączenie internetowe i spróbuj ponownie.",
     "retry": "Spróbuj ponownie"
+  },
+
+  "fundraiser": {
+    "raised": "Zebrano:",
+    "goal": "Cel:",
+    "support": "Wesprzyj",
+    "daysLeft": "{{count}} dni do końca",
+    "daysLeftFinished": "Termin zbiórki minął"
+  },
+
+  "pagination": {
+    "previous": "Poprzednia",
+    "next": "Następna"
   }
 }

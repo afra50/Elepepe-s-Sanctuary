@@ -27,12 +27,7 @@
     }
   },
   "urgent": {
-    "title": "Maluchy w szczególnej potrzebie",
-    "raised": "Zebrano:",
-    "goal": "Cel:",
-    "support": "Wesprzyj",
-    "daysLeft": "{{count}} dni do końca",
-    "daysLeftFinished": "Termin zbiórki minął"
+    "title": "Maluchy w szczególnej potrzebie"
   },
   "banner": {
     "title": "Szczęśliwe zakończenia istnieją",

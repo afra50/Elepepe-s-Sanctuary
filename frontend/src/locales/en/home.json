@@ -27,12 +27,7 @@
     }
   },
   "urgent": {
-    "title": "Little ones in special need",
-    "raised": "Raised:",
-    "goal": "Goal:",
-    "support": "Support",
-    "daysLeft": "{{count}} days left",
-    "daysLeftFinished": "The deadline has passed"
+    "title": "Little ones in special need"
   },
   "banner": {
     "title": "Happy Endings Do Exist",

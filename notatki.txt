@@ -5,12 +5,11 @@
 - filtry pomiedzy tel i laptopem jak sa widoczne to przycisk "Filtry" jest widoczny i nie dziala
 
 HOME
-- karuzela na najpilniejszych zbiorkach, a jak nie ma to zwykłe
+- karuzela na najpilniejszych zbiorkach, a jak nie albo malo to uzupelnic tymi co sie czas konczy
 
 AKTYWNE ZBIÓRKI
-- paginacja
-- tłumaczenia
-- najpilniejsze na początku, potem reszta
+- sprawdzic paginacje na wiekszej ilosci zbiorek
+- podstrony zbiórek
 
 KONTAKT
 - loader

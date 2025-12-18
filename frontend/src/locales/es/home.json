@@ -27,12 +27,7 @@
     }
   },
   "urgent": {
-    "title": "Pequeños en necesidad especial",
-    "raised": "Recaudado:",
-    "goal": "Meta:",
-    "support": "Ayudar",
-    "daysLeft": "{{count}} días restantes",
-    "daysLeftFinished": "La fecha límite ha pasado"
+    "title": "Pequeños en necesidad especial"
   },
   "banner": {
     "title": "Los finales felices existen",

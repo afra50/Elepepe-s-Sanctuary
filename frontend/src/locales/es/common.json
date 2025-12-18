@@ -3,5 +3,18 @@
     "title": "Ocurrió un error",
     "message": "No se pudieron cargar los datos. Comprueba tu conexión e inténtalo de nuevo.",
     "retry": "Intentar de nuevo"
+  },
+
+  "fundraiser": {
+    "raised": "Recaudado:",
+    "goal": "Meta:",
+    "support": "Ayudar",
+    "daysLeft": "{{count}} días restantes",
+    "daysLeftFinished": "La fecha límite ha pasado"
+  },
+
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Siguiente"
   }
 }

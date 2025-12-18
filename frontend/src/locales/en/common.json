@@ -3,5 +3,18 @@
     "title": "An error occurred",
     "message": "Failed to load data. Check your connection and try again.",
     "retry": "Try again"
+  },
+
+  "fundraiser": {
+    "raised": "Raised:",
+    "goal": "Goal:",
+    "support": "Support",
+    "daysLeft": "{{count}} days left",
+    "daysLeftFinished": "The deadline has passed"
+  },
+
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next"
   }
 }
