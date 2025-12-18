@@ -75,6 +75,12 @@
 @import "./components/admin/request_details_view";
 @import "./components/admin/admin_projects";
 @import "./components/admin/project_card";
+@import "./components/admin/admin_project_details";
+
+@import "./components/admin/project/project_header";
+@import "./components/admin/project/project_content_form";
+@import "./components/admin/project/project_sidebar";
+@import "./components/admin/project/project_media";
 
 * {
   margin: 0;

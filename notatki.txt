@@ -3,6 +3,7 @@
 - dodac wszedzie error state
 - wesprzyj na zbiórkach ma coś robić
 - filtry pomiedzy tel i laptopem jak sa widoczne to przycisk "Filtry" jest widoczny i nie dziala
+- tlumaczenie dla slowa "Sortuj"
 
 HOME
 - karuzela na najpilniejszych zbiorkach, a jak nie ma to zwykłe
@@ -24,12 +25,17 @@ FOOTER
 ADMIN
 1. Requests
     - przekierowanie na zbiorke
+    - akecptacja requesta z kwota startowa nie ustawia jej w bazie
+    - walidacja slugu przy akceptacji
 2. Zbiórki
     2.1 Podstrona zbiórki
         - edycja, zmiana statusow, danych
         - tworzenie aktualnosci
         - error state, loader, alert, button
         - wszystkie dane wyswietlic + uwzglednic wybrany jezyk
+        - walidacja danych przy edycji (front+backend) oraz na dodawaniu zbiorki (front+backend), pamietac o walidacji slugu
+
+        - zapisz zmiany ma zapisac zmiany
 
 BACKEND
 - Joi do walidacji requestów

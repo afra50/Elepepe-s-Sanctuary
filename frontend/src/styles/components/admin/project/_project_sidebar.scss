@@ -1,0 +1,66 @@
+// _projectSidebar.scss
+
+// Stylizacja specyficzna dla sidebara, która nie kłóci się z form.scss
+.admin-project-details-page {
+
+    // Karta z danymi wnioskodawcy (szare tło)
+    .applicant-info-box {
+        background-color: #f9fafb !important; // Nadpisuje białe tło .card
+        border: 1px solid #e5e7eb;
+
+        .applicant-details {
+            font-size: 0.9rem;
+
+            .applicant-name {
+                font-weight: 700;
+                color: $color-secondary;
+                margin-bottom: 0.2rem;
+                font-size: 1rem;
+            }
+
+            .applicant-type {
+                color: lighten($color-secondary, 20%);
+                font-size: 0.85rem;
+                margin-bottom: 0.8rem;
+                text-transform: uppercase;
+                font-weight: 600;
+                letter-spacing: 0.03em;
+            }
+
+            .applicant-meta {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: $color-white;
+                padding: 0.5rem 0.75rem;
+                border-radius: 0.4rem;
+                border: 1px solid rgba($color-border, 0.5);
+                font-size: 0.85rem;
+
+                strong {
+                    color: $color-primary;
+                }
+            }
+        }
+
+        // Utility klasa pomocnicza dla przycisku na całą szerokość
+        .w-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .mt-3 {
+            margin-top: 0.75rem;
+        }
+    }
+
+    // Lista informacji (możemy tu dodać specyficzne style dla inputów w sidebarze jeśli mają być mniejsze)
+    .info-list {
+
+        // Inputy w sidebarze korzystają z .form-field z form.scss, 
+        // więc wyglądają spójnie. Ewentualne drobne korekty marginesów:
+        .form-field {
+            margin-bottom: 0.8rem;
+        }
+    }
+}
