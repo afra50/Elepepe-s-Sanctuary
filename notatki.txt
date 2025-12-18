@@ -1,5 +1,5 @@
 - paginacja
-- min vh sprawdzic 
+- min vh sprawdzic wszedzie
 - dodac wszedzie error state
 - wesprzyj na zbiórkach ma coś robić
 
@@ -9,10 +9,6 @@ HOME
 AKTYWNE ZBIÓRKI
 - paginacja
 - tłumaczenia
-- filtry + wyszukiwarka
-- Loader
-- Error State
-- podpiąć backend
 - najpilniejsze na początku, potem reszta
 
 KONTAKT

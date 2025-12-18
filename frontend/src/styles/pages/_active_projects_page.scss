@@ -18,6 +18,27 @@
   }
 }
 
+/* === EMPTY STATE === */
+.active-projects-empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  max-width: 520px;
+  margin: 0 auto;
+
+  h3 {
+    font-family: $font-heading;
+    font-size: 1.3rem;
+    color: $color-secondary;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: $secondary-muted;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+}
+
 .active-projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
