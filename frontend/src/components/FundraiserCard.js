@@ -22,7 +22,7 @@ function getDaysLeft(endDate) {
 }
 
 function FundraiserCard({ project, onCardClick, onDonateClick }) {
-  const { t } = useTranslation("home");
+  const { t } = useTranslation("common");
   const { id, title, image, current, goal, endDate } = project;
 
   const daysLeft = getDaysLeft(endDate);
@@ -54,8 +54,8 @@ function FundraiserCard({ project, onCardClick, onDonateClick }) {
             <span className="fundraiser-card__days-left">
               <Calendar size={14} strokeWidth={2} />
               {daysLeft > 0
-                ? t("urgent.daysLeft", { count: daysLeft })
-                : t("urgent.daysLeftFinished")}
+                ? t("fundraiser.daysLeft", { count: daysLeft })
+                : t("fundraiser.daysLeftFinished")}
             </span>
           </div>
         )}
@@ -65,10 +65,10 @@ function FundraiserCard({ project, onCardClick, onDonateClick }) {
         <div className="fundraiser-card__stats">
           <div className="fundraiser-card__stat-row">
             <span>
-              {t("urgent.raised")} <strong>{current} PLN</strong>
+              {t("fundraiser.raised")} <strong>{current} PLN</strong>
             </span>
             <span>
-              {t("urgent.goal")} <strong>{goal} PLN</strong>
+              {t("fundraiser.goal")} <strong>{goal} PLN</strong>
             </span>
           </div>
 
@@ -81,7 +81,7 @@ function FundraiserCard({ project, onCardClick, onDonateClick }) {
           className="full-width"
           onClick={handleDonateClick}
         >
-          {t("urgent.support")}
+          {t("fundraiser.support")}
         </Button>
       </div>
     </div>

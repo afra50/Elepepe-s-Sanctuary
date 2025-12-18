@@ -1,0 +1,30 @@
+{
+  "activeTitle": "Campañas activas",
+  "activeSubtitle": "Detrás de cada una de estas campañas hay una historia real y una necesidad genuina de tratamiento para un pequeño animal.",
+
+  "search": "Buscar campañas...",
+
+  "clear": "Limpiar",
+
+  "sort": {
+    "default": "Predeterminado",
+    "date": "Más recientes / más antiguas",
+    "deadline": "Días restantes",
+    "completion": "% financiado"
+  },
+
+  "empty": {
+    "title": "No hay campañas activas",
+    "message": "Actualmente no estamos llevando a cabo ninguna campaña activa. Vuelve más tarde o envía una solicitud de ayuda."
+  },
+
+  "emptySearch": {
+    "title": "No se encontraron campañas",
+    "message": "No hay campañas que coincidan con tu búsqueda. Intenta cambiar el texto o limpiar los filtros."
+  },
+
+  "error": {
+    "title": "No se pudieron cargar las campañas",
+    "message": "Hubo un problema al conectar con el servidor. Por favor, inténtalo de nuevo."
+  }
+}

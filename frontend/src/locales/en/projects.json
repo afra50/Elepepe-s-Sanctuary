@@ -1,0 +1,30 @@
+{
+  "activeTitle": "Active fundraisers",
+  "activeSubtitle": "Behind each of these fundraisers there is a real story and a genuine need to treat a small animal in need.",
+
+  "search": "Search fundraisers...",
+
+  "clear": "Clear",
+
+  "sort": {
+    "default": "Default",
+    "date": "Newest / oldest",
+    "deadline": "Days left",
+    "completion": "% funded"
+  },
+
+  "empty": {
+    "title": "No active fundraisers",
+    "message": "At the moment, we are not running any active fundraisers. Please check back later or submit a request for support."
+  },
+
+  "emptySearch": {
+    "title": "No fundraisers found",
+    "message": "No fundraisers match your search. Try changing the search phrase or clearing the filters."
+  },
+
+  "error": {
+    "title": "Failed to load fundraisers",
+    "message": "There was a problem connecting to the server. Please try again."
+  }
+}

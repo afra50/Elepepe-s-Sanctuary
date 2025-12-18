@@ -1300,7 +1300,7 @@ function RequestSupportForm({ onShowAlert }) {
           <input
             id="otherFundraiserLink"
             name="otherFundraiserLink"
-            type="url"
+            type="text"
             value={form.otherFundraiserLink}
             onChange={handleChange}
             placeholder={t("form.fields.otherFundraiserLink.placeholder")}
