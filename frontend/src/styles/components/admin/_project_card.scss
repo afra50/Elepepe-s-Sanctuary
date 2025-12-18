@@ -1,0 +1,186 @@
+.project-card {
+    background: $color-white;
+    border: 1px solid rgba($color-border, 0.6);
+    border-radius: $radius-md;
+    box-shadow: $shadow-sm;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+
+    // Klasa dla klikalności
+    &.clickable {
+        cursor: pointer;
+    }
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: $shadow-md;
+        border-color: $color-border;
+    }
+
+    // --- HEADER (OBRAZEK) ---
+    &__header {
+        position: relative;
+        height: 160px;
+        background-color: #f3f4f6;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+
+        .project-card__img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        &:hover .project-card__img {
+            transform: scale(1.05);
+        }
+
+        .project-card__placeholder {
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        // Badge statusu
+        .project-card__badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+
+            &.status-active {
+                color: #2563eb;
+                border: 1px solid #2563eb;
+            }
+
+            &.status-draft {
+                color: #6b7280;
+                border: 1px solid #6b7280;
+            }
+
+            &.status-completed {
+                color: #059669;
+                border: 1px solid #059669;
+            }
+
+            &.status-cancelled {
+                color: #ef4444;
+                border: 1px solid #ef4444;
+            }
+        }
+
+        // Ikona PILNE
+        .project-card__urgent {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: #ef4444;
+            color: #ef4444;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+    }
+
+    // --- BODY ---
+    &__body {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 0.75rem;
+    }
+
+    &__title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0;
+        color: $color-secondary;
+        line-height: 1.3;
+        // 2 linie tekstu z kropkami
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    &__meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: $brown-700;
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .meta-id {
+            color: lighten($color-secondary, 20%);
+            font-family: monospace;
+        }
+    }
+
+    &__progress-wrapper {
+        margin-top: 0.5rem;
+
+        .money-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+
+            .collected {
+                font-weight: 700;
+                color: $color-primary;
+            }
+
+            .target {
+                color: lighten($color-secondary, 20%);
+            }
+        }
+
+        // Style dla progress bara są w Twoim komponencie, 
+        // ale wrapper pozycjonuje go w karcie.
+    }
+
+    &__footer {
+        margin-top: auto;
+        padding-top: 0.75rem;
+        border-top: 1px dashed rgba($color-border, 0.5);
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: lighten($color-secondary, 10%);
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    }
+}

@@ -13,6 +13,7 @@ import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import AdminRequests from "./components/admin/AdminRequests";
 import AdminPartnerships from "./components/admin/AdminPartnerships";
+import AdminProjects from "./components/admin/AdminProjects";
 
 // Import ochrony
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -40,6 +41,7 @@ const routes = [
       { index: true, element: <AdminDashboard /> },
       { path: "requests", element: <AdminRequests /> },
       { path: "partnerships", element: <AdminPartnerships /> },
+      { path: "projects", element: <AdminProjects /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },
