@@ -58,7 +58,9 @@
       "status": "Status początkowy",
       "statusOptions": {
         "draft": "Szkic (Niepubliczna)",
-        "active": "Aktywna (Publiczna)"
+        "active": "Aktywna (Publiczna)",
+        "completed": "Zakończona",
+        "cancelled": "Anulowana"
       },
       "title": "Tytuł zbiórki",
       "titlePlaceholder": "Np. Pomoc dla...",
@@ -67,7 +69,7 @@
       "age": "Wiek",
       "amountTarget": "Kwota Docelowa",
       "deadline": "Termin (Deadline)",
-      "amountCollected": "Zebrano (Startowo)"
+      "amountCollected": "Kwota Zebrana"
     },
     "alerts": {
       "titleRequired": "Tytuł jest wymagany!",
@@ -267,10 +269,14 @@
     "allSpecies": "Wszystkie gatunki",
     "allTypes": "Wszyscy zgłaszający",
     "allLanguages": "Wszystkie języki",
+    "allPriorities": "Wszystkie priorytety",
+    "normalPriority": "Zwykłe",
+    "importantPriority": "Pilne",
     "sortOptions": {
       "date": "Data dodania",
       "deadline": "Termin",
-      "amount": "Kwota"
+      "amount": "Kwota",
+      "progress": "Procent ukończenia"
     }
   }
 }

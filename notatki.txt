@@ -25,13 +25,11 @@ ADMIN
 1. Requests
     - przekierowanie na zbiorke
 2. Zbiórki
-    - edycja, zmiana statusow, danych z komponentu createprojectmodal jakos
-    - loader, error state, alert, button
-    - w zaleznosci od jezyka, taki wyswietlac skrot zbiorki
-    - podpiac backend
-    - tlumaczenia
-    - zweryfikowac czy sa wszystkie dane + na modalu
-    - sortowanie po tym ile zebrano juz
+    2.1 Podstrona zbiórki
+        - edycja, zmiana statusow, danych
+        - tworzenie aktualnosci
+        - error state, loader, alert, button
+        - wszystkie dane wyswietlic + uwzglednic wybrany jezyk
 
 BACKEND
 - Joi do walidacji requestów

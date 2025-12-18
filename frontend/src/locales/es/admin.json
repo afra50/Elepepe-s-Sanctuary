@@ -58,7 +58,9 @@
       "status": "Estado inicial",
       "statusOptions": {
         "draft": "Borrador (No público)",
-        "active": "Activa (Pública)"
+        "active": "Activa (Pública)",
+        "completed": "Terminado",
+        "cancelled": "Cancelado"
       },
       "title": "Título de la recaudación",
       "titlePlaceholder": "p.ej. Ayuda para...",
@@ -67,7 +69,7 @@
       "age": "Edad",
       "amountTarget": "Importe Objetivo",
       "deadline": "Fecha límite",
-      "amountCollected": "Recaudado (Inicial)"
+      "amountCollected": "Cantidad Recaudada"
     },
     "alerts": {
       "titleRequired": "¡El título es obligatorio!",
@@ -267,10 +269,14 @@
     "allSpecies": "Todas las especies",
     "allTypes": "Todos los solicitantes",
     "allLanguages": "Todos los idiomas",
+    "allPriorities": "Todas las prioridades",
+    "normalPriority": "Normal",
+    "importantPriority": "Urgente",
     "sortOptions": {
       "date": "Fecha de creación",
       "deadline": "Fecha límite",
-      "amount": "Importe"
+      "amount": "Importe",
+      "progress": "Porcentaje Completo"
     }
   }
 }

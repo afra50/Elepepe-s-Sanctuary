@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Filter } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import Button from "../../components/ui/Button";
 import Loader from "../../components/ui/Loader";
@@ -9,143 +10,53 @@ import FilterBar from "../ui/FilterBar";
 import ErrorState from "../ui/ErrorState";
 
 import ProjectCard from "../../components/admin/ProjectCard";
-import ProjectDetailsModal from "../../components/admin/ProjectDetailsModal";
-// import api from "../../utils/api";
+import api from "../../utils/api";
 
 const initialFilters = {
   search: "",
   sortBy: "createdAt",
   sortOrder: "desc",
   species: "all",
-  applicantType: "all", // Dodano filtr typu zgłaszającego
+  applicantType: "all",
+  isUrgent: "all", // Filtr Pilne
 };
 
 const AdminProjects = () => {
   const { t } = useTranslation("admin");
+  const navigate = useNavigate();
 
-  // STANY
+  // STANY DANYCH
   const [activeTab, setActiveTab] = useState("active");
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
 
+  // STANY FILTRÓW
   const [filters, setFilters] = useState(initialFilters);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
-  // MOCK DATA
+  // --- POBIERANIE DANYCH Z API ---
   const fetchProjects = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      // const response = await api.get("/projects");
-      // setProjects(response.data);
-
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      const mockData = [
-        {
-          id: 1,
-          status: "active",
-          isUrgent: 1,
-          slug: "pomoc-dla-reksia",
-          animalName: "Reksio",
-          animalsCount: 1,
-          species: "rat",
-          applicantType: "person", // Dodane pole
-          city: "Warszawa",
-          amountTarget: 1500.0,
-          amountCollected: 450.0,
-          currency: "PLN",
-          deadline: "2024-05-20",
-          createdAt: "2024-01-10",
-          title: JSON.stringify({
-            pl: "Pomoc dla Reksia",
-            en: "Help for Reksio",
-          }),
-          description: JSON.stringify({ pl: "Opis...", en: "Description..." }),
-          country: JSON.stringify({ pl: "Polska" }),
-          age: JSON.stringify({ pl: "2 lata" }),
-          files: [
-            {
-              id: 1,
-              url: "https://placehold.co/600x400/orange/white?text=Reksio",
-              isCover: 1,
-            },
-          ],
-        },
-        {
-          id: 2,
-          status: "draft",
-          isUrgent: 0,
-          slug: "swinka-peppa",
-          animalName: "Peppa",
-          animalsCount: 2,
-          species: "guineaPig",
-          applicantType: "organization", // Dodane pole
-          city: "Kraków",
-          amountTarget: 500.0,
-          amountCollected: 0.0,
-          currency: "EUR",
-          deadline: "2024-06-01",
-          createdAt: "2024-02-15",
-          title: JSON.stringify({ pl: "Świnka Peppa" }),
-          description: JSON.stringify({ pl: "Opis świnki..." }),
-          country: JSON.stringify({ pl: "Polska" }),
-          files: [],
-        },
-        {
-          id: 3,
-          status: "completed",
-          isUrgent: 0,
-          slug: "zbiorka-zakonczona",
-          animalName: "Burek",
-          animalsCount: 1,
-          species: "other",
-          applicantType: "vetClinic", // Dodane pole
-          city: "Gdańsk",
-          amountTarget: 1000.0,
-          amountCollected: 1200.0,
-          currency: "PLN",
-          deadline: "2023-12-01",
-          createdAt: "2023-11-01",
-          title: JSON.stringify({ pl: "Udana zbiórka" }),
-          description: JSON.stringify({ pl: "Dziękujemy!" }),
-          country: JSON.stringify({ pl: "Polska" }),
-          files: [],
-        },
-        {
-          id: 4,
-          status: "cancelled",
-          isUrgent: 0,
-          slug: "anulowana-zbiorka",
-          animalName: "Mruczek",
-          animalsCount: 1,
-          species: "other",
-          applicantType: "person", // Dodane pole
-          city: "Wrocław",
-          amountTarget: 2000.0,
-          amountCollected: 50.0,
-          currency: "PLN",
-          deadline: "2024-01-01",
-          createdAt: "2023-12-01",
-          title: JSON.stringify({ pl: "Anulowana zbiórka" }),
-          description: JSON.stringify({ pl: "Niestety..." }),
-          country: JSON.stringify({ pl: "Polska" }),
-          files: [],
-        },
-      ];
-      setProjects(mockData);
+      const response = await api.get("/projects/admin");
+      setProjects(response.data);
     } catch (err) {
-      setError("Błąd pobierania projektów");
+      console.error("Błąd pobierania projektów:", err);
+      setError(
+        t("requests.fetchError") || "Nie udało się pobrać listy projektów."
+      );
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
 
+  // --- FILTROWANIE ---
   const handleFilterChange = (name, value) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
@@ -153,41 +64,69 @@ const AdminProjects = () => {
   const processedProjects = useMemo(() => {
     let result = [...projects];
 
-    // Zakładki
+    // 1. Zakładki (Status)
     if (activeTab !== "all") {
       result = result.filter((p) => p.status === activeTab);
     }
 
-    // Filtry
+    // 2. Filtry
+    // A. Szukajka
     if (filters.search) {
       const q = filters.search.toLowerCase();
       result = result.filter((p) => {
-        const titlePL = p.title ? JSON.parse(p.title).pl?.toLowerCase() : "";
-        return titlePL?.includes(q) || p.animalName.toLowerCase().includes(q);
+        let titleObj = {};
+        try {
+          titleObj =
+            typeof p.title === "string" ? JSON.parse(p.title) : p.title;
+        } catch (e) {}
+
+        const titlePL = titleObj?.pl?.toLowerCase() || "";
+        return titlePL.includes(q) || p.animalName.toLowerCase().includes(q);
       });
     }
+
+    // B. Gatunek
     if (filters.species !== "all") {
       result = result.filter((p) => p.species === filters.species);
     }
+
+    // C. Typ wnioskodawcy
     if (filters.applicantType !== "all") {
       result = result.filter((p) => p.applicantType === filters.applicantType);
     }
 
-    // Sortowanie
+    // D. Pilne
+    if (filters.isUrgent !== "all") {
+      const shouldBeUrgent = filters.isUrgent === "true";
+      result = result.filter((p) => Boolean(p.isUrgent) === shouldBeUrgent);
+    }
+
+    // 3. Sortowanie - ZMODYFIKOWANE
     result.sort((a, b) => {
       const field = filters.sortBy;
-      let valA = a[field],
-        valB = b[field];
+      let valA, valB;
 
-      // Obsługa pól numerycznych
-      if (field === "amountTarget" || field === "amountCollected") {
-        valA = Number(valA);
-        valB = Number(valB);
+      // --- NOWOŚĆ: Sortowanie po Progresie ---
+      if (field === "progress") {
+        // Obliczamy % (zabezpieczenie przed dzieleniem przez 0)
+        // Jeśli cel to 0, traktujemy progres jako 0
+        valA = a.amountTarget > 0 ? a.amountCollected / a.amountTarget : 0;
+        valB = b.amountTarget > 0 ? b.amountCollected / b.amountTarget : 0;
       }
-      // Obsługa dat
+      // Sortowanie po Kwotach
+      else if (field === "amountTarget" || field === "amountCollected") {
+        valA = Number(a[field]);
+        valB = Number(b[field]);
+      }
+      // Sortowanie po Datach
       else if (field === "deadline" || field === "createdAt") {
-        valA = new Date(valA).getTime();
-        valB = new Date(valB).getTime();
+        valA = new Date(a[field]).getTime();
+        valB = new Date(b[field]).getTime();
+      }
+      // Fallback (np. stringi)
+      else {
+        valA = a[field];
+        valB = b[field];
       }
 
       return filters.sortOrder === "asc"
@@ -203,23 +142,31 @@ const AdminProjects = () => {
   }, [projects, activeTab, filters]);
 
   const sortOptions = [
-    { value: "createdAt", label: t("filters.sortOptions.date") },
+    {
+      value: "createdAt",
+      label: t("filters.sortOptions.date"),
+    },
     {
       value: "deadline",
-      label: t("filters.sortOptions.deadline") || "Deadline",
+      label: t("filters.sortOptions.deadline"),
     },
     {
       value: "amountTarget",
-      label: t("projects.fields.amountTarget") || "Cel zbiórki",
+      label: t("projects.fields.amountTarget"),
     },
     {
       value: "amountCollected",
-      label: t("projects.fields.amountCollected") || "Uzbierana kwota",
+      label: t("projects.fields.amountCollected"),
+    },
+    {
+      value: "progress",
+      label: t("filters.sortOptions.progress"),
     },
   ];
 
-  const handleStatusChange = (project, newStatus) => {
-    console.log("Status change:", project.id, newStatus);
+  // Handler kliknięcia w kartę -> Przekierowanie do edycji/szczegółów
+  const handleProjectClick = (projectId) => {
+    navigate(`/admin/projects/${projectId}`);
   };
 
   return (
@@ -251,6 +198,7 @@ const AdminProjects = () => {
         </div>
       </header>
 
+      {/* PANEL FILTRÓW */}
       <div
         className={`filter-panel-wrapper ${isFilterPanelOpen ? "open" : ""}`}
       >
@@ -299,9 +247,25 @@ const AdminProjects = () => {
               {t("form.fields.applicantType.options.vetClinic")}
             </option>
           </select>
+
+          <select
+            value={filters.isUrgent}
+            onChange={(e) => handleFilterChange("isUrgent", e.target.value)}
+          >
+            <option value="all">
+              {t("filters.allPriorities") || "Wszystkie priorytety"}
+            </option>
+            <option value="true">
+              {t("filters.importantPriority") || "Pilne"}
+            </option>
+            <option value="false">
+              {t("filters.normalPriority") || "Zwykłe"}
+            </option>
+          </select>
         </FilterBar>
       </div>
 
+      {/* ZAKŁADKI STATUSÓW */}
       <div className="tabs-container">
         {["active", "draft", "completed", "cancelled"].map((status) => (
           <button
@@ -317,15 +281,20 @@ const AdminProjects = () => {
         ))}
       </div>
 
+      {/* LISTA KART */}
       <div className="projects-content">
         {isLoading ? (
           <Loader size="lg" variant="center" />
         ) : error ? (
-          <ErrorState title="Błąd" message={error} onRetry={fetchProjects} />
+          <ErrorState
+            title={t("requests.fetchError") || "Błąd"}
+            message={error}
+            onRetry={fetchProjects}
+          />
         ) : processedProjects.length === 0 ? (
           <div className="empty-state">
             <h3>{t("requests.noRequestsFound")}</h3>
-            <p>Brak projektów.</p>
+            <p>Brak projektów spełniających kryteria.</p>
           </div>
         ) : (
           <div className="projects-grid">
@@ -333,19 +302,12 @@ const AdminProjects = () => {
               <ProjectCard
                 key={project.id}
                 project={project}
-                onClick={() => setSelectedProject(project)}
+                onClick={() => handleProjectClick(project.id)}
               />
             ))}
           </div>
         )}
       </div>
-
-      <ProjectDetailsModal
-        isOpen={!!selectedProject}
-        onClose={() => setSelectedProject(null)}
-        project={selectedProject}
-        onStatusChange={handleStatusChange}
-      />
     </div>
   );
 };
