@@ -29,7 +29,7 @@ ADMIN
         - walidacja danych przy edycji (front+backend) oraz na dodawaniu zbiorki (front+backend), pamietac o walidacji slugu + na formularzu poblokowac
         - zapisz zmiany ma zapisac zmiany
         - tlumaczenia
-        - tworzenie aktualnosci i odczyt
+        - tworzenie aktualnosci i odczyt + edycja, usuwanie
         - responsywnosc
         - loader i alert przy zmianie danych (pamietac o alercie jak nie ma okladki)
         - testy
