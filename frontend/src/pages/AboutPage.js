@@ -67,13 +67,37 @@ function AboutPage() {
 					lalala
 				</Button>
 			</section>
+
+			<section className="third-section">
+				<div className="text-container">
+					<h2 className="tile-title"> Więcej o nas </h2>
+				</div>
+				<div className="titles">
+					<a
+						href="/partnership"
+						className="tile first"
+						style={{ backgroundImage: "url(/3-sample.jpg)" }}>
+						<span className="text">Partnerzy</span>
+					</a>
+					<a
+						href="/contact"
+						className="tile second"
+						style={{ backgroundImage: "url(/2-sample.jpg)" }}>
+						<span className="text">Kontakt</span>
+					</a>
+					<a
+						href="/partnership"
+						className="tile third"
+						style={{ backgroundImage: "url(/1-sample.jpg)" }}>
+						<span className="text">Nasza grupa</span>
+					</a>
+				</div>
+			</section>
 		</main>
 	);
 }
 
 export default AboutPage;
-
-// 4. Sekcja zobacz komu pomogliśmy + przycisk do /success-stories
 
 // 5. Sekcja więcej o nas z 2 kafelkami - 1 odnośnik na współpraca, 2 odnośnik na kontakt
 
