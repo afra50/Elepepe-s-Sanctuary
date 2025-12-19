@@ -1,14 +1,24 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { AlertTriangle } from "lucide-react"; // <-- Import ikony
 import Button from "../../ui/Button";
+import Checkbox from "../../ui/Checkbox";
+import DatePickerField from "../../ui/DatePickerField";
 
-const ProjectSidebar = ({ formData, onChange }) => {
+const ProjectSidebar = ({ formData, onChange, onLangChange, activeLang }) => {
   const { t } = useTranslation("admin");
 
-  // Formatowanie daty dla input type="datetime-local" (wymaga formatu YYYY-MM-DDTHH:MM)
-  const formattedDeadline = formData.deadline
-    ? new Date(formData.deadline).toISOString().slice(0, 16)
-    : "";
+  const deadlineValue = formData.deadline || "";
+
+  const handleDateChange = (val) => {
+    onChange({ target: { name: "deadline", value: val } });
+  };
+
+  const handleCheckboxChange = (checked) => {
+    onChange({
+      target: { name: "isUrgent", type: "checkbox", checked: checked },
+    });
+  };
 
   return (
     <>
@@ -16,7 +26,6 @@ const ProjectSidebar = ({ formData, onChange }) => {
       <div className="card sidebar-card">
         <h3 className="section-title">Konfiguracja</h3>
 
-        {/* Status - używa Twojej klasy .form-field */}
         <div className="form-field">
           <label>Status</label>
           <select name="status" value={formData.status} onChange={onChange}>
@@ -27,22 +36,18 @@ const ProjectSidebar = ({ formData, onChange }) => {
           </select>
         </div>
 
-        {/* Checkbox "PILNE" - używa Twojej struktury .checkbox */}
-        <div className="form-field">
-          <label className="checkbox">
-            <input
-              type="checkbox"
-              name="isUrgent"
-              checked={formData.isUrgent}
-              onChange={onChange}
-            />
-            <span className="checkbox__box"></span>
-            <div className="checkbox__text">
-              <span className="checkbox__label" style={{ color: "#dc2626" }}>
-                Oznacz jako PILNE
-              </span>
+        {/* --- STYLIZOWANY CHECKBOX PILNE --- */}
+        <div className="form-field urgent-field-box">
+          <Checkbox
+            name="isUrgent"
+            checked={formData.isUrgent}
+            onChange={handleCheckboxChange}
+          >
+            <div className="urgent-label-content">
+              <AlertTriangle size={16} strokeWidth={2.5} />
+              <span>Oznacz jako PILNE</span>
             </div>
-          </label>
+          </Checkbox>
         </div>
 
         <div className="form-field">
@@ -57,11 +62,11 @@ const ProjectSidebar = ({ formData, onChange }) => {
 
         <div className="form-field">
           <label>Deadline</label>
-          <input
-            type="datetime-local"
+          <DatePickerField
             name="deadline"
-            value={formattedDeadline}
-            onChange={onChange}
+            value={deadlineValue}
+            onChange={handleDateChange}
+            placeholder="Wybierz datę..."
           />
         </div>
       </div>
@@ -70,7 +75,6 @@ const ProjectSidebar = ({ formData, onChange }) => {
       <div className="card sidebar-card mt-4">
         <h3 className="section-title">Dane zwierzęcia</h3>
 
-        {/* Używamy klasy .info-list z nowego SCSS dla lepszego układu w sidebarze */}
         <div className="info-list">
           <div className="form-field">
             <label>Imię</label>
@@ -82,14 +86,49 @@ const ProjectSidebar = ({ formData, onChange }) => {
             />
           </div>
 
-          <div className="form-field">
-            <label>Gatunek</label>
-            <select name="species" value={formData.species} onChange={onChange}>
-              <option value="rat">Szczur</option>
-              <option value="guineaPig">Świnka</option>
-              <option value="other">Inne</option>
-            </select>
+          <div className="form-row form-row--sm">
+            <div className="form-field half">
+              <label>Gatunek</label>
+              <select
+                name="species"
+                value={formData.species}
+                onChange={onChange}
+              >
+                <option value="rat">Szczur</option>
+                <option value="guineaPig">Świnka</option>
+                <option value="other">Inne</option>
+              </select>
+            </div>
+            <div className="form-field half">
+              <label>Liczba</label>
+              <input
+                type="number"
+                name="animalsCount"
+                value={formData.animalsCount}
+                onChange={onChange}
+                min="1"
+              />
+            </div>
           </div>
+
+          {formData.species === "other" && (
+            <div className="form-field species-other-box">
+              <label>
+                <img
+                  src={`/flags/${activeLang}.svg`}
+                  alt={activeLang}
+                  className="input-flag"
+                />
+                Gatunek (Inne) - {activeLang.toUpperCase()}
+              </label>
+              <input
+                type="text"
+                value={formData.speciesOther[activeLang] || ""}
+                onChange={(e) => onLangChange("speciesOther", e.target.value)}
+                placeholder={`Np. Chomik (${activeLang})`}
+              />
+            </div>
+          )}
 
           <div className="form-field">
             <label>Miasto</label>
@@ -103,25 +142,44 @@ const ProjectSidebar = ({ formData, onChange }) => {
         </div>
       </div>
 
-      {/* --- KARTA 3: WNIOSKODAWCA (READ ONLY) --- */}
+      {/* --- KARTA 3: DANE WNIOSKODAWCY --- */}
       <div className="card sidebar-card mt-4 applicant-info-box">
         <h3 className="section-title">Dane Wnioskodawcy</h3>
 
-        <div className="applicant-details">
-          <p className="applicant-name">{formData.fullName}</p>
-          <p className="applicant-type">
-            {t(`form.fields.applicantType.options.${formData.applicantType}`) ||
-              formData.applicantType}
-          </p>
+        <div className="info-list">
+          <div className="form-field">
+            <label>Imię i Nazwisko / Nazwa</label>
+            <input
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={onChange}
+            />
+          </div>
 
-          <div className="applicant-meta">
-            <span>Zgłoszenie ID:</span>
-            <strong>#{formData.requestId}</strong>
+          <div className="form-field">
+            <label>Typ Wnioskodawcy</label>
+            <select
+              name="applicantType"
+              value={formData.applicantType}
+              onChange={onChange}
+            >
+              <option value="person">Osoba prywatna</option>
+              <option value="organization">Organizacja</option>
+              <option value="vetClinic">Klinika Wet.</option>
+            </select>
+          </div>
+
+          <div className="applicant-details">
+            <div className="applicant-meta mt-3">
+              <span>Zgłoszenie ID:</span>
+              <strong>#{formData.requestId}</strong>
+            </div>
           </div>
         </div>
 
-        <Button variant="ghost" size="sm" className="w-full mt-3">
-          Zobacz oryginalny wniosek
+        <Button variant="accent" size="sm" className="w-full mt-3">
+          Zobacz oryginał
         </Button>
       </div>
     </>

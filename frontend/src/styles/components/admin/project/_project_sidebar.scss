@@ -1,9 +1,111 @@
 // _projectSidebar.scss
 
-// Stylizacja specyficzna dla sidebara, która nie kłóci się z form.scss
 .admin-project-details-page {
 
-    // Karta z danymi wnioskodawcy (szare tło)
+    // --- HELPER CLASSES ---
+    .text-danger {
+        color: $color-error
+    }
+
+    .w-full {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .mt-3 {
+        margin-top: 0.75rem;
+    }
+
+    // --- FORMULARZE W SIDEBARZE ---
+
+    // Mniejszy odstęp w wierszu formularza (np. Gatunek + Liczba)
+    .form-row--sm {
+        gap: 0.5rem;
+    }
+
+    .urgent-field-box {
+        background-color: #fef2f2; // Bardzo jasny czerwony
+        border: 2px dashed #fca5a5; // Przerywana czerwona ramka
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+        }
+
+        // Stylizacja treści wewnątrz checkboxa (ikona + tekst)
+        .urgent-label-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #b91c1c; // Ciemny czerwony tekst
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        // Dostosowanie samego checkboxa (kwadracika) wewnątrz tego boxa
+        .checkbox__box {
+            border-color: #ef4444; // Czerwona ramka kwadracika
+            background-color: white;
+        }
+
+        // Gdy zaznaczony
+        input:checked+.checkbox__box {
+            background-color: #ef4444;
+            border-color: #ef4444;
+        }
+    }
+
+    // Specjalny box dla "Gatunek (Inne)" z tłem i flagą
+    .species-other-box {
+        background-color: #fdf2f8;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px dashed #fbcfe8;
+        margin-bottom: 0.8rem;
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            margin-bottom: 0.3rem;
+            color: #db2777;
+        }
+
+        .input-flag {
+            width: 16px;
+            height: 12px;
+            border-radius: 2px;
+            object-fit: cover;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            background-color: #ffffff; // Wymuszamy białe tło inputa na różowym tle
+            border-color: #fbcfe8;
+
+            &:focus {
+                border-color: #db2777;
+                box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.1);
+            }
+        }
+    }
+
+    // Lista pól formularza w sekcji "Dane zwierzęcia"
+    .info-list {
+        .form-field {
+            margin-bottom: 0.8rem;
+        }
+    }
+
+    // --- KARTA WNIOSKODAWCY (SZARA) ---
     .applicant-info-box {
         background-color: #f9fafb !important; // Nadpisuje białe tło .card
         border: 1px solid #e5e7eb;
@@ -41,26 +143,6 @@
                     color: $color-primary;
                 }
             }
-        }
-
-        // Utility klasa pomocnicza dla przycisku na całą szerokość
-        .w-full {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .mt-3 {
-            margin-top: 0.75rem;
-        }
-    }
-
-    // Lista informacji (możemy tu dodać specyficzne style dla inputów w sidebarze jeśli mają być mniejsze)
-    .info-list {
-
-        // Inputy w sidebarze korzystają z .form-field z form.scss, 
-        // więc wyglądają spójnie. Ewentualne drobne korekty marginesów:
-        .form-field {
-            margin-bottom: 0.8rem;
         }
     }
 }

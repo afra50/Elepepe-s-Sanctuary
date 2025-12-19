@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ExternalLink, Save, AlertTriangle } from "lucide-react";
+import {
+  ArrowLeft,
+  ExternalLink,
+  Save,
+  AlertTriangle,
+  Edit2,
+  Check,
+  X,
+} from "lucide-react";
 import Button from "../../ui/Button";
 import Alert from "../../ui/Alert";
-// Import Twojego komponentu paska postępu
 import ProgressBar from "../../ui/ProgressBar";
 
 const ProjectHeader = ({
@@ -11,20 +18,20 @@ const ProjectHeader = ({
   id,
   onBack,
   onSave,
+  onChange, // Potrzebne do edycji finansów
   isSaving,
   activeLang,
   alert,
   setAlert,
 }) => {
   const { t } = useTranslation("admin");
+  const [isEditingFinance, setIsEditingFinance] = useState(false);
 
   // Obsługa kliknięcia w podgląd
   const handlePublicPreview = () => {
     if (formData.slug) {
-      // Otwiera w nowej karcie
       window.open(`/projects/${formData.slug}`, "_blank");
     } else {
-      // Fallback jeśli slug nie jest jeszcze ustawiony
       console.warn("Brak sluga, nie można otworzyć podglądu");
     }
   };
@@ -37,10 +44,10 @@ const ProjectHeader = ({
         </Button>
         <div className="header-actions">
           <Button
-            variant="outline"
+            variant="accent"
             icon={<ExternalLink size={16} />}
             onClick={handlePublicPreview}
-            disabled={!formData.slug} // Zablokuj jeśli brak sluga
+            disabled={!formData.slug}
           >
             Podgląd publiczny
           </Button>
@@ -74,23 +81,90 @@ const ProjectHeader = ({
           </div>
         </div>
 
-        {/* Box Finansowy */}
+        {/* --- BOX FINANSOWY --- */}
         <div className="finance-summary-box">
-          <div className="fs-row">
-            <span className="fs-label">Cel:</span>
-            <span className="fs-value">
-              {formData.amountTarget} {formData.currency}
+          <div className="finance-header">
+            <span
+              className={`finance-title ${isEditingFinance ? "active" : ""}`}
+            >
+              {isEditingFinance ? "Edycja finansów" : "Finanse"}
             </span>
-          </div>
-          <div className="fs-row">
-            <span className="fs-label">Zebrano:</span>
-            <span className="fs-value highlight">
-              {formData.amountCollected} {formData.currency}
-            </span>
+
+            <button
+              type="button"
+              className="icon-btn-small"
+              onClick={() => setIsEditingFinance(!isEditingFinance)}
+              title="Edytuj kwoty"
+            >
+              {isEditingFinance ? <X size={16} /> : <Edit2 size={14} />}
+            </button>
           </div>
 
-          {/* Nowy Progress Bar */}
-          <div style={{ marginTop: "0.75rem" }}>
+          {!isEditingFinance ? (
+            // --- TRYB PODGLĄDU ---
+            <>
+              <div className="fs-row">
+                <span className="fs-label">Cel:</span>
+                <span className="fs-value">
+                  {formData.amountTarget} {formData.currency}
+                </span>
+              </div>
+              <div className="fs-row">
+                <span className="fs-label">Zebrano:</span>
+                <span className="fs-value highlight">
+                  {formData.amountCollected} {formData.currency}
+                </span>
+              </div>
+            </>
+          ) : (
+            // --- TRYB EDYCJI ---
+            <div className="finance-edit-grid">
+              <div className="finance-input-group">
+                <label>Cel:</label>
+                <input
+                  type="number"
+                  name="amountTarget"
+                  value={formData.amountTarget}
+                  onChange={onChange}
+                  className="mini-input"
+                />
+              </div>
+              <div className="finance-input-group">
+                <label>Zebrano:</label>
+                <input
+                  type="number"
+                  name="amountCollected"
+                  value={formData.amountCollected}
+                  onChange={onChange}
+                  className="mini-input"
+                />
+              </div>
+              <div className="finance-input-group">
+                <label>Waluta:</label>
+                <select
+                  name="currency"
+                  value={formData.currency}
+                  onChange={onChange}
+                  className="mini-input"
+                >
+                  <option value="PLN">PLN</option>
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                </select>
+              </div>
+              <div className="finance-actions">
+                <button
+                  className="btn-text-primary"
+                  onClick={() => setIsEditingFinance(false)}
+                >
+                  <Check size={14} style={{ marginRight: 4 }} /> Gotowe
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Progress Bar */}
+          <div className="progress-wrapper">
             <ProgressBar
               current={formData.amountCollected}
               goal={formData.amountTarget}
@@ -100,7 +174,7 @@ const ProjectHeader = ({
       </div>
 
       {alert && (
-        <div className="mt-4">
+        <div className="alert-container">
           <Alert variant={alert.variant} onClose={() => setAlert(null)}>
             {alert.message}
           </Alert>

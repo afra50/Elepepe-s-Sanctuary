@@ -1,0 +1,19 @@
+.create-news-modal {
+    .btn-upload-wrapper {
+        margin-bottom: 0.5rem;
+    }
+
+    .existing-files-box {
+        margin-top: 1rem;
+
+        .small-text {
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    // Helper class dla szarej kropki (jeśli nie masz w globalnym file-list)
+    .file-list__dot.dot-gray {
+        background-color: #9ca3af;
+    }
+}

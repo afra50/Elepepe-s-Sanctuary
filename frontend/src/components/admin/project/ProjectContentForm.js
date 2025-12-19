@@ -1,5 +1,4 @@
 import React from "react";
-import { Globe } from "lucide-react";
 
 const ProjectContentForm = ({
   formData,
@@ -7,18 +6,32 @@ const ProjectContentForm = ({
   setActiveLangTab,
   onLangChange,
 }) => {
+  // Mapa języków na etykiety
+  const languages = [
+    { code: "pl", label: "Polski" },
+    { code: "en", label: "English" },
+    { code: "es", label: "Español" },
+  ];
+
   return (
     <div className="form-section card">
-      {/* Zakładki Językowe (używają stylów z _projectContentForm.scss poniżej) */}
+      {/* Zakładki Językowe */}
       <div className="lang-tabs-container">
         <div className="tabs-list">
-          {["pl", "en", "es"].map((lang) => (
+          {languages.map(({ code, label }) => (
             <button
-              key={lang}
-              className={`lang-tab ${activeLangTab === lang ? "active" : ""}`}
-              onClick={() => setActiveLangTab(lang)}
+              key={code}
+              className={`lang-tab ${activeLangTab === code ? "active" : ""}`}
+              onClick={() => setActiveLangTab(code)}
             >
-              <Globe size={14} className="mr-2" /> {lang.toUpperCase()}
+              {/* Wyświetlanie flagi z public/flags/ */}
+              <img
+                src={`/flags/${code}.svg`}
+                alt={label}
+                className="tab-flag"
+                onError={(e) => (e.target.style.display = "none")} // Ukryj jeśli brak pliku
+              />
+              {label}
             </button>
           ))}
         </div>
@@ -26,14 +39,13 @@ const ProjectContentForm = ({
 
       <h3 className="section-title">Treści ({activeLangTab.toUpperCase()})</h3>
 
-      {/* UŻYCIE TWOJEJ KLASY .form-field */}
       <div className="form-field">
         <label>Tytuł zbiórki</label>
         <input
           type="text"
           value={formData.title[activeLangTab] || ""}
           onChange={(e) => onLangChange("title", e.target.value)}
-          placeholder="Wpisz tytuł..."
+          placeholder={`Wpisz tytuł (${activeLangTab})...`}
         />
       </div>
 
@@ -43,13 +55,13 @@ const ProjectContentForm = ({
           rows={10}
           value={formData.description[activeLangTab] || ""}
           onChange={(e) => onLangChange("description", e.target.value)}
-          placeholder="Opisz zbiórkę..."
+          placeholder={`Opisz zbiórkę (${activeLangTab})...`}
         />
       </div>
 
       <div className="form-row">
         <div className="form-field half">
-          <label>Kraj (Tekst wyświetlany)</label>
+          <label>Kraj</label>
           <input
             type="text"
             value={formData.country[activeLangTab] || ""}
@@ -57,7 +69,7 @@ const ProjectContentForm = ({
           />
         </div>
         <div className="form-field half">
-          <label>Wiek (Tekst wyświetlany)</label>
+          <label>Wiek</label>
           <input
             type="text"
             value={formData.age[activeLangTab] || ""}

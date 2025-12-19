@@ -11,6 +11,7 @@
             .lang-tab {
                 display: flex;
                 align-items: center;
+                gap: 0.5rem; // Odstęp między flagą a tekstem
                 padding: 0.6rem 1rem;
                 border-radius: 0.5rem;
                 background: $color-white;
@@ -20,6 +21,15 @@
                 cursor: pointer;
                 transition: all 0.2s ease;
                 font-size: 0.85rem;
+
+                // STYL FLAGI
+                .tab-flag {
+                    width: 20px;
+                    height: 15px;
+                    object-fit: cover; // Zapobiega rozciąganiu
+                    border-radius: 2px; // Lekkie zaokrąglenie flagi
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); // Delikatny cień
+                }
 
                 &:hover {
                     background: #f9fafb;
