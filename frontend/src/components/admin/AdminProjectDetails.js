@@ -12,6 +12,9 @@ import ProjectHeader from "../../components/admin/project/ProjectHeader";
 import ProjectContentForm from "../../components/admin/project/ProjectContentForm";
 import ProjectSidebar from "../../components/admin/project/ProjectSidebar";
 import ProjectMedia from "../../components/admin/project/ProjectMedia";
+// NOWE:
+import ProjectNews from "../../components/admin/project/ProjectNews";
+import CreateNewsModal from "../../components/admin/project/CreateNewsModal";
 
 const AdminProjectDetails = () => {
   const { id } = useParams();
@@ -25,8 +28,13 @@ const AdminProjectDetails = () => {
   const [error, setError] = useState(null);
   const [alert, setAlert] = useState(null);
 
-  // Stan dla zakładek językowych (przekazywany do ContentForm)
+  // Stan dla zakładek językowych
   const [activeLangTab, setActiveLangTab] = useState("pl");
+
+  // --- STAN DLA AKTUALNOŚCI ---
+  const [projectNews, setProjectNews] = useState([]);
+  const [isNewsModalOpen, setIsNewsModalOpen] = useState(false);
+  const [newsToEdit, setNewsToEdit] = useState(null);
 
   // --- POBIERANIE DANYCH ---
   const fetchProjectDetails = useCallback(async () => {
@@ -36,6 +44,7 @@ const AdminProjectDetails = () => {
       const response = await api.get(`/projects/admin/${id}`);
       const data = response.data;
 
+      // Parsowanie pól JSON
       const parseField = (field) => {
         try {
           return typeof field === "string" ? JSON.parse(field) : field || {};
@@ -44,7 +53,6 @@ const AdminProjectDetails = () => {
         }
       };
 
-      // Przygotowanie danych
       const preparedData = {
         ...data,
         title: { pl: "", en: "", es: "", ...parseField(data.title) },
@@ -60,6 +68,17 @@ const AdminProjectDetails = () => {
       };
 
       setFormData(preparedData);
+
+      // Pobieranie aktualności (jeśli są w osobnym endpoincie lub w 'data.updates')
+      // Zakładam, że backend zwraca je w data.updates lub trzeba dociągnąć osobno:
+      if (data.updates) {
+        setProjectNews(data.updates);
+      } else {
+        // Opcjonalnie: dociągnij jeśli nie ma w głównym obiekcie
+        // const newsRes = await api.get(`/projects/${id}/updates`);
+        // setProjectNews(newsRes.data);
+        setProjectNews([]); // Placeholder
+      }
     } catch (err) {
       console.error("Błąd:", err);
       setError(t("requests.fetchError") || "Nie udało się pobrać szczegółów.");
@@ -72,7 +91,7 @@ const AdminProjectDetails = () => {
     fetchProjectDetails();
   }, [fetchProjectDetails]);
 
-  // --- HANDLERY ---
+  // --- HANDLERY FORMULARZA ---
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -91,23 +110,74 @@ const AdminProjectDetails = () => {
     }));
   };
 
+  const handleFilesChange = (newFiles) => {
+    setFormData((prev) => ({
+      ...prev,
+      files: newFiles,
+    }));
+  };
+
+  // --- HANDLERY NEWSÓW ---
+  const handleAddNews = () => {
+    setNewsToEdit(null);
+    setIsNewsModalOpen(true);
+  };
+
+  const handleEditNews = (newsItem) => {
+    setNewsToEdit(newsItem);
+    setIsNewsModalOpen(true);
+  };
+
+  const handleDeleteNews = async (newsId) => {
+    if (!window.confirm("Czy na pewno chcesz usunąć tę aktualność?")) return;
+
+    try {
+      // await api.delete(`/projects/${id}/updates/${newsId}`);
+      setProjectNews((prev) => prev.filter((n) => n.id !== newsId));
+      setAlert({ variant: "success", message: "Aktualność usunięta." });
+    } catch (err) {
+      setAlert({ variant: "error", message: "Błąd usuwania aktualności." });
+    }
+  };
+
+  const handleSaveNews = async (newsData) => {
+    // newsData zawiera { title, content, isVisible, files (nowe) } + id (jeśli edycja)
+
+    // Tutaj logika FormData dla plików newsa
+    console.log("Saving news:", newsData);
+
+    // Symulacja (zastąp to requestem do API)
+    const newUpdate = {
+      id: newsData.id || Date.now(),
+      title: newsData.title,
+      content: newsData.content,
+      isVisible: newsData.isVisible,
+      createdAt: new Date().toISOString(),
+      files: newsData.files || [],
+    };
+
+    if (newsData.id) {
+      setProjectNews((prev) =>
+        prev.map((n) => (n.id === newsData.id ? { ...n, ...newUpdate } : n))
+      );
+    } else {
+      setProjectNews((prev) => [newUpdate, ...prev]);
+    }
+
+    setIsNewsModalOpen(false);
+    setAlert({ variant: "success", message: "Aktualność zapisana!" });
+  };
+
+  // --- SAVE GLOBALNY ---
   const handleSave = async () => {
     setIsSaving(true);
     setAlert(null);
     try {
-      const payload = {
-        ...formData,
-        title: JSON.stringify(formData.title),
-        description: JSON.stringify(formData.description),
-        country: JSON.stringify(formData.country),
-        age: JSON.stringify(formData.age),
-        speciesOther: JSON.stringify(formData.speciesOther),
-        isUrgent: formData.isUrgent ? 1 : 0,
-      };
+      // Przygotowanie danych (JSON + FormData jeśli pliki)
+      // ... (Twoja logika zapisu z poprzednich kroków)
 
-      // await api.put(`/projects/${id}`, payload); // Odkomentuj jak backend będzie gotowy
-      console.log("Saving payload:", payload);
-      await new Promise((r) => setTimeout(r, 800)); // Mock save
+      console.log("Saving main project data...", formData);
+      await new Promise((r) => setTimeout(r, 800));
 
       setAlert({ variant: "success", message: "Zapisano zmiany!" });
       fetchProjectDetails();
@@ -132,6 +202,7 @@ const AdminProjectDetails = () => {
         id={id}
         onBack={() => navigate("/admin/projects")}
         onSave={handleSave}
+        onChange={handleChange}
         isSaving={isSaving}
         activeLang={activeLangTab}
         alert={alert}
@@ -147,15 +218,38 @@ const AdminProjectDetails = () => {
             onLangChange={handleLangChange}
           />
 
-          <ProjectMedia files={formData.files} />
+          {/* NOWA SEKCJA NEWSÓW */}
+          <ProjectNews
+            news={projectNews}
+            onAddNews={handleAddNews}
+            onEditNews={handleEditNews}
+            onDeleteNews={handleDeleteNews}
+          />
 
-          {/* Tu można dodać ProjectNewsSection w przyszłości */}
+          <ProjectMedia
+            files={formData.files}
+            onFilesChange={handleFilesChange}
+          />
         </div>
 
         <div className="sidebar-content">
-          <ProjectSidebar formData={formData} onChange={handleChange} />
+          <ProjectSidebar
+            formData={formData}
+            onChange={handleChange}
+            onLangChange={handleLangChange}
+            activeLang={activeLangTab}
+          />
         </div>
       </div>
+
+      {/* MODAL NEWSÓW */}
+      <CreateNewsModal
+        isOpen={isNewsModalOpen}
+        onClose={() => setIsNewsModalOpen(false)}
+        newsToEdit={newsToEdit}
+        onSave={handleSaveNews}
+        isSaving={false} // lub stan lokalny isNewsSaving
+      />
     </div>
   );
 };

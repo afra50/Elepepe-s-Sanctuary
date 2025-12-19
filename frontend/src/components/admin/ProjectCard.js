@@ -47,7 +47,7 @@ const ProjectCard = ({ project, onClick }) => {
             project.status}
         </div>
 
-        {project.isUrgent === 1 && (
+        {Boolean(project.isUrgent) && (
           <div
             className="project-card__urgent"
             title={t("projects.fields.isUrgent")}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { createPortal } from "react-dom"; // <--- KLUCZOWY IMPORT DO NAPRAWY WIDOCZNOŚCI
+import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Filter } from "lucide-react";
 
@@ -30,6 +31,8 @@ const initialFilters = {
 
 const AdminRequests = () => {
   const { t } = useTranslation("admin");
+
+  const navigate = useNavigate();
 
   // --- STANY DANYCH ---
   const [activeTab, setActiveTab] = useState("pending");
@@ -255,14 +258,20 @@ const AdminRequests = () => {
     { value: "amount", label: t("filters.sortOptions.amount") },
   ];
 
-  // Nowa funkcja do obsługi podglądu zbiórki
   const handleViewProject = (requestDetails) => {
-    // TODO: Tutaj zrobisz przekierowanie, np.:
-    // navigate(`/admin/projects/${requestDetails.projectId}`);
-    // lub jeśli nie masz ID projektu w requeście, musisz je dodać do backendu
+    // Sprawdź, czy masz ID projektu.
+    // Jeśli ID wniosku (request) to to samo co ID projektu, użyj requestDetails.id.
+    // Jeśli backend zwraca pole 'projectId', użyj go.
 
-    console.log("Przekierowanie do zbiórki dla wniosku ID:", requestDetails.id);
-    // alert("Przekierowanie do podstrony zbiórki (TODO)");
+    // Zakładając, że ID jest takie samo lub backend zwraca "id":
+    const projectId = requestDetails.projectId || requestDetails.id;
+
+    if (projectId) {
+      navigate(`/admin/projects/${projectId}`);
+    } else {
+      console.error("Brak ID projektu do przekierowania");
+      // Opcjonalnie alert
+    }
   };
 
   return (

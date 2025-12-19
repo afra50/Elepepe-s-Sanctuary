@@ -80,14 +80,18 @@ const RequestDetailsModal = ({
           </>
         )}
 
-        {/* STATUS ZATWIERDZONY - ZMIANA TUTAJ */}
         {details.status === "approved" && (
           <Button
-            variant="outline" // lub "primary", zależy jak chcesz wyróżnić
+            variant="outline"
             icon={<ExternalLink size={18} />}
-            onClick={() => onViewProject && onViewProject(details)}
+            onClick={() => {
+              // Wywołaj funkcję przekazaną z rodzica (AdminRequests.js)
+              if (onViewProject) {
+                onViewProject(details);
+              }
+            }}
           >
-            {/* Tekst: "Zobacz zrzutkę" */}
+            {/* Zmień tekst jeśli chcesz, np. "Edytuj zbiórkę" */}
             {t("actions.viewProject") || "Zobacz zrzutkę"}
           </Button>
         )}
