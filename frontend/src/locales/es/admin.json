@@ -38,6 +38,7 @@
   "projects": {
     "createTitle": "Creador de Recaudación",
     "createSubtitle": "Verifica los datos y añade traducciones antes de crear la recaudación. La solicitud se aprobará automáticamente.",
+    "confirmDeleteNews": "¿Estás seguro de que quieres eliminar esta actualización?",
     "sections": {
       "basicData": "Datos Básicos",
       "configuration": "Configuración de la Recaudación",
@@ -45,6 +46,9 @@
       "finance": "Finanzas y Plazo",
       "applicantData": "Datos del solicitante",
       "media": "Fotos y Documentos"
+    },
+    "contentForm": {
+      "header": "Contenido"
     },
     "fields": {
       "animalName": "Nombre de la mascota",
@@ -69,12 +73,22 @@
       "age": "Edad",
       "amountTarget": "Importe Objetivo",
       "deadline": "Fecha límite",
-      "amountCollected": "Cantidad Recaudada"
+      "amountCollected": "Cantidad Recaudada",
+      "detailedDescription": "Descripción detallada"
+    },
+    "placeholders": {
+      "enterTitle": "Introduce el título",
+      "enterDescription": "Describe la recaudación",
+      "speciesOther": "p.ej. Hámster"
     },
     "alerts": {
       "titleRequired": "¡El título es obligatorio!",
       "noCoverPhoto": "No se ha seleccionado foto principal. ¿Continuar sin portada?",
-      "noPhotos": "No hay fotos en la solicitud."
+      "noPhotos": "No hay fotos en la solicitud.",
+      "saveSuccess": "¡Cambios guardados correctamente!",
+      "saveError": "Error al guardar los cambios.",
+      "deleteSuccess": "Actualización eliminada correctamente.",
+      "deleteError": "Error al eliminar la actualización."
     },
     "errors": {
       "animalNameRequired": "El nombre del animal es obligatorio.",
@@ -84,6 +98,65 @@
       "deadlineRequired": "La fecha límite es obligatoria.",
       "fieldRequiredInLang": "El campo \"{{field}}\" es obligatorio en {{lang}}.",
       "speciesOtherRequiredInLang": "El campo \"{{field}}\" (Especie - Otro) es obligatorio en {{lang}}."
+    },
+    "urgentBadge": "URGENTE",
+    "finance": {
+      "title": "Finanzas",
+      "editTitle": "Editar finanzas",
+      "editTooltip": "Editar importes",
+      "target": "Objetivo",
+      "collected": "Recaudado",
+      "currency": "Moneda"
+    },
+    "news": {
+      "title": "Noticias y Actualizaciones",
+      "add": "Añadir noticia",
+      "empty": "No hay noticias para esta recaudación.",
+      "public": "Público",
+      "hidden": "Oculto",
+      "photosCount": "+{{count}} fotos"
+    },
+    "media": {
+      "title": "Galería y Archivos",
+      "subtitle": "Gestionar fotos y documentos de la recaudación.",
+      "photosLabel": "Fotos",
+      "documentsLabel": "Documentos",
+      "addPhotos": "Añadir fotos",
+      "addDocuments": "Añadir documentos",
+      "setCoverTooltip": "Haz clic para establecer como portada",
+      "setCoverHint": "Establecer como portada",
+      "deletedTooltip": "Archivo marcado para eliminar",
+      "coverBadge": "Portada",
+      "deletedBadge": "ELIMINADO",
+      "newPhoto": "NUEVO",
+      "newDoc": "NUEVO",
+      "untitledDocument": "Documento sin título",
+      "noPhotos": "No hay fotos. Haz clic en \"Añadir fotos\" para subir.",
+      "noDocuments": "No hay documentos."
+    },
+    "newsModal": {
+      "createTitle": "Nueva actualización",
+      "editTitle": "Editar actualización",
+      "addFiles": "Adjuntar archivos",
+      "existingFiles": "Archivos existentes",
+      "defaultFileName": "Archivo",
+      "fields": {
+        "title": "Título",
+        "content": "Contenido",
+        "isVisible": "Visible públicamente"
+      },
+      "placeholders": {
+        "title": "Introduce el titular...",
+        "content": "¿Qué hay de nuevo con la mascota?"
+      },
+      "errors": {
+        "titleRequired": "El título es obligatorio"
+      }
+    },
+    "sidebar": {
+      "animalData": "Datos del animal",
+      "requestId": "ID Solicitud",
+      "viewOriginalRequest": "Ver solicitud original"
     }
   },
   "partnerships": {
@@ -202,13 +275,25 @@
     "addFiles": "Añadir archivos",
     "addPhotos": "Añadir fotos",
     "addDocuments": "Añadir documentos",
-    "viewProject": "Ver proyecto"
+    "viewProject": "Ver proyecto",
+    "backToList": "Volver a la lista",
+    "publicPreview": "Vista pública",
+    "saveChanges": "Guardar cambios",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "restore": "Restaurar",
+    "download": "Descargar"
   },
   "common": {
     "years": "años",
     "confirm": "Confirmar",
     "cancel": "Cancelar",
-    "ok": "OK"
+    "ok": "OK",
+    "untitled": "Sin título",
+    "done": "Listo",
+    "save": "Guardar",
+    "add": "Añadir",
+    "selectDate": "Seleccionar fecha..."
   },
   "form": {
     "sections": {
@@ -278,5 +363,10 @@
       "amount": "Importe",
       "progress": "Porcentaje Completo"
     }
+  },
+  "languages": {
+    "pl": "Polaco",
+    "en": "Inglés",
+    "es": "Español"
   }
 }

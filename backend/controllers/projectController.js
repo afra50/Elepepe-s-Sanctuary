@@ -107,8 +107,7 @@ const getProjectDetails = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // 1. Pobierz projekt (możemy użyć getAllProjects z filtrem w pamięci lub dodać getProjectById w modelu)
-    // Dla optymalizacji lepiej dodać getProjectById, ale tutaj użyjemy szybkiego zapytania
+    // 1. Pobierz dane projektu
     const [projectRows] = await connection.query(
       "SELECT * FROM projects WHERE id = ?",
       [id]
@@ -117,24 +116,41 @@ const getProjectDetails = async (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     const project = projectRows[0];
 
-    // 2. Pobierz pliki
+    // 2. Pobierz pliki projektu (galeria/dokumenty zbiórki)
     const files = await ProjectModel.getProjectFiles(connection, id);
 
-    // 3. Formatowanie
+    // 3. Pobierz aktualności (newsy) --- NOWOŚĆ
+    const updatesRaw = await ProjectModel.getProjectUpdates(connection, id);
+
+    // Formatowanie aktualności dla frontendu
+    const formattedUpdates = updatesRaw.map((u) => ({
+      id: u.id,
+      title: u.title, // tu zakładam, że w bazie jest tekst, jeśli JSON to JSON.parse(u.title)
+      content: u.content,
+      isVisible: !!u.is_visible,
+      publishedAt: u.published_at,
+      createdAt: u.created_at,
+      updatedAt: u.updated_at,
+      // Formatowanie plików aktualności
+      files: u.files.map((f) => ({
+        id: f.id,
+        url: `${req.protocol}://${req.get("host")}${f.file_path}`,
+        type: f.file_type,
+        originalName: f.original_name,
+      })),
+    }));
+
+    // 4. Formatowanie głównego obiektu odpowiedzi
     const response = {
       ...project,
       isUrgent: !!project.is_urgent,
       amountTarget: Number(project.amount_target),
       amountCollected: Number(project.amount_collected),
-      // Parsowanie pól JSON, jeśli w bazie są stringami
       title: project.title,
       description: project.description,
-      country: project.country, // frontend oczekuje stringa JSON czy obiektu?
-      // W AdminProjects.js używasz JSON.parse(p.title), więc wyślij stringa.
+      country: project.country,
       age: project.age,
       speciesOther: project.species_other,
-
-      // Mapowanie camelCase
       animalName: project.animal_name,
       animalsCount: project.animals_count,
       applicantType: project.applicant_type,
@@ -142,6 +158,7 @@ const getProjectDetails = async (req, res) => {
       requestId: project.request_id,
       createdAt: project.created_at,
 
+      // Pliki główne projektu
       files: files.map((f) => ({
         id: f.id,
         url: `${req.protocol}://${req.get("host")}${f.file_path}`,
@@ -149,6 +166,9 @@ const getProjectDetails = async (req, res) => {
         type: f.file_type,
         originalName: f.original_name,
       })),
+
+      // Aktualności --- NOWOŚĆ
+      news: formattedUpdates,
     };
 
     res.status(200).json(response);
@@ -160,8 +180,78 @@ const getProjectDetails = async (req, res) => {
   }
 };
 
+/**
+ * POST /api/projects/:id/updates
+ * Tworzy nową aktualność dla projektu
+ */
+const addProjectUpdate = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const { id } = req.params;
+    // Oczekujemy, że title i content to obiekty: { pl: "...", en: "...", es: "..." }
+    const { title, content, isVisible } = req.body;
+
+    // Prosta walidacja - sprawdzamy czy istnieje wersja PL (jako domyślna)
+    if (!title || !title.pl || !content || !content.pl) {
+      return res
+        .status(400)
+        .json({ error: "Tytuł i treść (wersja PL) są wymagane." });
+    }
+
+    // KONWERSJA NA STRING JSON DLA BAZY DANYCH
+    // Baza przyjmuje LONGTEXT, więc musimy zamienić obiekt na string
+    const titleJson = JSON.stringify(title);
+    const contentJson = JSON.stringify(content);
+
+    const newUpdateId = await ProjectModel.createProjectUpdate(connection, {
+      projectId: id,
+      title: titleJson, // <-- Przekazujemy string JSON
+      content: contentJson, // <-- Przekazujemy string JSON
+      isVisible,
+    });
+
+    res.status(201).json({
+      message: "Aktualność dodana",
+      id: newUpdateId,
+    });
+  } catch (error) {
+    console.error("addProjectUpdate error:", error);
+    res.status(500).json({ error: "Server error" });
+  } finally {
+    connection.release();
+  }
+};
+
+/**
+ * DELETE /api/projects/:id/updates/:updateId
+ */
+const deleteProjectUpdate = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const { updateId } = req.params; // ID newsa do usunięcia
+
+    const deleted = await ProjectModel.deleteProjectUpdate(
+      connection,
+      updateId
+    );
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Nie znaleziono aktualności." });
+    }
+
+    res.status(200).json({ message: "Aktualność usunięta." });
+  } catch (error) {
+    console.error("deleteProjectUpdate error:", error);
+    res.status(500).json({ error: "Błąd serwera." });
+  } finally {
+    connection.release();
+  }
+};
+
 module.exports = {
   getActiveProjects,
   getAdminProjects,
   getProjectDetails,
+  addProjectUpdate,
+  deleteProjectUpdate,
 };

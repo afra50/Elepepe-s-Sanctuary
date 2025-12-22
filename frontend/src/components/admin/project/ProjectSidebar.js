@@ -1,11 +1,17 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { AlertTriangle } from "lucide-react"; // <-- Import ikony
+import { AlertTriangle } from "lucide-react";
 import Button from "../../ui/Button";
 import Checkbox from "../../ui/Checkbox";
 import DatePickerField from "../../ui/DatePickerField";
 
-const ProjectSidebar = ({ formData, onChange, onLangChange, activeLang }) => {
+const ProjectSidebar = ({
+  formData,
+  onChange,
+  onLangChange,
+  activeLang,
+  onViewRequest,
+}) => {
   const { t } = useTranslation("admin");
 
   const deadlineValue = formData.deadline || "";
@@ -24,15 +30,25 @@ const ProjectSidebar = ({ formData, onChange, onLangChange, activeLang }) => {
     <>
       {/* --- KARTA 1: KONFIGURACJA --- */}
       <div className="card sidebar-card">
-        <h3 className="section-title">Konfiguracja</h3>
+        <h3 className="section-title">
+          {t("projects.sections.configuration")}
+        </h3>
 
         <div className="form-field">
-          <label>Status</label>
+          <label>{t("projects.fields.status")}</label>
           <select name="status" value={formData.status} onChange={onChange}>
-            <option value="draft">Szkic (Niepubliczna)</option>
-            <option value="active">Aktywna (Publiczna)</option>
-            <option value="completed">Zakończona</option>
-            <option value="cancelled">Anulowana</option>
+            <option value="draft">
+              {t("projects.fields.statusOptions.draft")}
+            </option>
+            <option value="active">
+              {t("projects.fields.statusOptions.active")}
+            </option>
+            <option value="completed">
+              {t("projects.fields.statusOptions.completed")}
+            </option>
+            <option value="cancelled">
+              {t("projects.fields.statusOptions.cancelled")}
+            </option>
           </select>
         </div>
 
@@ -45,13 +61,13 @@ const ProjectSidebar = ({ formData, onChange, onLangChange, activeLang }) => {
           >
             <div className="urgent-label-content">
               <AlertTriangle size={16} strokeWidth={2.5} />
-              <span>Oznacz jako PILNE</span>
+              <span>{t("projects.fields.isUrgent")}</span>
             </div>
           </Checkbox>
         </div>
 
         <div className="form-field">
-          <label>Slug (Link URL)</label>
+          <label>{t("projects.fields.slug")}</label>
           <input
             type="text"
             name="slug"
@@ -61,23 +77,23 @@ const ProjectSidebar = ({ formData, onChange, onLangChange, activeLang }) => {
         </div>
 
         <div className="form-field">
-          <label>Deadline</label>
+          <label>{t("projects.fields.deadline")}</label>
           <DatePickerField
             name="deadline"
             value={deadlineValue}
             onChange={handleDateChange}
-            placeholder="Wybierz datę..."
+            placeholder={t("common.selectDate")}
           />
         </div>
       </div>
 
       {/* --- KARTA 2: DANE ZWIERZAKA --- */}
       <div className="card sidebar-card mt-4">
-        <h3 className="section-title">Dane zwierzęcia</h3>
+        <h3 className="section-title">{t("projects.sidebar.animalData")}</h3>
 
         <div className="info-list">
           <div className="form-field">
-            <label>Imię</label>
+            <label>{t("projects.fields.animalName")}</label>
             <input
               type="text"
               name="animalName"
@@ -88,19 +104,26 @@ const ProjectSidebar = ({ formData, onChange, onLangChange, activeLang }) => {
 
           <div className="form-row form-row--sm">
             <div className="form-field half">
-              <label>Gatunek</label>
+              <label>{t("projects.fields.species")}</label>
               <select
                 name="species"
                 value={formData.species}
                 onChange={onChange}
               >
-                <option value="rat">Szczur</option>
-                <option value="guineaPig">Świnka</option>
-                <option value="other">Inne</option>
+                {/* Używamy kluczy z sekcji 'form', które już masz w JSON */}
+                <option value="rat">
+                  {t("form.fields.species.options.rat")}
+                </option>
+                <option value="guineaPig">
+                  {t("form.fields.species.options.guineaPig")}
+                </option>
+                <option value="other">
+                  {t("form.fields.species.options.other")}
+                </option>
               </select>
             </div>
             <div className="form-field half">
-              <label>Liczba</label>
+              <label>{t("projects.fields.animalsCount")}</label>
               <input
                 type="number"
                 name="animalsCount"
@@ -119,19 +142,21 @@ const ProjectSidebar = ({ formData, onChange, onLangChange, activeLang }) => {
                   alt={activeLang}
                   className="input-flag"
                 />
-                Gatunek (Inne) - {activeLang.toUpperCase()}
+                {t("projects.fields.speciesOther")} - {activeLang.toUpperCase()}
               </label>
               <input
                 type="text"
                 value={formData.speciesOther[activeLang] || ""}
                 onChange={(e) => onLangChange("speciesOther", e.target.value)}
-                placeholder={`Np. Chomik (${activeLang})`}
+                placeholder={`${t(
+                  "projects.placeholders.speciesOther"
+                )} (${activeLang})`}
               />
             </div>
           )}
 
           <div className="form-field">
-            <label>Miasto</label>
+            <label>{t("projects.fields.city")}</label>
             <input
               type="text"
               name="city"
@@ -144,11 +169,13 @@ const ProjectSidebar = ({ formData, onChange, onLangChange, activeLang }) => {
 
       {/* --- KARTA 3: DANE WNIOSKODAWCY --- */}
       <div className="card sidebar-card mt-4 applicant-info-box">
-        <h3 className="section-title">Dane Wnioskodawcy</h3>
+        <h3 className="section-title">
+          {t("projects.sections.applicantData")}
+        </h3>
 
         <div className="info-list">
           <div className="form-field">
-            <label>Imię i Nazwisko / Nazwa</label>
+            <label>{t("form.fields.fullName")}</label>
             <input
               type="text"
               name="fullName"
@@ -158,28 +185,40 @@ const ProjectSidebar = ({ formData, onChange, onLangChange, activeLang }) => {
           </div>
 
           <div className="form-field">
-            <label>Typ Wnioskodawcy</label>
+            <label>{t("form.fields.applicantType.label")}</label>
             <select
               name="applicantType"
               value={formData.applicantType}
               onChange={onChange}
             >
-              <option value="person">Osoba prywatna</option>
-              <option value="organization">Organizacja</option>
-              <option value="vetClinic">Klinika Wet.</option>
+              <option value="person">
+                {t("form.fields.applicantType.options.person")}
+              </option>
+              <option value="organization">
+                {t("form.fields.applicantType.options.organization")}
+              </option>
+              <option value="vetClinic">
+                {t("form.fields.applicantType.options.vetClinic")}
+              </option>
             </select>
           </div>
 
           <div className="applicant-details">
             <div className="applicant-meta mt-3">
-              <span>Zgłoszenie ID:</span>
+              <span>{t("projects.sidebar.requestId")}:</span>
               <strong>#{formData.requestId}</strong>
             </div>
           </div>
         </div>
 
-        <Button variant="accent" size="sm" className="w-full mt-3">
-          Zobacz oryginał
+        <Button
+          variant="accent"
+          size="sm"
+          className="w-full mt-3"
+          onClick={onViewRequest}
+          disabled={!formData.requestId}
+        >
+          {t("projects.sidebar.viewOriginalRequest")}
         </Button>
       </div>
     </>

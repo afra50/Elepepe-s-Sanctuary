@@ -9,9 +9,11 @@ import {
   Upload,
   RotateCcw,
 } from "lucide-react";
-import Button from "../../ui/Button"; // Twój komponent Button
+import { useTranslation } from "react-i18next";
+import Button from "../../ui/Button";
 
 const ProjectMedia = ({ files, onFilesChange }) => {
+  const { t } = useTranslation("admin");
   const photoInputRef = useRef(null);
   const docInputRef = useRef(null);
 
@@ -64,7 +66,6 @@ const ProjectMedia = ({ files, onFilesChange }) => {
     e.target.value = "";
   };
 
-  // Oznaczanie jako usunięte (soft delete)
   const handleMarkAsDeleted = (id) => {
     const updatedFiles = files
       .map((f) => {
@@ -79,7 +80,6 @@ const ProjectMedia = ({ files, onFilesChange }) => {
     onFilesChange(updatedFiles);
   };
 
-  // Przywracanie pliku
   const handleRestoreFile = (id) => {
     const updatedFiles = files.map((f) =>
       f.id === id ? { ...f, isDeleted: false } : f
@@ -102,10 +102,10 @@ const ProjectMedia = ({ files, onFilesChange }) => {
     <div className="media-section card mt-4">
       <div className="section-header-row section-header-media">
         <div>
-          <h3 className="section-title title-no-border">Galeria i Pliki</h3>
-          <p className="section-subtitle">
-            Zarządzaj zdjęciami i dokumentami zbiórki.
-          </p>
+          <h3 className="section-title title-no-border">
+            {t("projects.media.title")}
+          </h3>
+          <p className="section-subtitle">{t("projects.media.subtitle")}</p>
         </div>
       </div>
 
@@ -113,17 +113,17 @@ const ProjectMedia = ({ files, onFilesChange }) => {
       <div className="mb-4">
         <div className="upload-header">
           <label className="section-label-bold">
-            Zdjęcia ({photos.filter((p) => !p.isDeleted).length})
+            {t("projects.media.photosLabel")} (
+            {photos.filter((p) => !p.isDeleted).length})
           </label>
 
-          {/* Przycisk dodawania zdjęć (Button) */}
           <Button
             variant="ghost"
             size="sm"
             icon={<ImageIcon size={16} />}
             onClick={handleAddPhotosClick}
           >
-            Dodaj zdjęcia
+            {t("projects.media.addPhotos")}
           </Button>
           <input
             ref={photoInputRef}
@@ -146,14 +146,16 @@ const ProjectMedia = ({ files, onFilesChange }) => {
                 onClick={() => !file.isDeleted && handleSetCover(file.id)}
                 title={
                   file.isDeleted
-                    ? "Plik oznaczony do usunięcia"
-                    : "Kliknij, aby ustawić jako okładkę"
+                    ? t("projects.media.deletedTooltip")
+                    : t("projects.media.setCoverTooltip")
                 }
               >
                 <img src={file.url} alt="media" />
 
                 {file.isNew && !file.isDeleted && (
-                  <div className="new-badge">NOWE</div>
+                  <div className="new-badge">
+                    {t("projects.media.newPhoto")}
+                  </div>
                 )}
 
                 {!file.isDeleted ? (
@@ -161,11 +163,11 @@ const ProjectMedia = ({ files, onFilesChange }) => {
                     {file.isCover ? (
                       <div className="cover-badge">
                         <Star size={10} fill="white" strokeWidth={0} />
-                        <span>Miniatura</span>
+                        <span>{t("projects.media.coverBadge")}</span>
                       </div>
                     ) : (
                       <div className="cover-hover-hint">
-                        Ustaw jako miniaturę
+                        {t("projects.media.setCoverHint")}
                       </div>
                     )}
 
@@ -176,14 +178,16 @@ const ProjectMedia = ({ files, onFilesChange }) => {
                         e.stopPropagation();
                         handleMarkAsDeleted(file.id);
                       }}
-                      title="Usuń"
+                      title={t("actions.delete")}
                     >
                       <Trash2 size={12} />
                     </button>
                   </>
                 ) : (
                   <div className="deleted-overlay">
-                    <span className="deleted-text">USUNIĘTE</span>
+                    <span className="deleted-text">
+                      {t("projects.media.deletedBadge")}
+                    </span>
                     <button
                       type="button"
                       className="btn-restore"
@@ -191,7 +195,7 @@ const ProjectMedia = ({ files, onFilesChange }) => {
                         e.stopPropagation();
                         handleRestoreFile(file.id);
                       }}
-                      title="Przywróć"
+                      title={t("actions.restore")}
                     >
                       <RotateCcw size={16} />
                     </button>
@@ -201,9 +205,7 @@ const ProjectMedia = ({ files, onFilesChange }) => {
             ))}
           </div>
         ) : (
-          <div className="empty-state-box">
-            Brak zdjęć. Kliknij "Dodaj zdjęcia", aby wgrać.
-          </div>
+          <div className="empty-state-box">{t("projects.media.noPhotos")}</div>
         )}
       </div>
 
@@ -211,17 +213,17 @@ const ProjectMedia = ({ files, onFilesChange }) => {
       <div className="documents-list-container">
         <div className="upload-header">
           <label className="docs-title-header">
-            Dokumenty ({documents.filter((d) => !d.isDeleted).length})
+            {t("projects.media.documentsLabel")} (
+            {documents.filter((d) => !d.isDeleted).length})
           </label>
 
-          {/* Przycisk dodawania dokumentów (Button) */}
           <Button
             variant="ghost"
             size="sm"
             icon={<Paperclip size={16} />}
             onClick={handleAddDocumentsClick}
           >
-            Dodaj dokumenty
+            {t("projects.media.addDocuments")}
           </Button>
           <input
             ref={docInputRef}
@@ -248,13 +250,19 @@ const ProjectMedia = ({ files, onFilesChange }) => {
                     <FileText size={16} className="text-gray" />
                   )}
                   <span className="doc-name">
-                    {doc.originalName || doc.file?.name || "Dokument bez nazwy"}
+                    {doc.originalName ||
+                      doc.file?.name ||
+                      t("projects.media.untitledDocument")}
                   </span>
                   {doc.isNew && !doc.isDeleted && (
-                    <span className="badge-new">NOWY</span>
+                    <span className="badge-new">
+                      {t("projects.media.newDoc")}
+                    </span>
                   )}
                   {doc.isDeleted && (
-                    <span className="badge-deleted">USUNIĘTE</span>
+                    <span className="badge-deleted">
+                      {t("projects.media.deletedBadge")}
+                    </span>
                   )}
                 </div>
                 <div className="doc-actions">
@@ -266,7 +274,7 @@ const ProjectMedia = ({ files, onFilesChange }) => {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="action-btn"
-                          title="Pobierz"
+                          title={t("actions.download")}
                         >
                           <Download size={14} />
                         </a>
@@ -274,7 +282,7 @@ const ProjectMedia = ({ files, onFilesChange }) => {
                       <button
                         className="action-btn btn-delete"
                         onClick={() => handleMarkAsDeleted(doc.id)}
-                        title="Usuń"
+                        title={t("actions.delete")}
                       >
                         <Trash2 size={14} />
                       </button>
@@ -283,9 +291,9 @@ const ProjectMedia = ({ files, onFilesChange }) => {
                     <button
                       className="action-btn btn-restore"
                       onClick={() => handleRestoreFile(doc.id)}
-                      title="Przywróć"
+                      title={t("actions.restore")}
                     >
-                      <RotateCcw size={14} /> Przywróć
+                      <RotateCcw size={14} /> {t("actions.restore")}
                     </button>
                   )}
                 </div>
@@ -293,7 +301,9 @@ const ProjectMedia = ({ files, onFilesChange }) => {
             ))}
           </div>
         ) : (
-          <div className="empty-state-box">Brak dokumentów.</div>
+          <div className="empty-state-box">
+            {t("projects.media.noDocuments")}
+          </div>
         )}
       </div>
     </div>

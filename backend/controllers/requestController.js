@@ -363,6 +363,7 @@ const updateRequestStatus = async (req, res) => {
         species: validatedProject.species,
         city: validatedProject.city,
         amountTarget: validatedProject.amountTarget,
+        amountCollected: validatedProject.amountCollected,
         currency: validatedProject.currency,
         deadline: validatedProject.deadline,
         slug: validatedProject.slug,

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const ProjectContentForm = ({
   formData,
@@ -6,62 +7,69 @@ const ProjectContentForm = ({
   setActiveLangTab,
   onLangChange,
 }) => {
-  // Mapa języków na etykiety
-  const languages = [
-    { code: "pl", label: "Polski" },
-    { code: "en", label: "English" },
-    { code: "es", label: "Español" },
-  ];
+  const { t } = useTranslation("admin");
+
+  // Lista kodów języków (etykiety pobieramy dynamicznie w renderze)
+  const langCodes = ["pl", "en", "es"];
 
   return (
     <div className="form-section card">
       {/* Zakładki Językowe */}
       <div className="lang-tabs-container">
         <div className="tabs-list">
-          {languages.map(({ code, label }) => (
+          {langCodes.map((code) => (
             <button
               key={code}
               className={`lang-tab ${activeLangTab === code ? "active" : ""}`}
               onClick={() => setActiveLangTab(code)}
             >
-              {/* Wyświetlanie flagi z public/flags/ */}
+              {/* Wyświetlanie flagi */}
               <img
                 src={`/flags/${code}.svg`}
-                alt={label}
+                alt={code}
                 className="tab-flag"
-                onError={(e) => (e.target.style.display = "none")} // Ukryj jeśli brak pliku
+                onError={(e) => (e.target.style.display = "none")}
               />
-              {label}
+              {/* Tłumaczenie nazwy języka np. Polski, English... */}
+              {t(`languages.${code}`)}
             </button>
           ))}
         </div>
       </div>
 
-      <h3 className="section-title">Treści ({activeLangTab.toUpperCase()})</h3>
+      <h3 className="section-title">
+        {t("projects.contentForm.header")} ({activeLangTab.toUpperCase()})
+      </h3>
 
       <div className="form-field">
-        <label>Tytuł zbiórki</label>
+        <label>{t("projects.fields.title")}</label>
         <input
           type="text"
           value={formData.title[activeLangTab] || ""}
           onChange={(e) => onLangChange("title", e.target.value)}
-          placeholder={`Wpisz tytuł (${activeLangTab})...`}
+          // Placeholder: "Wpisz tytuł (pl)..."
+          placeholder={`${t(
+            "projects.placeholders.enterTitle"
+          )} (${activeLangTab})...`}
         />
       </div>
 
       <div className="form-field">
-        <label>Opis szczegółowy</label>
+        <label>{t("projects.fields.detailedDescription")}</label>
         <textarea
           rows={10}
           value={formData.description[activeLangTab] || ""}
           onChange={(e) => onLangChange("description", e.target.value)}
-          placeholder={`Opisz zbiórkę (${activeLangTab})...`}
+          // Placeholder: "Opisz zbiórkę (pl)..."
+          placeholder={`${t(
+            "projects.placeholders.enterDescription"
+          )} (${activeLangTab})...`}
         />
       </div>
 
       <div className="form-row">
         <div className="form-field half">
-          <label>Kraj</label>
+          <label>{t("projects.fields.country")}</label>
           <input
             type="text"
             value={formData.country[activeLangTab] || ""}
@@ -69,7 +77,7 @@ const ProjectContentForm = ({
           />
         </div>
         <div className="form-field half">
-          <label>Wiek</label>
+          <label>{t("projects.fields.age")}</label>
           <input
             type="text"
             value={formData.age[activeLangTab] || ""}

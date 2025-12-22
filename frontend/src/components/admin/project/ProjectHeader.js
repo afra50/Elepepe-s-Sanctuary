@@ -18,7 +18,7 @@ const ProjectHeader = ({
   id,
   onBack,
   onSave,
-  onChange, // Potrzebne do edycji finansów
+  onChange,
   isSaving,
   activeLang,
   alert,
@@ -27,7 +27,6 @@ const ProjectHeader = ({
   const { t } = useTranslation("admin");
   const [isEditingFinance, setIsEditingFinance] = useState(false);
 
-  // Obsługa kliknięcia w podgląd
   const handlePublicPreview = () => {
     if (formData.slug) {
       window.open(`/projects/${formData.slug}`, "_blank");
@@ -40,7 +39,7 @@ const ProjectHeader = ({
     <header className="details-header">
       <div className="header-top">
         <Button variant="ghost" icon={<ArrowLeft size={16} />} onClick={onBack}>
-          Wróć do listy
+          {t("actions.backToList")}
         </Button>
         <div className="header-actions">
           <Button
@@ -49,7 +48,7 @@ const ProjectHeader = ({
             onClick={handlePublicPreview}
             disabled={!formData.slug}
           >
-            Podgląd publiczny
+            {t("actions.publicPreview")}
           </Button>
           <Button
             variant="primary"
@@ -57,7 +56,7 @@ const ProjectHeader = ({
             onClick={onSave}
             isLoading={isSaving}
           >
-            Zapisz zmiany
+            {t("actions.saveChanges")}
           </Button>
         </div>
       </div>
@@ -65,7 +64,9 @@ const ProjectHeader = ({
       <div className="header-title-row">
         <div>
           <h1 className="page-title">
-            {formData.title[activeLang] || formData.title["pl"] || "Bez tytułu"}
+            {formData.title[activeLang] ||
+              formData.title["pl"] ||
+              t("common.untitled")}
           </h1>
           <div className="meta-badges">
             <span className={`status-badge ${formData.status}`}>
@@ -75,7 +76,7 @@ const ProjectHeader = ({
             <span className="id-badge">ID: #{id}</span>
             {formData.isUrgent && (
               <span className="urgent-badge">
-                <AlertTriangle size={12} /> PILNE
+                <AlertTriangle size={12} /> {t("projects.urgentBadge")}
               </span>
             )}
           </div>
@@ -87,14 +88,16 @@ const ProjectHeader = ({
             <span
               className={`finance-title ${isEditingFinance ? "active" : ""}`}
             >
-              {isEditingFinance ? "Edycja finansów" : "Finanse"}
+              {isEditingFinance
+                ? t("projects.finance.editTitle")
+                : t("projects.finance.title")}
             </span>
 
             <button
               type="button"
               className="icon-btn-small"
               onClick={() => setIsEditingFinance(!isEditingFinance)}
-              title="Edytuj kwoty"
+              title={t("projects.finance.editTooltip")}
             >
               {isEditingFinance ? <X size={16} /> : <Edit2 size={14} />}
             </button>
@@ -104,13 +107,17 @@ const ProjectHeader = ({
             // --- TRYB PODGLĄDU ---
             <>
               <div className="fs-row">
-                <span className="fs-label">Cel:</span>
+                <span className="fs-label">
+                  {t("projects.finance.target")}:
+                </span>
                 <span className="fs-value">
                   {formData.amountTarget} {formData.currency}
                 </span>
               </div>
               <div className="fs-row">
-                <span className="fs-label">Zebrano:</span>
+                <span className="fs-label">
+                  {t("projects.finance.collected")}:
+                </span>
                 <span className="fs-value highlight">
                   {formData.amountCollected} {formData.currency}
                 </span>
@@ -120,7 +127,7 @@ const ProjectHeader = ({
             // --- TRYB EDYCJI ---
             <div className="finance-edit-grid">
               <div className="finance-input-group">
-                <label>Cel:</label>
+                <label>{t("projects.finance.target")}:</label>
                 <input
                   type="number"
                   name="amountTarget"
@@ -130,7 +137,7 @@ const ProjectHeader = ({
                 />
               </div>
               <div className="finance-input-group">
-                <label>Zebrano:</label>
+                <label>{t("projects.finance.collected")}:</label>
                 <input
                   type="number"
                   name="amountCollected"
@@ -140,7 +147,7 @@ const ProjectHeader = ({
                 />
               </div>
               <div className="finance-input-group">
-                <label>Waluta:</label>
+                <label>{t("projects.finance.currency")}:</label>
                 <select
                   name="currency"
                   value={formData.currency}
@@ -157,7 +164,8 @@ const ProjectHeader = ({
                   className="btn-text-primary"
                   onClick={() => setIsEditingFinance(false)}
                 >
-                  <Check size={14} style={{ marginRight: 4 }} /> Gotowe
+                  <Check size={14} style={{ marginRight: 4 }} />{" "}
+                  {t("common.done")}
                 </button>
               </div>
             </div>

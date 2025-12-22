@@ -21,17 +21,22 @@ FOOTER
 
 ADMIN
 1. Requests
-    - akecptacja requesta z kwota startowa nie ustawia jej w bazie
     - walidacja slugu przy akceptacji
 2. Zbiórki
     2.1 Podstrona zbiórki
-        - przycisk zobacz oryginal ma otwierac modal danego requesta w zakladce requests
         - walidacja danych przy edycji (front+backend) oraz na dodawaniu zbiorki (front+backend), pamietac o walidacji slugu + na formularzu poblokowac
         - zapisz zmiany ma zapisac zmiany
-        - tlumaczenia
-        - tworzenie aktualnosci i odczyt + edycja, usuwanie
+        - tlumaczenia backend (alerty)
+        - wyswietlanie zdjec,plikow dla aktualnosci
         - responsywnosc
         - loader i alert przy zmianie danych (pamietac o alercie jak nie ma okladki)
+        - testy
+    2.2 Create News modal
+        - alerty, walidacja front + backend, zablokowanie przeslania jak nie ma jakiegos jezyka, loader
+        - responsywnosc
+        - obsluga plikow
+        - edycja
+        - tlumaczenia backend
         - testy
 
 

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 // UI & Utils
 import Loader from "../../components/ui/Loader";
 import ErrorState from "../../components/ui/ErrorState";
+import ConfirmDialog from "../../components/ui/ConfirmDialog";
 import api from "../../utils/api";
 
 // Sub-components
@@ -12,31 +13,37 @@ import ProjectHeader from "../../components/admin/project/ProjectHeader";
 import ProjectContentForm from "../../components/admin/project/ProjectContentForm";
 import ProjectSidebar from "../../components/admin/project/ProjectSidebar";
 import ProjectMedia from "../../components/admin/project/ProjectMedia";
-// NOWE:
 import ProjectNews from "../../components/admin/project/ProjectNews";
 import CreateNewsModal from "../../components/admin/project/CreateNewsModal";
+import RequestDetailsModal from "../../components/admin/RequestDetailsModal";
 
 const AdminProjectDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation("admin");
 
-  // --- STANY ---
+  // --- PROJECT STATE ---
   const [formData, setFormData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
   const [alert, setAlert] = useState(null);
-
-  // Stan dla zakładek językowych
   const [activeLangTab, setActiveLangTab] = useState("pl");
 
-  // --- STAN DLA AKTUALNOŚCI ---
+  // --- NEWS STATE ---
   const [projectNews, setProjectNews] = useState([]);
   const [isNewsModalOpen, setIsNewsModalOpen] = useState(false);
   const [newsToEdit, setNewsToEdit] = useState(null);
+  const [isSavingNews, setIsSavingNews] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [newsIdToDelete, setNewsIdToDelete] = useState(null);
 
-  // --- POBIERANIE DANYCH ---
+  // --- ORIGINAL REQUEST MODAL STATE ---
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const [originalRequest, setOriginalRequest] = useState(null);
+  const [isRequestLoading, setIsRequestLoading] = useState(false);
+
+  // --- FETCH DATA ---
   const fetchProjectDetails = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -44,7 +51,7 @@ const AdminProjectDetails = () => {
       const response = await api.get(`/projects/admin/${id}`);
       const data = response.data;
 
-      // Parsowanie pól JSON
+      // Safe JSON parsing helper
       const parseField = (field) => {
         try {
           return typeof field === "string" ? JSON.parse(field) : field || {};
@@ -55,6 +62,7 @@ const AdminProjectDetails = () => {
 
       const preparedData = {
         ...data,
+        // Ensure multilingual fields have structure even if empty
         title: { pl: "", en: "", es: "", ...parseField(data.title) },
         description: {
           pl: "",
@@ -69,19 +77,15 @@ const AdminProjectDetails = () => {
 
       setFormData(preparedData);
 
-      // Pobieranie aktualności (jeśli są w osobnym endpoincie lub w 'data.updates')
-      // Zakładam, że backend zwraca je w data.updates lub trzeba dociągnąć osobno:
-      if (data.updates) {
-        setProjectNews(data.updates);
+      // Handle news from the new backend structure
+      if (data.news) {
+        setProjectNews(data.news);
       } else {
-        // Opcjonalnie: dociągnij jeśli nie ma w głównym obiekcie
-        // const newsRes = await api.get(`/projects/${id}/updates`);
-        // setProjectNews(newsRes.data);
-        setProjectNews([]); // Placeholder
+        setProjectNews([]);
       }
     } catch (err) {
-      console.error("Błąd:", err);
-      setError(t("requests.fetchError") || "Nie udało się pobrać szczegółów.");
+      console.error("Error fetching project:", err);
+      setError(t("requests.fetchError") || "Failed to load project details.");
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +95,32 @@ const AdminProjectDetails = () => {
     fetchProjectDetails();
   }, [fetchProjectDetails]);
 
-  // --- HANDLERY FORMULARZA ---
+  // --- HANDLER: VIEW ORIGINAL REQUEST ---
+  const handleViewOriginalRequest = async () => {
+    if (!formData.requestId) return;
+
+    setIsRequestModalOpen(true);
+
+    // If we already have the specific request loaded, don't fetch again
+    if (originalRequest && originalRequest.id === formData.requestId) return;
+
+    setIsRequestLoading(true);
+    try {
+      const response = await api.get(`/requests/${formData.requestId}`);
+      setOriginalRequest(response.data);
+    } catch (err) {
+      console.error("Error fetching original request:", err);
+      setAlert({
+        variant: "error",
+        message: "Failed to fetch original request data.",
+      });
+      setIsRequestModalOpen(false);
+    } finally {
+      setIsRequestLoading(false);
+    }
+  };
+
+  // --- HANDLERS: FORM & FILES ---
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -103,21 +132,50 @@ const AdminProjectDetails = () => {
   const handleLangChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
-      [field]: {
-        ...prev[field],
-        [activeLangTab]: value,
-      },
+      [field]: { ...prev[field], [activeLangTab]: value },
     }));
   };
 
   const handleFilesChange = (newFiles) => {
-    setFormData((prev) => ({
-      ...prev,
-      files: newFiles,
-    }));
+    setFormData((prev) => ({ ...prev, files: newFiles }));
   };
 
-  // --- HANDLERY NEWSÓW ---
+  const handleSave = async () => {
+    setIsSaving(true);
+    setAlert(null);
+    try {
+      // Prepare payload for backend
+      // Note: You might need to handle file uploads separately via FormData if they are new files
+      const payload = {
+        ...formData,
+        title: JSON.stringify(formData.title),
+        description: JSON.stringify(formData.description),
+        country: JSON.stringify(formData.country),
+        age: JSON.stringify(formData.age),
+        speciesOther: JSON.stringify(formData.speciesOther),
+      };
+
+      // Example save logic (adapt to your API needs)
+      await api.put(`/projects/admin/${id}`, payload);
+
+      setAlert({
+        variant: "success",
+        message: t("projects.alerts.saveSuccess") || "Changes saved!",
+      });
+      // Refresh data to get clean state
+      fetchProjectDetails();
+    } catch (err) {
+      console.error("Save error:", err);
+      setAlert({
+        variant: "error",
+        message: t("projects.alerts.saveError") || "Error saving changes.",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // --- HANDLERS: NEWS ---
   const handleAddNews = () => {
     setNewsToEdit(null);
     setIsNewsModalOpen(true);
@@ -128,70 +186,86 @@ const AdminProjectDetails = () => {
     setIsNewsModalOpen(true);
   };
 
-  const handleDeleteNews = async (newsId) => {
-    if (!window.confirm("Czy na pewno chcesz usunąć tę aktualność?")) return;
+  const handleDeleteNewsClick = (newsId) => {
+    setNewsIdToDelete(newsId);
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const confirmDeleteNews = async () => {
+    if (!newsIdToDelete) return;
 
     try {
-      // await api.delete(`/projects/${id}/updates/${newsId}`);
-      setProjectNews((prev) => prev.filter((n) => n.id !== newsId));
-      setAlert({ variant: "success", message: "Aktualność usunięta." });
+      // Wywołanie API (upewnij się, że endpoint pasuje do backendu)
+      await api.delete(`/projects/${id}/updates/${newsIdToDelete}`);
+
+      // Aktualizacja stanu lokalnego (usunięcie z listy)
+      setProjectNews((prev) => prev.filter((n) => n.id !== newsIdToDelete));
+
+      setAlert({
+        variant: "success",
+        message: t("projects.alerts.deleteSuccess") || "Aktualność usunięta.",
+      });
     } catch (err) {
-      setAlert({ variant: "error", message: "Błąd usuwania aktualności." });
+      console.error(err);
+      setAlert({
+        variant: "error",
+        message:
+          t("projects.alerts.deleteError") || "Błąd usuwania aktualności.",
+      });
+    } finally {
+      // Zamknij dialog i wyczyść ID
+      setIsDeleteConfirmOpen(false);
+      setNewsIdToDelete(null);
     }
+  };
+
+  // 3. Anulowanie usuwania
+  const cancelDeleteNews = () => {
+    setIsDeleteConfirmOpen(false);
+    setNewsIdToDelete(null);
   };
 
   const handleSaveNews = async (newsData) => {
-    // newsData zawiera { title, content, isVisible, files (nowe) } + id (jeśli edycja)
-
-    // Tutaj logika FormData dla plików newsa
-    console.log("Saving news:", newsData);
-
-    // Symulacja (zastąp to requestem do API)
-    const newUpdate = {
-      id: newsData.id || Date.now(),
-      title: newsData.title,
-      content: newsData.content,
-      isVisible: newsData.isVisible,
-      createdAt: new Date().toISOString(),
-      files: newsData.files || [],
-    };
-
-    if (newsData.id) {
-      setProjectNews((prev) =>
-        prev.map((n) => (n.id === newsData.id ? { ...n, ...newUpdate } : n))
-      );
-    } else {
-      setProjectNews((prev) => [newUpdate, ...prev]);
-    }
-
-    setIsNewsModalOpen(false);
-    setAlert({ variant: "success", message: "Aktualność zapisana!" });
-  };
-
-  // --- SAVE GLOBALNY ---
-  const handleSave = async () => {
-    setIsSaving(true);
-    setAlert(null);
+    setIsSavingNews(true);
     try {
-      // Przygotowanie danych (JSON + FormData jeśli pliki)
-      // ... (Twoja logika zapisu z poprzednich kroków)
+      // Przygotowujemy prosty obiekt JSON (bez plików na razie)
+      const payload = {
+        title: newsData.title,
+        content: newsData.content,
+        isVisible: newsData.isVisible,
+      };
 
-      console.log("Saving main project data...", formData);
-      await new Promise((r) => setTimeout(r, 800));
+      if (newsData.id) {
+        // --- EDYCJA (PUT) ---
+        // Tutaj będziesz musiał dorobić endpoint PUT w backendzie w przyszłości
+        await api.put(`/projects/${id}/updates/${newsData.id}`, payload);
+      } else {
+        // --- TWORZENIE (POST) ---
+        await api.post(`/projects/${id}/updates`, payload);
+      }
 
-      setAlert({ variant: "success", message: "Zapisano zmiany!" });
+      // Zamknij modal i odśwież dane
+      setIsNewsModalOpen(false);
+      setAlert({ variant: "success", message: "Aktualność zapisana!" });
       fetchProjectDetails();
     } catch (err) {
-      setAlert({ variant: "error", message: "Błąd zapisu." });
+      console.error("Error saving news:", err);
+      setAlert({
+        variant: "error",
+        message: "Nie udało się zapisać aktualności.",
+      });
     } finally {
-      setIsSaving(false);
+      setIsSavingNews(false);
     }
   };
-
   if (isLoading) return <Loader size="lg" variant="center" />;
   if (error)
     return (
-      <ErrorState title="Błąd" message={error} onRetry={fetchProjectDetails} />
+      <ErrorState
+        title={t("common.error")}
+        message={error}
+        onRetry={fetchProjectDetails}
+      />
     );
   if (!formData) return null;
 
@@ -218,12 +292,11 @@ const AdminProjectDetails = () => {
             onLangChange={handleLangChange}
           />
 
-          {/* NOWA SEKCJA NEWSÓW */}
           <ProjectNews
             news={projectNews}
             onAddNews={handleAddNews}
             onEditNews={handleEditNews}
-            onDeleteNews={handleDeleteNews}
+            onDeleteNews={handleDeleteNewsClick}
           />
 
           <ProjectMedia
@@ -238,18 +311,47 @@ const AdminProjectDetails = () => {
             onChange={handleChange}
             onLangChange={handleLangChange}
             activeLang={activeLangTab}
+            // Pass the handler to open the modal
+            onViewRequest={handleViewOriginalRequest}
           />
         </div>
       </div>
 
-      {/* MODAL NEWSÓW */}
+      {/* NEWS MODAL */}
       <CreateNewsModal
         isOpen={isNewsModalOpen}
         onClose={() => setIsNewsModalOpen(false)}
         newsToEdit={newsToEdit}
         onSave={handleSaveNews}
-        isSaving={false} // lub stan lokalny isNewsSaving
+        isSaving={isSavingNews}
       />
+
+      {/* ORIGINAL REQUEST MODAL (READ ONLY) */}
+      <RequestDetailsModal
+        isOpen={isRequestModalOpen}
+        onClose={() => setIsRequestModalOpen(false)}
+        details={originalRequest}
+        isLoading={isRequestLoading}
+        // Hide actions since we are just viewing reference data
+        onApprove={null}
+        onReject={null}
+        onViewProject={null}
+      />
+
+      {isDeleteConfirmOpen && (
+        <ConfirmDialog
+          isOpen={isDeleteConfirmOpen}
+          variant="danger"
+          message={
+            t("projects.confirmDeleteNews") ||
+            "Czy na pewno chcesz usunąć tę aktualność?"
+          }
+          confirmLabel={t("actions.delete") || "Usuń"}
+          cancelLabel={t("common.cancel") || "Anuluj"}
+          onConfirm={confirmDeleteNews}
+          onCancel={cancelDeleteNews}
+        />
+      )}
     </div>
   );
 };
