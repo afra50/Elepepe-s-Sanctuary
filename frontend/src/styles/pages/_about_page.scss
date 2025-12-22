@@ -5,7 +5,7 @@
 		max-width: 1200px;
 		display: flex;
 		padding-inline: clamp(1rem, 3vw, 2rem);
-		padding-block: 5rem;
+		padding-block: clamp(2rem, 3vw, 5rem);
 		margin: 0 auto;
 		flex-wrap: wrap;
 		gap: 3rem;
@@ -46,13 +46,13 @@
 		background-color: #ddd;
 		text-align: center;
 		padding-inline: clamp(1rem, 3vw, 2rem);
-		padding-block: 5rem;
+		padding-block: clamp(2rem, 3vw, 5rem);
 
 		.right-side {
 			max-width: 1200px;
 			display: flex;
 
-			margin: 0 auto;
+			margin: 2rem auto;
 			flex-wrap: wrap;
 			gap: 3rem;
 			flex-direction: row-reverse;
@@ -95,8 +95,9 @@
 	// TRZECIA SEKCJA
 	.third-section {
 		.tile-title {
-			margin-bottom: 0rem;
-			margin-top: 5rem;
+			margin-bottom: 1rem;
+			margin-top: clamp(3rem, 4vw, 5rem);
+
 			text-align: center;
 			font-size: 2rem;
 			color: $color-secondary;
@@ -115,6 +116,7 @@
 			flex: 1;
 			background-size: cover;
 			background-repeat: no-repeat;
+			min-width: 350px;
 			width: 20%;
 			height: 300px;
 			border-radius: 1rem;

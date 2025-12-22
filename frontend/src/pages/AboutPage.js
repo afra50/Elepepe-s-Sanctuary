@@ -5,8 +5,8 @@ function AboutPage() {
 		<main className="page-about">
 			<Banner
 				image="/about-us-banner.jpg"
-				title={"Tytuł"}
-				text={"lorem ipsum"}
+				title={"Elepepe's Sanctuary"}
+				text={"Jesteśmy, by pomagać najmniejszym"}
 				ctaLabel={"Dołącz do nas!"}
 				ctaLink="/"
 			/>
@@ -64,7 +64,7 @@ function AboutPage() {
 						style={{ backgroundImage: "url(/1-sample.jpg)" }}></div>
 				</div>
 				<Button variant="primary" size="lg" className="succes-stories">
-					lalala
+					Nasze sukcesy
 				</Button>
 			</section>
 
@@ -98,7 +98,3 @@ function AboutPage() {
 }
 
 export default AboutPage;
-
-// 5. Sekcja więcej o nas z 2 kafelkami - 1 odnośnik na współpraca, 2 odnośnik na kontakt
-
-// Sekcje mogą mieć naprzemienne kolory. Komponent Baner masz zrobiony i jest do wykorzystania
