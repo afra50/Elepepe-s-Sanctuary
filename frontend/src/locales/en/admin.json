@@ -88,7 +88,8 @@
       "saveSuccess": "Changes saved successfully!",
       "saveError": "Error saving changes.",
       "deleteSuccess": "Update deleted successfully.",
-      "deleteError": "Error deleting update."
+      "deleteError": "Error deleting update.",
+      "validationError": "The form contains errors. Please check the data."
     },
     "errors": {
       "animalNameRequired": "Animal name is required.",
@@ -97,7 +98,10 @@
       "amountTargetPositive": "Target amount must be greater than 0.",
       "deadlineRequired": "Deadline is required.",
       "fieldRequiredInLang": "The field \"{{field}}\" is required in {{lang}}.",
-      "speciesOtherRequiredInLang": "The field \"{{field}}\" (Species - Other) is required in {{lang}}."
+      "speciesOtherRequiredInLang": "The field \"{{field}}\" (Species - Other) is required in {{lang}}.",
+      "basicDataRequired": "Please complete the required basic fields (Name, Slug).",
+      "titleRequired": "Fundraiser title is required.",
+      "slugExists": "This link (slug) is already used by another fundraiser."
     },
     "urgentBadge": "URGENT",
     "finance": {

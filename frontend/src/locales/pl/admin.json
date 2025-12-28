@@ -88,7 +88,8 @@
       "saveSuccess": "Zapisano zmiany!",
       "saveError": "Błąd zapisu.",
       "deleteSuccess": "Aktualność usunięta.",
-      "deleteError": "Błąd usuwania aktualności."
+      "deleteError": "Błąd usuwania aktualności.",
+      "validationError": "Formularz zawiera błędy. Sprawdź poprawność danych."
     },
     "errors": {
       "animalNameRequired": "Imię zwierzaka jest wymagane.",
@@ -97,7 +98,10 @@
       "amountTargetPositive": "Kwota docelowa musi być większa od 0.",
       "deadlineRequired": "Termin (Deadline) jest wymagany.",
       "fieldRequiredInLang": "Pole \"{{field}}\" jest wymagane w języku {{lang}}.",
-      "speciesOtherRequiredInLang": "Pole \"{{field}}\" (Gatunek - Inne) jest wymagane w języku {{lang}}."
+      "speciesOtherRequiredInLang": "Pole \"{{field}}\" (Gatunek - Inne) jest wymagane w języku {{lang}}.",
+      "slugExists": "Ten link (slug) jest już używany przez inną zbiórkę.",
+      "basicDataRequired": "Uzupełnij wymagane pola podstawowe (Imię, Link).",
+      "titleRequired": "Tytuł jest wymagany."
     },
     "urgentBadge": "PILNE",
     "finance": {

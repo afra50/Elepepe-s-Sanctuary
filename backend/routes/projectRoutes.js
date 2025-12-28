@@ -9,6 +9,7 @@ router.get("/", projectController.getActiveProjects);
 // ADMIN ONLY
 router.get("/admin", auth, adminOnly, projectController.getAdminProjects);
 router.get("/admin/:id", auth, adminOnly, projectController.getProjectDetails);
+router.put("/admin/:id", auth, adminOnly, projectController.updateProject);
 router.post(
   "/:id/updates",
   auth,

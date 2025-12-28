@@ -35,8 +35,18 @@ const AdminProjectDetails = () => {
   const [isNewsModalOpen, setIsNewsModalOpen] = useState(false);
   const [newsToEdit, setNewsToEdit] = useState(null);
   const [isSavingNews, setIsSavingNews] = useState(false);
+
+  // Dialog potwierdzenia usuwania newsa
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [newsIdToDelete, setNewsIdToDelete] = useState(null);
+
+  // Dialog potwierdzenia zapisu (np. brak okładki)
+  const [confirmSaveDialog, setConfirmSaveDialog] = useState({
+    isOpen: false,
+    message: "",
+    variant: "info",
+    onConfirm: null,
+  });
 
   // --- ORIGINAL REQUEST MODAL STATE ---
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
@@ -140,39 +150,162 @@ const AdminProjectDetails = () => {
     setFormData((prev) => ({ ...prev, files: newFiles }));
   };
 
-  const handleSave = async () => {
+  // --- SAVE LOGIC (WITH VALIDATION) ---
+  const executeSave = async () => {
+    // Zamknij dialog potwierdzenia zapisu (jeśli był otwarty)
+    setConfirmSaveDialog((prev) => ({ ...prev, isOpen: false }));
     setIsSaving(true);
     setAlert(null);
+
     try {
-      // Prepare payload for backend
-      // Note: You might need to handle file uploads separately via FormData if they are new files
+      // Znajdź ID aktualnej okładki (jeśli jest)
+      const coverFile = formData.files.find((f) => f.isCover && !f.isDeleted);
+      const coverFileId = coverFile ? coverFile.id : null;
+
       const payload = {
         ...formData,
+        // Convert objects to JSON strings for backend
         title: JSON.stringify(formData.title),
         description: JSON.stringify(formData.description),
         country: JSON.stringify(formData.country),
         age: JSON.stringify(formData.age),
         speciesOther: JSON.stringify(formData.speciesOther),
+        // Pass cover ID explicitly
+        coverFileId: coverFileId,
       };
 
-      // Example save logic (adapt to your API needs)
       await api.put(`/projects/admin/${id}`, payload);
 
       setAlert({
         variant: "success",
-        message: t("projects.alerts.saveSuccess") || "Changes saved!",
+        message: t("projects.alerts.saveSuccess"),
       });
-      // Refresh data to get clean state
       fetchProjectDetails();
     } catch (err) {
       console.error("Save error:", err);
-      setAlert({
-        variant: "error",
-        message: t("projects.alerts.saveError") || "Error saving changes.",
-      });
+      // --- OBSŁUGA BŁĘDÓW Z BACKENDU ---
+      const errorCode = err.response?.data?.code;
+
+      if (errorCode === "SLUG_EXISTS") {
+        setAlert({
+          variant: "error",
+          message:
+            t("projects.errors.slugExists") ||
+            "Ten link (slug) jest już zajęty.",
+        });
+      } else if (errorCode === "VALIDATION_ERROR") {
+        setAlert({
+          variant: "error",
+          message:
+            t("projects.alerts.validationError") ||
+            "Błąd walidacji danych. Sprawdź formularz.",
+        });
+      } else {
+        // Domyślny błąd
+        setAlert({
+          variant: "error",
+          message:
+            t("projects.alerts.saveError") || "Wystąpił błąd podczas zapisu.",
+        });
+      }
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleSave = async () => {
+    // 1. Walidacja podstawowa (pola wspólne)
+    if (!formData.slug || !formData.animalName) {
+      setAlert({
+        variant: "error",
+        message:
+          t("projects.errors.basicDataRequired") ||
+          "Uzupełnij podstawowe dane (Slug, Imię).",
+      });
+      return;
+    }
+
+    if (formData.amountTarget <= 0) {
+      setAlert({
+        variant: "error",
+        message:
+          t("projects.errors.amountTargetPositive") ||
+          "Cel zbiórki musi być większy od 0.",
+      });
+      return;
+    }
+
+    // 2. Ścisła walidacja wszystkich języków
+    const languages = ["pl", "en", "es"];
+    // Lista pól, które muszą być wypełnione w każdym języku
+    const requiredTransFields = ["title", "description", "country"];
+
+    for (const lang of languages) {
+      for (const field of requiredTransFields) {
+        const value = formData[field][lang];
+
+        // Sprawdzamy czy wartość istnieje i nie jest pustym stringiem (same spacje)
+        if (!value || !value.trim()) {
+          // A. Przełącz widok na język, w którym jest błąd (UX)
+          setActiveLangTab(lang);
+
+          // B. Pobierz przetłumaczoną nazwę pola (np. "Tytuł" lub "Title")
+          const fieldName = t(`projects.fields.${field}`);
+          const langLabel = lang.toUpperCase();
+
+          // C. Wyświetl błąd
+          setAlert({
+            variant: "error",
+            // Używamy klucza, który masz w plikach JSON: "fieldRequiredInLang"
+            message:
+              t("projects.errors.fieldRequiredInLang", {
+                field: fieldName,
+                lang: langLabel,
+              }) || `Pole "${fieldName}" jest wymagane w języku ${langLabel}.`,
+          });
+
+          return; // Przerwij zapisywanie
+        }
+      }
+
+      // Opcjonalnie: Walidacja "Gatunek (Inne)" tylko jeśli wybrano "other"
+      if (formData.species === "other") {
+        const speciesOtherVal = formData.speciesOther[lang];
+        if (!speciesOtherVal || !speciesOtherVal.trim()) {
+          setActiveLangTab(lang);
+          const fieldName = t("projects.fields.speciesOther");
+          const langLabel = lang.toUpperCase();
+
+          setAlert({
+            variant: "error",
+            message: t("projects.errors.speciesOtherRequiredInLang", {
+              field: fieldName,
+              lang: langLabel,
+            }),
+          });
+          return;
+        }
+      }
+    }
+
+    // 3. Walidacja okładki (Twoja istniejąca logika)
+    const hasPhotos = formData.files.some(
+      (f) => f.type === "photo" && !f.isDeleted
+    );
+    const hasCover = formData.files.some((f) => f.isCover && !f.isDeleted);
+
+    if (hasPhotos && !hasCover) {
+      setConfirmSaveDialog({
+        isOpen: true,
+        message: t("projects.alerts.noCoverPhoto"),
+        variant: "warning",
+        onConfirm: executeSave,
+      });
+      return;
+    }
+
+    // 4. Jeśli wszystko OK -> Wykonaj zapis
+    executeSave();
   };
 
   // --- HANDLERS: NEWS ---
@@ -195,12 +328,8 @@ const AdminProjectDetails = () => {
     if (!newsIdToDelete) return;
 
     try {
-      // Wywołanie API (upewnij się, że endpoint pasuje do backendu)
       await api.delete(`/projects/${id}/updates/${newsIdToDelete}`);
-
-      // Aktualizacja stanu lokalnego (usunięcie z listy)
       setProjectNews((prev) => prev.filter((n) => n.id !== newsIdToDelete));
-
       setAlert({
         variant: "success",
         message: t("projects.alerts.deleteSuccess") || "Aktualność usunięta.",
@@ -213,13 +342,11 @@ const AdminProjectDetails = () => {
           t("projects.alerts.deleteError") || "Błąd usuwania aktualności.",
       });
     } finally {
-      // Zamknij dialog i wyczyść ID
       setIsDeleteConfirmOpen(false);
       setNewsIdToDelete(null);
     }
   };
 
-  // 3. Anulowanie usuwania
   const cancelDeleteNews = () => {
     setIsDeleteConfirmOpen(false);
     setNewsIdToDelete(null);
@@ -228,7 +355,6 @@ const AdminProjectDetails = () => {
   const handleSaveNews = async (newsData) => {
     setIsSavingNews(true);
     try {
-      // Przygotowujemy prosty obiekt JSON (bez plików na razie)
       const payload = {
         title: newsData.title,
         content: newsData.content,
@@ -237,14 +363,14 @@ const AdminProjectDetails = () => {
 
       if (newsData.id) {
         // --- EDYCJA (PUT) ---
-        // Tutaj będziesz musiał dorobić endpoint PUT w backendzie w przyszłości
-        await api.put(`/projects/${id}/updates/${newsData.id}`, payload);
+        // Pamiętaj, aby dodać endpoint PUT w backendzie dla edycji newsa!
+        // await api.put(`/projects/${id}/updates/${newsData.id}`, payload);
+        alert("Edycja newsa wymaga implementacji PUT w backendzie");
       } else {
         // --- TWORZENIE (POST) ---
         await api.post(`/projects/${id}/updates`, payload);
       }
 
-      // Zamknij modal i odśwież dane
       setIsNewsModalOpen(false);
       setAlert({ variant: "success", message: "Aktualność zapisana!" });
       fetchProjectDetails();
@@ -258,6 +384,7 @@ const AdminProjectDetails = () => {
       setIsSavingNews(false);
     }
   };
+
   if (isLoading) return <Loader size="lg" variant="center" />;
   if (error)
     return (
@@ -311,13 +438,14 @@ const AdminProjectDetails = () => {
             onChange={handleChange}
             onLangChange={handleLangChange}
             activeLang={activeLangTab}
-            // Pass the handler to open the modal
             onViewRequest={handleViewOriginalRequest}
           />
         </div>
       </div>
 
-      {/* NEWS MODAL */}
+      {/* --- MODALS --- */}
+
+      {/* 1. News Modal */}
       <CreateNewsModal
         isOpen={isNewsModalOpen}
         onClose={() => setIsNewsModalOpen(false)}
@@ -326,31 +454,56 @@ const AdminProjectDetails = () => {
         isSaving={isSavingNews}
       />
 
-      {/* ORIGINAL REQUEST MODAL (READ ONLY) */}
+      {/* 2. Original Request Modal (Read-only) */}
       <RequestDetailsModal
         isOpen={isRequestModalOpen}
         onClose={() => setIsRequestModalOpen(false)}
         details={originalRequest}
         isLoading={isRequestLoading}
-        // Hide actions since we are just viewing reference data
         onApprove={null}
         onReject={null}
         onViewProject={null}
       />
 
+      {/* 3. Delete News Confirmation Dialog */}
       {isDeleteConfirmOpen && (
-        <ConfirmDialog
-          isOpen={isDeleteConfirmOpen}
-          variant="danger"
-          message={
-            t("projects.confirmDeleteNews") ||
-            "Czy na pewno chcesz usunąć tę aktualność?"
-          }
-          confirmLabel={t("actions.delete") || "Usuń"}
-          cancelLabel={t("common.cancel") || "Anuluj"}
-          onConfirm={confirmDeleteNews}
-          onCancel={cancelDeleteNews}
-        />
+        <div
+          className="portal-confirm-container"
+          style={{ position: "fixed", zIndex: 9999 }}
+        >
+          <ConfirmDialog
+            isOpen={isDeleteConfirmOpen}
+            variant="danger"
+            message={
+              t("projects.confirmDeleteNews") ||
+              "Czy na pewno chcesz usunąć tę aktualność?"
+            }
+            confirmLabel={t("actions.delete") || "Usuń"}
+            cancelLabel={t("common.cancel") || "Anuluj"}
+            onConfirm={confirmDeleteNews}
+            onCancel={cancelDeleteNews}
+          />
+        </div>
+      )}
+
+      {/* 4. Save Project Confirmation Dialog (e.g. No Cover) */}
+      {confirmSaveDialog.isOpen && (
+        <div
+          className="portal-confirm-container"
+          style={{ position: "fixed", zIndex: 9999 }}
+        >
+          <ConfirmDialog
+            isOpen={confirmSaveDialog.isOpen}
+            variant={confirmSaveDialog.variant}
+            message={confirmSaveDialog.message}
+            confirmLabel={t("actions.yes") || "Tak"}
+            cancelLabel={t("actions.cancel") || "Anuluj"}
+            onConfirm={confirmSaveDialog.onConfirm}
+            onCancel={() =>
+              setConfirmSaveDialog((prev) => ({ ...prev, isOpen: false }))
+            }
+          />
+        </div>
       )}
     </div>
   );

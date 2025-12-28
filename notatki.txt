@@ -24,13 +24,10 @@ ADMIN
     - walidacja slugu przy akceptacji
 2. Zbiórki
     2.1 Podstrona zbiórki
-        - walidacja danych przy edycji (front+backend) oraz na dodawaniu zbiorki (front+backend), pamietac o walidacji slugu + na formularzu poblokowac
-        - zapisz zmiany ma zapisac zmiany
-        - tlumaczenia backend (alerty)
+        - walidacja danych na dodawaniu zbiorki (front+backend) + tlumaczenia
         - wyswietlanie zdjec,plikow dla aktualnosci
+        - obsluga plikow, kompresja
         - responsywnosc
-        - loader i alert przy zmianie danych (pamietac o alercie jak nie ma okladki)
-        - testy
     2.2 Create News modal
         - alerty, walidacja front + backend, zablokowanie przeslania jak nie ma jakiegos jezyka, loader
         - responsywnosc

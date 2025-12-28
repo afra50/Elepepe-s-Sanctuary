@@ -179,6 +179,86 @@ const deleteProjectUpdate = async (connection, id) => {
   return result.affectedRows > 0;
 };
 
+/**
+ * Aktualizuje dane projektu w bazie.
+ */
+const updateProject = async (connection, id, data) => {
+  const sql = `
+    UPDATE projects 
+    SET 
+      status = ?, 
+      slug = ?, 
+      is_urgent = ?,
+      applicant_type = ?, 
+      full_name = ?, 
+      animal_name = ?, 
+      animals_count = ?, 
+      species = ?, 
+      city = ?,
+      amount_target = ?, 
+      amount_collected = ?, 
+      currency = ?, 
+      deadline = ?,
+      title = ?, 
+      description = ?, 
+      country = ?, 
+      species_other = ?, 
+      age = ?
+    WHERE id = ?
+  `;
+
+  const values = [
+    data.status,
+    data.slug,
+    data.isUrgent ? 1 : 0,
+    data.applicantType,
+    data.fullName,
+    data.animalName,
+    data.animalsCount,
+    data.species,
+    data.city,
+    data.amountTarget,
+    data.amountCollected,
+    data.currency,
+    data.deadline,
+    data.title, // string JSON
+    data.description, // string JSON
+    data.country, // string JSON
+    data.speciesOther, // string JSON (lub null)
+    data.age, // string JSON (lub null)
+    id,
+  ];
+
+  const [result] = await connection.query(sql, values);
+  return result.affectedRows > 0;
+};
+
+// Funkcja do aktualizacji flagi is_cover w tabeli plików (reset wszystkich, ustawienie jednego)
+const setProjectCover = async (connection, projectId, fileId) => {
+  // 1. Zresetuj wszystkie flagi is_cover dla tego projektu
+  await connection.query(
+    "UPDATE project_files SET is_cover = 0 WHERE project_id = ?",
+    [projectId]
+  );
+
+  // 2. Jeśli podano ID, ustaw flagę
+  if (fileId) {
+    await connection.query(
+      "UPDATE project_files SET is_cover = 1 WHERE id = ? AND project_id = ?",
+      [fileId, projectId]
+    );
+  }
+};
+
+/**
+ * Sprawdza czy slug jest zajęty przez INNY projekt
+ */
+const checkSlugExists = async (connection, slug, excludeId) => {
+  const sql = `SELECT id FROM projects WHERE slug = ? AND id != ? LIMIT 1`;
+  const [rows] = await connection.query(sql, [slug, excludeId]);
+  return rows.length > 0;
+};
+
 module.exports = {
   createProject,
   addProjectFiles,
@@ -189,4 +269,7 @@ module.exports = {
   getProjectUpdates,
   createProjectUpdate,
   deleteProjectUpdate,
+  updateProject,
+  setProjectCover,
+  checkSlugExists,
 };
