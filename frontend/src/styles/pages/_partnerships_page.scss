@@ -1,0 +1,108 @@
+.page-partners {
+	padding-block: clamp(2.5rem, 5vw, 3.5rem);
+	background-color: $color-background;
+
+	h1 {
+		color: $color-secondary;
+	}
+
+	p {
+		color: $secondary-muted;
+	}
+	a {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+	.p-container {
+		max-width: 60rem;
+		margin-inline: auto;
+		padding-inline: clamp(1rem, 4vw, 2rem);
+	}
+	.p-hero {
+		margin-bottom: 2.2rem;
+
+		&_icon {
+			display: inline-block;
+			padding: 0.35rem 0.9rem;
+			border-radius: 999px;
+			background-color: $color-accent;
+			color: $color-white;
+			font-size: 1.05rem;
+			font-family: $font-accent;
+			letter-spacing: 0.03em;
+			margin-bottom: 0.9rem;
+		}
+
+		&_title {
+			font-size: clamp(2.1rem, 3.1vw, 2.8rem);
+			margin-bottom: 0.7rem;
+		}
+
+		&_intro {
+			font-size: 0.98rem;
+			line-height: 1.7;
+		}
+	}
+	.partners-list {
+		max-width: 1200px;
+		display: flex;
+		margin: 0 auto;
+		flex-wrap: wrap;
+		gap: 3rem;
+	}
+	.full-list {
+		margin-top: clamp(3rem, 4vw, 5rem);
+		padding-inline: clamp(1rem, 3vw, 2rem);
+		display: flex;
+		gap: 2rem;
+		list-style: none;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	.partner {
+		min-width: 20%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+		border: 1px solid $color-background;
+		border-radius: 12px;
+		padding: 1.5rem;
+		box-shadow: $shadow-bg;
+		background-color: #fff;
+		transition: transform 0.3s ease;
+		&:hover {
+			transform: scale(1.05);
+		}
+
+		.text-container {
+			max-width: 200px;
+		}
+	}
+	.partners-logo {
+		width: auto;
+		height: 100px;
+	}
+}
+
+@media (max-width: 767px) {
+	.page-partners {
+		.p-container {
+			width: 100%;
+		}
+	}
+	.partners-list {
+		.list-container {
+			flex-direction: column;
+			gap: 2rem;
+			text-align: center;
+			align-items: center;
+			width: 100%;
+			.full-list {
+				width: 100%;
+			}
+		}
+	}
+}
