@@ -10,6 +10,13 @@ HOME
 
 PODSTRONA ZBIÓRKI
 
+PARTNERZY
+- podpiac backend
+
+O NAS
+- tłumaczenia
+- poprawic style lekko?
+
 KONTAKT
 - loader
 - polityka podpiac

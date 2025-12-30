@@ -6,6 +6,7 @@ import AboutPage from "./pages/AboutPage";
 import RequestSupportPage from "./pages/RequestSupportPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ActiveProjectsPage from "./pages/ActiveProjectsPage";
+import PartnershipsPage from "./pages/PartnershipsPage";
 
 // Importy Admina
 import LoginPage from "./pages/LoginPage";
@@ -26,6 +27,7 @@ const routes = [
   { path: "/about", element: <AboutPage /> },
   { path: "/request-support", element: <RequestSupportPage /> },
   { path: "/projects", element: <ActiveProjectsPage /> },
+  { path: "/partnerships", element: <PartnershipsPage /> },
 
   // --- LOGOWANIE ADMINA (Dostępne publicznie) ---
   { path: "/admin/login", element: <LoginPage /> },
