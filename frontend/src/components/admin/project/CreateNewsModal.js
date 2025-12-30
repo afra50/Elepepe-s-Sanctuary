@@ -14,50 +14,71 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
   const languages = ["pl", "en", "es"];
 
   // --- STAN FORMULARZA ---
-  // Teraz title i content to obiekty, a nie stringi
   const [formData, setFormData] = useState({
     title: { pl: "", en: "", es: "" },
     content: { pl: "", en: "", es: "" },
     isVisible: true,
-    files: [],
   });
 
-  const [existingFiles, setExistingFiles] = useState([]);
+  // --- NOWE: JEDNOLITA LISTA PLIKÓW (STARE + NOWE) ---
+  // Obiekt pliku: { id, name, isNew, file (dla nowych) }
+  const [files, setFiles] = useState([]);
+
+  // Lista ID plików do usunięcia (tylko stare pliki)
+  const [filesToDelete, setFilesToDelete] = useState([]);
 
   // --- INICJALIZACJA DANYCH ---
   useEffect(() => {
-    if (newsToEdit) {
-      // Helper do parsowania JSON, jeśli przyjdzie string z bazy
-      const parseField = (field) => {
-        try {
-          return typeof field === "string" ? JSON.parse(field) : field || {};
-        } catch (e) {
-          return {};
-        }
-      };
+    if (isOpen) {
+      // Reset
+      setFiles([]);
+      setFilesToDelete([]);
+      setActiveLang("pl");
 
-      setFormData({
-        title: { pl: "", en: "", es: "", ...parseField(newsToEdit.title) },
-        content: { pl: "", en: "", es: "", ...parseField(newsToEdit.content) },
-        isVisible: newsToEdit.isVisible ?? true,
-        files: [],
-      });
-      setExistingFiles(newsToEdit.files || []);
-    } else {
-      // Reset dla nowego wpisu
-      setFormData({
-        title: { pl: "", en: "", es: "" },
-        content: { pl: "", en: "", es: "" },
-        isVisible: true,
-        files: [],
-      });
-      setExistingFiles([]);
+      if (newsToEdit) {
+        // Helper do parsowania JSON
+        const parseField = (field) => {
+          try {
+            return typeof field === "string" ? JSON.parse(field) : field || {};
+          } catch (e) {
+            return {};
+          }
+        };
+
+        setFormData({
+          title: { pl: "", en: "", es: "", ...parseField(newsToEdit.title) },
+          content: {
+            pl: "",
+            en: "",
+            es: "",
+            ...parseField(newsToEdit.content),
+          },
+          isVisible: newsToEdit.isVisible ?? true,
+        });
+
+        // Mapowanie ISTNIEJĄCYCH plików na wspólny format
+        if (newsToEdit.files && Array.isArray(newsToEdit.files)) {
+          setFiles(
+            newsToEdit.files.map((f) => ({
+              id: f.id, // Prawdziwe ID z bazy
+              name: f.originalName || f.name,
+              isNew: false, // To jest stary plik
+            }))
+          );
+        }
+      } else {
+        // Reset dla nowego wpisu
+        setFormData({
+          title: { pl: "", en: "", es: "" },
+          content: { pl: "", en: "", es: "" },
+          isVisible: true,
+        });
+      }
     }
   }, [newsToEdit, isOpen]);
 
   // --- HANDLERY ---
 
-  // Zmiana tekstu w konkretnym języku
   const handleTextChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -72,22 +93,35 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
     setFormData((prev) => ({ ...prev, isVisible: checked }));
   };
 
+  // --- NOWA OBSŁUGA PLIKÓW ---
+
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length) {
-      setFormData((prev) => ({
-        ...prev,
-        files: [...prev.files, ...files],
-      }));
-    }
+    const newFiles = Array.from(e.target.files);
+    if (!newFiles.length) return;
+
+    // Tworzymy obiekty dla nowych plików
+    const processedFiles = newFiles.map((file) => ({
+      id: `temp-${Math.random().toString(36).substr(2, 9)}`, // Tymczasowe ID
+      name: file.name,
+      isNew: true,
+      file: file, // Fizyczny obiekt File do wysłania
+    }));
+
+    setFiles((prev) => [...prev, ...processedFiles]);
     e.target.value = "";
   };
 
-  const removeNewFile = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      files: prev.files.filter((_, i) => i !== index),
-    }));
+  const removeFile = (id) => {
+    const fileToRemove = files.find((f) => f.id === id);
+    if (!fileToRemove) return;
+
+    // Jeśli usuwamy STARY plik (z bazy), dodajemy jego ID do listy usuniętych
+    if (!fileToRemove.isNew) {
+      setFilesToDelete((prev) => [...prev, id]);
+    }
+
+    // Usuwamy z widoku
+    setFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
   const handleSubmit = () => {
@@ -100,10 +134,18 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
       return;
     }
 
-    onSave({
+    // Przygotowujemy payload.
+    // Parent (AdminProjectDetails) zamieni to na FormData.
+    const payload = {
       ...formData,
       id: newsToEdit?.id,
-    });
+      // Przekazujemy tylko obiekty File dla NOWYCH plików
+      filesToUpload: files.filter((f) => f.isNew).map((f) => f.file),
+      // Przekazujemy listę ID starych plików do usunięcia
+      filesToDelete: filesToDelete,
+    };
+
+    onSave(payload);
   };
 
   return (
@@ -187,7 +229,7 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
         </Checkbox>
       </div>
 
-      {/* SEKCJA PLIKÓW (Bez zmian) */}
+      {/* SEKCJA PLIKÓW */}
       <div className="mt-4">
         <div className="btn-upload-wrapper">
           <Button
@@ -207,15 +249,21 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
           />
         </div>
 
-        {formData.files.length > 0 && (
+        {files.length > 0 && (
           <ul className="file-list mt-2">
-            {formData.files.map((file, idx) => (
-              <li key={idx} className="file-list__item">
-                <span className="file-list__name">{file.name}</span>
+            {files.map((file) => (
+              <li key={file.id} className="file-list__item">
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {/* Opcjonalnie: kropka oznaczająca status (nowy/stary) */}
+                  <span
+                    className={`file-list__dot ${file.isNew ? "" : "dot-gray"}`}
+                  ></span>
+                  <span className="file-list__name">{file.name}</span>
+                </div>
                 <button
                   type="button"
                   className="file-list__btn file-list__btn--remove"
-                  onClick={() => removeNewFile(idx)}
+                  onClick={() => removeFile(file.id)}
                 >
                   <Trash2 size={12} />
                 </button>

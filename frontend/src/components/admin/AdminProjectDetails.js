@@ -415,33 +415,66 @@ const AdminProjectDetails = () => {
     setNewsIdToDelete(null);
   };
 
-  const handleSaveNews = async (newsData) => {
+  const handleSaveNews = async (newsPayload) => {
     setIsSavingNews(true);
     try {
-      const payload = {
-        title: newsData.title,
-        content: newsData.content,
-        isVisible: newsData.isVisible,
+      const formData = new FormData();
+
+      // 1. Pola tekstowe
+      formData.append("title", JSON.stringify(newsPayload.title));
+      formData.append("content", JSON.stringify(newsPayload.content));
+      // Konwersja boolean na string, bo FormData przyjmuje tylko stringi/bloby
+      formData.append("isVisible", String(newsPayload.isVisible));
+
+      // 2. Pliki (tablica 'files')
+      if (newsPayload.filesToUpload && newsPayload.filesToUpload.length > 0) {
+        newsPayload.filesToUpload.forEach((file) => {
+          // Upewnij się, że 'file' to obiekt File (Blob)
+          formData.append("files", file);
+        });
+      }
+
+      // 3. Usuwanie
+      if (newsPayload.filesToDelete && newsPayload.filesToDelete.length > 0) {
+        formData.append(
+          "filesToDelete",
+          JSON.stringify(newsPayload.filesToDelete)
+        );
+      }
+
+      // Debug: Sprawdź co leci w konsoli przeglądarki
+      // for (var pair of formData.entries()) {
+      //     console.log(pair[0]+ ', ' + pair[1]);
+      // }
+
+      const config = {
+        headers: { "Content-Type": "multipart/form-data" },
       };
 
-      if (newsData.id) {
-        // --- EDYCJA (PUT) ---
-        // Pamiętaj, aby dodać endpoint PUT w backendzie dla edycji newsa!
-        // await api.put(`/projects/${id}/updates/${newsData.id}`, payload);
-        alert("Edycja newsa wymaga implementacji PUT w backendzie");
+      if (newsPayload.id) {
+        // EDYCJA
+        await api.put(
+          `/projects/${id}/updates/${newsPayload.id}`,
+          formData,
+          config
+        );
       } else {
-        // --- TWORZENIE (POST) ---
-        await api.post(`/projects/${id}/updates`, payload);
+        // TWORZENIE
+        await api.post(`/projects/${id}/updates`, formData, config);
       }
 
       setIsNewsModalOpen(false);
-      setAlert({ variant: "success", message: "Aktualność zapisana!" });
+      setAlert({
+        variant: "success",
+        message: t("projects.news.savedSuccess") || "Aktualność zapisana!",
+      });
       fetchProjectDetails();
     } catch (err) {
       console.error("Error saving news:", err);
       setAlert({
         variant: "error",
-        message: "Nie udało się zapisać aktualności.",
+        message:
+          t("projects.news.saveError") || "Nie udało się zapisać aktualności.",
       });
     } finally {
       setIsSavingNews(false);

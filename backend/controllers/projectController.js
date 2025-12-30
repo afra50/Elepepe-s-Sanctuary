@@ -213,35 +213,200 @@ const getProjectDetails = async (req, res) => {
 
 /**
  * POST /api/projects/:id/updates
+ * Dodaje aktualność wraz z plikami
  */
 const addProjectUpdate = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const { id } = req.params;
+    // FormData przesyła wszystko jako stringi
     const { title, content, isVisible } = req.body;
 
-    if (!title || !title.pl || !content || !content.pl) {
-      return res
-        .status(400)
-        .json({ error: "Tytuł i treść (wersja PL) są wymagane." });
-    }
+    // Parsowanie widoczności ("true"/"false")
+    const isVisibleBool = isVisible === "true" || isVisible === true;
 
-    const titleJson = JSON.stringify(title);
-    const contentJson = JSON.stringify(content);
+    await connection.beginTransaction();
 
+    // 1. Zapisz tekst aktualności
     const newUpdateId = await ProjectModel.createProjectUpdate(connection, {
       projectId: id,
-      title: titleJson,
-      content: contentJson,
-      isVisible,
+      title: title, // JSON string
+      content: content, // JSON string
+      isVisible: isVisibleBool,
     });
 
-    res.status(201).json({
-      message: "Aktualność dodana",
-      id: newUpdateId,
-    });
+    // 2. Obsługa plików
+    if (req.files && req.files.length > 0) {
+      const filesToInsert = [];
+
+      // Struktura folderów: uploads/projects/{id}/updates/{photos|documents}
+      const baseDir = path.join(
+        process.cwd(),
+        "uploads",
+        "projects",
+        String(id),
+        "updates"
+      );
+      const photosDir = path.join(baseDir, "photos");
+      const docsDir = path.join(baseDir, "documents");
+
+      // Upewnij się, że foldery istnieją
+      await fs.mkdir(photosDir, { recursive: true });
+      await fs.mkdir(docsDir, { recursive: true });
+
+      for (const file of req.files) {
+        let filePath;
+        let fileType;
+        const uniqueId = uuidv4();
+
+        if (file.mimetype.startsWith("image/")) {
+          // ZDJĘCIE: Kompresja Sharp
+          const filename = `${uniqueId}.webp`;
+          await sharp(file.buffer)
+            .resize({ width: 1000, withoutEnlargement: true }) // Mniejsza rozdzielczość dla newsów
+            .webp({ quality: 80 })
+            .toFile(path.join(photosDir, filename));
+
+          filePath = `/uploads/projects/${id}/updates/photos/${filename}`;
+          fileType = "photo";
+        } else {
+          // DOKUMENT: Zwykły zapis
+          let ext = path.extname(file.originalname) || ".bin";
+          const filename = `${uniqueId}${ext}`;
+          await fs.writeFile(path.join(docsDir, filename), file.buffer);
+
+          filePath = `/uploads/projects/${id}/updates/documents/${filename}`;
+          fileType = "document";
+        }
+
+        // Przygotuj dane do insertu (oryginalna nazwa musi być zdekodowana z utf8 jeśli multer ją popsuł, ale zazwyczaj jest ok)
+        // Multer w pamięci ma file.originalname jako string.
+        filesToInsert.push([
+          newUpdateId,
+          filePath,
+          fileType,
+          file.originalname,
+        ]);
+      }
+
+      await ProjectModel.addUpdateFiles(connection, filesToInsert);
+    }
+
+    await connection.commit();
+    res
+      .status(201)
+      .json({ message: "Update added successfully", id: newUpdateId });
   } catch (error) {
+    await connection.rollback();
     console.error("addProjectUpdate error:", error);
+    res.status(500).json({ error: "Server error" });
+  } finally {
+    connection.release();
+  }
+};
+
+/**
+ * PUT /api/projects/:id/updates/:updateId
+ * Edycja aktualności (tekst + dodawanie/usuwanie plików)
+ */
+const editProjectUpdate = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const { id, updateId } = req.params;
+    const { title, content, isVisible, filesToDelete } = req.body;
+    const isVisibleBool = isVisible === "true" || isVisible === true;
+
+    await connection.beginTransaction();
+
+    // 1. Aktualizacja tekstu
+    await ProjectModel.updateProjectUpdate(connection, updateId, {
+      title,
+      content,
+      isVisible: isVisibleBool,
+    });
+
+    // 2. Usuwanie plików (jeśli zaznaczono)
+    if (filesToDelete) {
+      let idsToDelete = [];
+      try {
+        idsToDelete = JSON.parse(filesToDelete);
+      } catch (e) {}
+
+      if (idsToDelete.length > 0) {
+        // A. Pobierz ścieżki (potrzebujemy napisać proste query tutaj lub w modelu,
+        // użyjmy tego co mamy w modelu dla głównego projektu, ale to inna tabela.
+        // Napiszmy szybkie query tutaj dla uproszczenia lub użyjmy uniwersalnego podejścia)
+
+        // Lepiej napisać query tutaj, bo `getFilesByIds` jest dla `project_files` a my chcemy `project_update_files`
+        const [filesRows] = await connection.query(
+          "SELECT file_path FROM project_update_files WHERE id IN (?)",
+          [idsToDelete]
+        );
+
+        // B. Usuń z dysku
+        for (const file of filesRows) {
+          try {
+            const fullPath = path.join(process.cwd(), file.file_path);
+            await fs.unlink(fullPath);
+          } catch (e) {
+            console.warn("File delete error:", e.message);
+          }
+        }
+
+        // C. Usuń z bazy
+        await ProjectModel.deleteUpdateFiles(connection, idsToDelete);
+      }
+    }
+
+    // 3. Dodawanie NOWYCH plików (Kopia logiki z addProjectUpdate)
+    if (req.files && req.files.length > 0) {
+      const filesToInsert = [];
+      const baseDir = path.join(
+        process.cwd(),
+        "uploads",
+        "projects",
+        String(id),
+        "updates"
+      );
+      const photosDir = path.join(baseDir, "photos");
+      const docsDir = path.join(baseDir, "documents");
+
+      await fs.mkdir(photosDir, { recursive: true });
+      await fs.mkdir(docsDir, { recursive: true });
+
+      for (const file of req.files) {
+        let filePath;
+        let fileType;
+        const uniqueId = uuidv4();
+
+        if (file.mimetype.startsWith("image/")) {
+          const filename = `${uniqueId}.webp`;
+          await sharp(file.buffer)
+            .resize({ width: 1000, withoutEnlargement: true })
+            .webp({ quality: 80 })
+            .toFile(path.join(photosDir, filename));
+
+          filePath = `/uploads/projects/${id}/updates/photos/${filename}`;
+          fileType = "photo";
+        } else {
+          let ext = path.extname(file.originalname) || ".bin";
+          const filename = `${uniqueId}${ext}`;
+          await fs.writeFile(path.join(docsDir, filename), file.buffer);
+
+          filePath = `/uploads/projects/${id}/updates/documents/${filename}`;
+          fileType = "document";
+        }
+
+        filesToInsert.push([updateId, filePath, fileType, file.originalname]);
+      }
+      await ProjectModel.addUpdateFiles(connection, filesToInsert);
+    }
+
+    await connection.commit();
+    res.status(200).json({ message: "Update edited successfully" });
+  } catch (error) {
+    await connection.rollback();
+    console.error("editProjectUpdate error:", error);
     res.status(500).json({ error: "Server error" });
   } finally {
     connection.release();
@@ -255,17 +420,39 @@ const deleteProjectUpdate = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const { updateId } = req.params;
+
+    // 1. Pobierz pliki powiązane z tym newsem (żeby usunąć z dysku)
+    const files = await ProjectModel.getUpdateFiles(connection, updateId);
+
+    // 2. Usuń fizycznie z dysku
+    for (const file of files) {
+      try {
+        const fullPath = path.join(process.cwd(), file.file_path);
+        await fs.unlink(fullPath);
+      } catch (e) {
+        console.warn(`Could not delete file ${file.file_path}`, e.message);
+      }
+    }
+
+    // 3. Usuń newsa z bazy (pliki z bazy usuną się kaskadowo lub trzeba je usunąć ręcznie)
+    // Bezpieczniej usunąć pliki z bazy najpierw:
+    if (files.length > 0) {
+      const ids = files.map((f) => f.id);
+      await ProjectModel.deleteUpdateFiles(connection, ids);
+    }
+
+    // Usuń rekord newsa
     const deleted = await ProjectModel.deleteProjectUpdate(
       connection,
       updateId
     );
-    if (!deleted) {
-      return res.status(404).json({ error: "Nie znaleziono aktualności." });
-    }
-    res.status(200).json({ message: "Aktualność usunięta." });
+
+    if (!deleted) return res.status(404).json({ error: "Update not found." });
+
+    res.status(200).json({ message: "Update deleted." });
   } catch (error) {
     console.error("deleteProjectUpdate error:", error);
-    res.status(500).json({ error: "Błąd serwera." });
+    res.status(500).json({ error: "Server error." });
   } finally {
     connection.release();
   }
@@ -502,6 +689,7 @@ module.exports = {
   getAdminProjects,
   getProjectDetails,
   addProjectUpdate,
+  editProjectUpdate,
   deleteProjectUpdate,
   updateProject,
 };

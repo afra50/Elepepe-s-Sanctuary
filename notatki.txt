@@ -33,13 +33,13 @@ ADMIN
     - walidacja slugu przy akceptacji
 2. Zbiórki
     2.1 Podstrona zbiórki
-        - wyswietlanie zdjec,plikow dla aktualnosci
+        - weryfikacja, czy front i backend nie przepusci za duzo plikow 
         - responsywnosc
     2.2 Create News modal
-        - alerty, walidacja front + backend, zablokowanie przeslania jak nie ma jakiegos jezyka, loader
+        - walidacja front + backend, 
+        - zablokowanie przeslania jak nie ma jakiegos jezyka, 
+        - alert, loader
         - responsywnosc
-        - obsluga plikow
-        - edycja
         - tlumaczenia backend
         - testy
 
