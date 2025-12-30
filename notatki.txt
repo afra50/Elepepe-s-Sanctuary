@@ -28,22 +28,6 @@ KONTAKT
 FOOTER
 - polityka i regulamin podpiac
 
-ADMIN
-1. Requests
-    - walidacja slugu przy akceptacji
-2. Zbiórki
-    2.1 Podstrona zbiórki
-        - weryfikacja, czy front i backend nie przepusci za duzo plikow 
-        - responsywnosc
-    2.2 Create News modal
-        - walidacja front + backend, 
-        - zablokowanie przeslania jak nie ma jakiegos jezyka, 
-        - alert, loader
-        - responsywnosc
-        - tlumaczenia backend
-        - testy
-
-
 BACKEND
 - Joi do walidacji requestów
 

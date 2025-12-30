@@ -118,7 +118,10 @@
       "empty": "No news for this fundraiser.",
       "public": "Public",
       "hidden": "Hidden",
-      "photosCount": "+{{count}} photos"
+      "photosCount": "+{{count}} photos",
+      "noFiles": "No files added.",
+      "savedSuccess": "Update saved successfully!",
+      "saveError": "Failed to save the update."
     },
     "media": {
       "title": "Gallery & Files",
@@ -154,7 +157,8 @@
         "content": "What's new with the pet?"
       },
       "errors": {
-        "titleRequired": "Title is required"
+        "titleRequired": "Title is required",
+        "allLanguagesRequired": "Please complete title and content in all languages. Missing: {{lang}}"
       }
     },
     "sidebar": {
@@ -297,7 +301,14 @@
     "done": "Done",
     "save": "Save",
     "add": "Add",
-    "selectDate": "Select date..."
+    "selectDate": "Select date...",
+    "errors": {
+      "serverError": "An unexpected server error occurred.",
+      "validationError": "Validation error. Please check the form.",
+      "fileTooLarge": "File is too large (maximum 10MB).",
+      "tooManyFiles": "File limit exceeded.",
+      "unsupportedFileType": "Unsupported file format. (Allowed: JPG, PNG, WEBP, PDF)"
+    }
   },
   "form": {
     "sections": {

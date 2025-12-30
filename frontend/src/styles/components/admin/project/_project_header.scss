@@ -1,45 +1,76 @@
 .admin-project-details-page {
     .details-header {
         background: $color-white;
-        padding: 1.5rem;
+        // Płynny padding: mniejszy na telefonie (1rem), większy na desktopie (1.5rem)
+        padding: clamp(1rem, 2vw, 1.5rem);
         border-radius: $radius-md;
         box-shadow: $shadow-sm;
         border: 1px solid rgba($color-border, 0.6);
         margin-bottom: 2rem;
 
+        // --- GÓRNA BELKA (PRZYCISKI) ---
         .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            gap: 1rem; // Odstęp między przyciskiem "Wróć" a "Akcjami"
+
+            // NA TELEFONIE: Układaj elementy jeden pod drugim
+            @media (max-width: 600px) {
+                flex-direction: column-reverse; // Akcje na górze, Wróć na dole (opcjonalnie) lub column
+                align-items: stretch; // Rozciągnij przyciski na całą szerokość
+            }
         }
 
         .header-actions {
             display: flex;
             gap: 0.75rem;
+
+            // NA TELEFONIE: Przyciski akcji na pełną szerokość
+            @media (max-width: 600px) {
+                flex: 1;
+                width: 100%;
+
+                // Sprawia, że przyciski wewnątrz Button componentu zajmują równą przestrzeń
+                button {
+                    flex: 1;
+                    justify-content: center;
+                }
+            }
         }
 
+        // --- TYTUŁ I STATUSY ---
         .header-title-row {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            flex-wrap: wrap;
+            align-items: flex-end; // Na desktopie wyrównaj do dołu
             gap: 1.5rem;
+
+            // NA TABLECIE I TELEFONIE: Układaj w kolumnę
+            @media (max-width: 900px) {
+                flex-direction: column;
+                align-items: flex-start; // Wyrównaj do lewej
+            }
 
             .page-title {
                 font-family: $font-heading;
-                font-size: 1.75rem;
+                // Płynna wielkość czcionki: min 1.25rem, max 1.75rem
+                font-size: clamp(1.25rem, 4vw, 1.75rem);
                 font-weight: 800;
                 margin: 0 0 0.5rem 0;
                 color: $color-secondary;
                 line-height: 1.2;
+
+                // Obsługa bardzo długich tytułów (łamanie słów)
+                word-break: break-word;
             }
 
             .meta-badges {
                 display: flex;
                 gap: 0.5rem;
                 align-items: center;
-                flex-wrap: wrap;
+                flex-wrap: wrap; // Pozwól badge'om spadać do nowej linii
 
                 .status-badge {
                     padding: 4px 10px;
@@ -48,6 +79,7 @@
                     text-transform: uppercase;
                     font-size: 0.75rem;
                     letter-spacing: 0.05em;
+                    white-space: nowrap; // Nie łam tekstu wewnątrz badge'a
 
                     &.active {
                         background: #dcfce7;
@@ -82,6 +114,7 @@
                     font-family: monospace;
                     font-size: 0.8rem;
                     border: 1px solid #e5e7eb;
+                    white-space: nowrap;
                 }
 
                 .urgent-badge {
@@ -95,6 +128,7 @@
                     font-weight: 700;
                     font-size: 0.75rem;
                     text-transform: uppercase;
+                    white-space: nowrap;
                 }
             }
         }
@@ -105,9 +139,16 @@
             border: 1px solid #e2e8f0;
             padding: 1rem;
             border-radius: 0.75rem;
-            min-width: 250px;
-            flex-shrink: 0;
             position: relative;
+
+            // Responsywna szerokość
+            width: 100%; // Na mobilu 100%
+
+            @media (min-width: 900px) {
+                min-width: 280px; // Na desktopie stała szerokość
+                width: auto;
+                flex-shrink: 0;
+            }
 
             .finance-header {
                 display: flex;
@@ -131,7 +172,7 @@
                     border: none;
                     cursor: pointer;
                     color: #6b7280;
-                    padding: 4px;
+                    padding: 6px; // Nieco większy obszar kliknięcia na dotyk
                     border-radius: 4px;
                     display: flex;
                     align-items: center;
@@ -171,7 +212,7 @@
             .finance-edit-grid {
                 display: flex;
                 flex-direction: column;
-                gap: 6px;
+                gap: 8px; // Nieco większy odstęp dla dotyku
                 margin-bottom: 8px;
 
                 .finance-input-group {
@@ -186,11 +227,11 @@
                     }
 
                     .mini-input {
-                        width: 80px;
-                        padding: 2px 6px;
+                        width: 100px; // Nieco szersze na mobilu
+                        padding: 4px 6px; // Większy padding dla łatwości edycji
                         border: 1px solid #d1d5db;
                         border-radius: 4px;
-                        font-size: 0.85rem;
+                        font-size: 0.9rem; // Większa czcionka, żeby iOS nie zoomował
                         text-align: right;
                         font-family: inherit;
 
@@ -210,11 +251,12 @@
                         border: none;
                         color: $color-primary;
                         font-family: $font-body;
-                        font-size: 0.75rem;
+                        font-size: 0.8rem;
                         font-weight: 700;
                         cursor: pointer;
                         display: inline-flex;
                         align-items: center;
+                        padding: 4px 8px; // Łatwiejsze trafienie palcem
 
                         &:hover {
                             text-decoration: underline;

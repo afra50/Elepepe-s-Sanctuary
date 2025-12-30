@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import Modal from "../../ui/Modal";
 import Button from "../../ui/Button";
 import Checkbox from "../../ui/Checkbox";
+import Alert from "../../ui/Alert";
+import Loader from "../../ui/Loader";
 import { useTranslation } from "react-i18next";
 import { Trash2, Paperclip } from "lucide-react";
 
@@ -20,23 +22,22 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
     isVisible: true,
   });
 
-  // --- NOWE: JEDNOLITA LISTA PLIKÓW (STARE + NOWE) ---
-  // Obiekt pliku: { id, name, isNew, file (dla nowych) }
+  // --- STAN PLIKÓW ---
   const [files, setFiles] = useState([]);
-
-  // Lista ID plików do usunięcia (tylko stare pliki)
   const [filesToDelete, setFilesToDelete] = useState([]);
+
+  // --- STAN ALERTU LOKALNEGO ---
+  const [localAlert, setLocalAlert] = useState(null);
 
   // --- INICJALIZACJA DANYCH ---
   useEffect(() => {
     if (isOpen) {
-      // Reset
       setFiles([]);
       setFilesToDelete([]);
       setActiveLang("pl");
+      setLocalAlert(null);
 
       if (newsToEdit) {
-        // Helper do parsowania JSON
         const parseField = (field) => {
           try {
             return typeof field === "string" ? JSON.parse(field) : field || {};
@@ -56,18 +57,16 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
           isVisible: newsToEdit.isVisible ?? true,
         });
 
-        // Mapowanie ISTNIEJĄCYCH plików na wspólny format
         if (newsToEdit.files && Array.isArray(newsToEdit.files)) {
           setFiles(
             newsToEdit.files.map((f) => ({
-              id: f.id, // Prawdziwe ID z bazy
+              id: f.id,
               name: f.originalName || f.name,
-              isNew: false, // To jest stary plik
+              isNew: false,
             }))
           );
         }
       } else {
-        // Reset dla nowego wpisu
         setFormData({
           title: { pl: "", en: "", es: "" },
           content: { pl: "", en: "", es: "" },
@@ -87,61 +86,78 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
         [activeLang]: value,
       },
     }));
+    if (localAlert) setLocalAlert(null);
   };
 
   const handleCheckboxChange = (checked) => {
     setFormData((prev) => ({ ...prev, isVisible: checked }));
   };
 
-  // --- NOWA OBSŁUGA PLIKÓW ---
+  const MAX_FILES = 10; // Stała zgodna z backendem
 
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
     if (!newFiles.length) return;
 
-    // Tworzymy obiekty dla nowych plików
+    // Sprawdź, czy po dodaniu nie przekroczymy limitu
+    // Liczymy tylko pliki, które aktualnie są na liście (files.length) + nowe
+    if (files.length + newFiles.length > MAX_FILES) {
+      setLocalAlert({
+        variant: "error",
+        message: `Możesz dodać maksymalnie ${MAX_FILES} plików.`, // Dodaj do tłumaczeń: projects.newsModal.errors.maxFiles
+      });
+      e.target.value = ""; // Reset inputa
+      return;
+    }
+
     const processedFiles = newFiles.map((file) => ({
-      id: `temp-${Math.random().toString(36).substr(2, 9)}`, // Tymczasowe ID
+      id: `temp-${Math.random().toString(36).substr(2, 9)}`,
       name: file.name,
       isNew: true,
-      file: file, // Fizyczny obiekt File do wysłania
+      file: file,
     }));
 
     setFiles((prev) => [...prev, ...processedFiles]);
     e.target.value = "";
+
+    // Jeśli był jakiś błąd wcześniej, wyczyść go
+    if (localAlert) setLocalAlert(null);
   };
 
   const removeFile = (id) => {
     const fileToRemove = files.find((f) => f.id === id);
     if (!fileToRemove) return;
 
-    // Jeśli usuwamy STARY plik (z bazy), dodajemy jego ID do listy usuniętych
     if (!fileToRemove.isNew) {
       setFilesToDelete((prev) => [...prev, id]);
     }
 
-    // Usuwamy z widoku
     setFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
   const handleSubmit = () => {
-    // Walidacja: wymagany tytuł chociaż w języku PL
-    if (!formData.title.pl.trim()) {
-      alert(
-        t("projects.newsModal.errors.titleRequired") ||
-          "Tytuł (PL) jest wymagany"
-      );
-      return;
+    for (const lang of languages) {
+      const title = formData.title[lang];
+      const content = formData.content[lang];
+
+      if (!title?.trim() || !content?.trim()) {
+        setActiveLang(lang);
+        setLocalAlert({
+          variant: "error",
+          message:
+            t("projects.newsModal.errors.allLanguagesRequired", {
+              lang: lang.toUpperCase(),
+            }) ||
+            `Uzupełnij tytuł i treść we wszystkich językach. Brakuje: ${lang.toUpperCase()}`,
+        });
+        return;
+      }
     }
 
-    // Przygotowujemy payload.
-    // Parent (AdminProjectDetails) zamieni to na FormData.
     const payload = {
       ...formData,
       id: newsToEdit?.id,
-      // Przekazujemy tylko obiekty File dla NOWYCH plików
       filesToUpload: files.filter((f) => f.isNew).map((f) => f.file),
-      // Przekazujemy listę ID starych plików do usunięcia
       filesToDelete: filesToDelete,
     };
 
@@ -161,15 +177,36 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
       size="md"
       footer={
         <>
-          <Button variant="ghost" onClick={onClose}>
+          <Button variant="ghost" onClick={onClose} disabled={isSaving}>
             {t("common.cancel")}
           </Button>
-          <Button variant="primary" onClick={handleSubmit} isLoading={isSaving}>
-            {newsToEdit ? t("common.save") : t("common.add")}
+
+          <Button variant="primary" onClick={handleSubmit} disabled={isSaving}>
+            {isSaving ? (
+              <div className="btn-loader-wrapper">
+                <Loader size="sm" variant="inline" />
+              </div>
+            ) : newsToEdit ? (
+              t("common.save")
+            ) : (
+              t("common.add")
+            )}
           </Button>
         </>
       }
     >
+      {/* ALERT BŁĘDÓW */}
+      {localAlert && (
+        <div className="mb-4">
+          <Alert
+            variant={localAlert.variant}
+            onClose={() => setLocalAlert(null)}
+          >
+            {localAlert.message}
+          </Alert>
+        </div>
+      )}
+
       {/* ZAKŁADKI JĘZYKOWE */}
       <div className="lang-tabs-simple mb-3">
         {languages.map((code) => (
@@ -201,6 +238,7 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
           placeholder={`${t(
             "projects.newsModal.placeholders.title"
           )} (${activeLang})`}
+          disabled={isSaving}
         />
       </div>
 
@@ -216,6 +254,7 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
           placeholder={`${t(
             "projects.newsModal.placeholders.content"
           )} (${activeLang})`}
+          disabled={isSaving}
         />
       </div>
 
@@ -224,6 +263,7 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
           name="isVisible"
           checked={formData.isVisible}
           onChange={handleCheckboxChange}
+          disabled={isSaving}
         >
           {t("projects.newsModal.fields.isVisible")}
         </Checkbox>
@@ -237,8 +277,12 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
             size="sm"
             icon={<Paperclip size={16} />}
             onClick={() => fileInputRef.current?.click()}
+            // Zablokuj, jeśli zapisuje LUB jeśli osiągnięto limit plików
+            disabled={isSaving || files.length >= 10}
           >
-            {t("projects.newsModal.addFiles")}
+            {files.length >= 10
+              ? "Limit plików osiągnięty" // projects.newsModal.limitReached
+              : t("projects.newsModal.addFiles")}
           </Button>
           <input
             ref={fileInputRef}
@@ -249,12 +293,11 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
           />
         </div>
 
-        {files.length > 0 && (
+        {files.length > 0 ? (
           <ul className="file-list mt-2">
             {files.map((file) => (
               <li key={file.id} className="file-list__item">
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  {/* Opcjonalnie: kropka oznaczająca status (nowy/stary) */}
                   <span
                     className={`file-list__dot ${file.isNew ? "" : "dot-gray"}`}
                   ></span>
@@ -264,12 +307,16 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
                   type="button"
                   className="file-list__btn file-list__btn--remove"
                   onClick={() => removeFile(file.id)}
+                  disabled={isSaving}
                 >
                   <Trash2 size={12} />
                 </button>
               </li>
             ))}
           </ul>
+        ) : (
+          // Wyświetl komunikat, jeśli brak plików
+          <p>{t("projects.news.noFiles")}</p>
         )}
       </div>
     </Modal>

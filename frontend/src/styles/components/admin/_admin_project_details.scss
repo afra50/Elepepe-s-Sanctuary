@@ -1,19 +1,19 @@
-// _adminProjectDetails.scss
-
 .admin-project-details-page {
     width: 100%;
-    padding-bottom: 4rem;
     font-family: $font-body;
     color: $color-secondary;
 
     // --- GRID LAYOUT ---
     .details-layout {
         display: grid;
-        grid-template-columns: 2fr 1fr;
+        grid-template-columns: 2fr 1fr; // Desktop: Główna treść szersza, sidebar węższy
         gap: 2rem;
+        align-items: start; // Ważne: sidebar nie rozciąga się na wysokość
 
+        // Tablet i Mobile: Jedna kolumna
         @media (max-width: 1024px) {
             grid-template-columns: 1fr;
+            gap: 1.5rem;
         }
     }
 
@@ -24,7 +24,13 @@
         border-radius: $radius-md;
         padding: 1.5rem;
         box-shadow: $shadow-sm;
-        margin-bottom: 1.5rem; // Odstęp między kartami w pionie
+        margin-bottom: 1.5rem;
+
+        // Mniejszy padding na telefonach
+        @media (max-width: 600px) {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
     }
 
     // --- TYTUŁY SEKCJI ---
@@ -54,22 +60,29 @@
         }
     }
 
-    // --- UTILITY ---
+    // --- UTILITY: FORM ROW ---
+    // Używane do układania inputów obok siebie (np. Miasto | Kraj)
     .form-row {
         display: flex;
         gap: 1.5rem;
 
-        @media (max-width: 600px) {
+        // Na telefonie jeden pod drugim
+        @media (max-width: 768px) {
             flex-direction: column;
-            gap: 0;
+            gap: 0; // Odstępy między inputami załatwi margin-bottom w .form-group
         }
 
         .half {
             flex: 1;
+
+            // Na mobile full width
+            @media (max-width: 768px) {
+                width: 100%;
+            }
         }
     }
 
-    // --- PLACEHOLDERY (np. brak newsów) ---
+    // --- PLACEHOLDERY ---
     .text-muted {
         color: lighten($color-secondary, 20%);
         font-size: 0.9rem;

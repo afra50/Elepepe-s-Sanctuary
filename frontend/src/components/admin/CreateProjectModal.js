@@ -19,6 +19,10 @@ import Alert from "../../components/ui/Alert";
 import ConfirmDialog from "../../components/ui/ConfirmDialog";
 import api from "../../utils/api";
 
+// --- KONFIGURACJA LIMITÓW (Zgodna z backendem) ---
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_FILES = 10; // Limit na jedną kategorię (np. 10 nowych zdjęć)
+
 const generateSlug = (text, id) => {
   if (!text) return "";
   const slug = text
@@ -41,7 +45,7 @@ const generateSlug = (text, id) => {
 const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
   const { t } = useTranslation("admin");
 
-  // --- STANY UI (ALERT / CONFIRM) ---
+  // --- STANY UI ---
   const [alert, setAlert] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
@@ -163,29 +167,115 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // --- HANDLERY PLIKÓW ---
+  // --- HANDLERY PLIKÓW (Z WALIDACJĄ) ---
+
   const handleAddPhotos = (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
-    const processed = files.map((file) => ({
-      file,
-      id: Math.random().toString(36).substr(2, 9),
-      url: URL.createObjectURL(file),
-      isPhoto: true,
-    }));
+
+    // 1. Walidacja ilości
+    if (newPhotos.length + files.length > MAX_FILES) {
+      setAlert({
+        variant: "error",
+        message:
+          t("common.errors.tooManyFiles") || `Maksymalnie ${MAX_FILES} plików.`,
+      });
+      e.target.value = "";
+      return;
+    }
+
+    const processed = [];
+    for (const file of files) {
+      // 2. Walidacja typu
+      if (!file.type.startsWith("image/")) {
+        setAlert({
+          variant: "error",
+          message: `${file.name}: ${
+            t("common.errors.unsupportedFileType") || "Dozwolone tylko zdjęcia."
+          }`,
+        });
+        e.target.value = "";
+        return;
+      }
+      // 3. Walidacja rozmiaru
+      if (file.size > MAX_FILE_SIZE) {
+        setAlert({
+          variant: "error",
+          message: `${file.name}: ${
+            t("common.errors.fileTooLarge") || "Plik za duży (>10MB)."
+          }`,
+        });
+        e.target.value = "";
+        return;
+      }
+
+      processed.push({
+        file,
+        id: Math.random().toString(36).substr(2, 9),
+        url: URL.createObjectURL(file),
+        isPhoto: true,
+      });
+    }
+
     setNewPhotos((prev) => [...prev, ...processed]);
+    setAlert(null); // Czyścimy ewentualny błąd
     e.target.value = "";
   };
 
   const handleAddDocuments = (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
-    const processed = files.map((file) => ({
-      file,
-      id: Math.random().toString(36).substr(2, 9),
-      isPhoto: false,
-    }));
+
+    // 1. Walidacja ilości
+    if (newDocuments.length + files.length > MAX_FILES) {
+      setAlert({
+        variant: "error",
+        message:
+          t("common.errors.tooManyFiles") || `Maksymalnie ${MAX_FILES} plików.`,
+      });
+      e.target.value = "";
+      return;
+    }
+
+    const processed = [];
+    for (const file of files) {
+      // 2. Walidacja typu (PDF lub Obraz)
+      const isPdf = file.type === "application/pdf";
+      const isImage = file.type.startsWith("image/");
+
+      if (!isPdf && !isImage) {
+        setAlert({
+          variant: "error",
+          message: `${file.name}: ${
+            t("common.errors.unsupportedFileType") ||
+            "Dozwolone tylko PDF i zdjęcia."
+          }`,
+        });
+        e.target.value = "";
+        return;
+      }
+
+      // 3. Walidacja rozmiaru
+      if (file.size > MAX_FILE_SIZE) {
+        setAlert({
+          variant: "error",
+          message: `${file.name}: ${
+            t("common.errors.fileTooLarge") || "Plik za duży (>10MB)."
+          }`,
+        });
+        e.target.value = "";
+        return;
+      }
+
+      processed.push({
+        file,
+        id: Math.random().toString(36).substr(2, 9),
+        isPhoto: false,
+      });
+    }
+
     setNewDocuments((prev) => [...prev, ...processed]);
+    setAlert(null);
     e.target.value = "";
   };
 
@@ -274,9 +364,35 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
       onClose();
     } catch (error) {
       console.error("Błąd tworzenia zbiórki:", error);
+
+      // --- OBSŁUGA BŁĘDÓW BACKENDOWYCH ---
+      let errorMessage = t("status.errorMessage") || "Wystąpił błąd.";
+
+      if (error.response && error.response.data) {
+        const { code } = error.response.data;
+
+        // Błędy walidacji danych / slugu
+        if (code === "SLUG_EXISTS") {
+          errorMessage = t("projects.errors.slugExists") || "Slug zajęty.";
+        } else if (code === "VALIDATION_ERROR") {
+          errorMessage = t("projects.alerts.validationError");
+        }
+        // Błędy plików (z app.js)
+        else if (code === "LIMIT_FILE_SIZE") {
+          errorMessage = t("common.errors.fileTooLarge");
+        } else if (
+          code === "LIMIT_FILE_COUNT" ||
+          code === "LIMIT_UNEXPECTED_FILE"
+        ) {
+          errorMessage = t("common.errors.tooManyFiles");
+        } else if (code === "INVALID_FILE_TYPE") {
+          errorMessage = t("common.errors.unsupportedFileType");
+        }
+      }
+
       setAlert({
         variant: "error",
-        message: t("status.errorMessage") || "Wystąpił błąd.",
+        message: errorMessage,
       });
     } finally {
       setIsSubmitting(false);
@@ -287,34 +403,42 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
   const handlePreSubmit = () => {
     const showErr = (msg) => setAlert({ variant: "error", message: msg });
 
-    // --- POPRAWKI DŁUGOŚCI (VARCHAR) ---
+    // --- 1. WALIDACJA SLUGU ---
+    if (!formData.slug.trim()) {
+      return showErr(t("projects.errors.slugRequired"));
+    }
+    if (formData.slug.length > 255) {
+      return showErr("Slug jest za długi (max 255 znaków).");
+    }
+    // Regex: małe litery, cyfry, myślniki. Bez spacji i znaków specjalnych.
+    const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+    if (!slugRegex.test(formData.slug)) {
+      return showErr(
+        "Slug może zawierać tylko małe litery, cyfry i myślniki (bez spacji, np. 'pomoc-dla-chomika')."
+      );
+    }
+
+    // --- INNE DŁUGOŚCI (VARCHAR) ---
     if (!formData.animalName.trim())
       return showErr(t("projects.errors.animalNameRequired"));
     if (formData.animalName.length > 100)
-      return showErr("Imię zwierzaka jest za długie (max 100 znaków)."); // VARCHAR(100)
+      return showErr("Imię zwierzaka jest za długie (max 100 znaków).");
 
     if (!formData.fullName.trim())
       return showErr(t("projects.errors.fullNameRequired"));
     if (formData.fullName.length > 255)
-      return showErr("Imię i nazwisko jest za długie (max 255 znaków)."); // VARCHAR(255)
-
-    if (!formData.slug.trim())
-      return showErr(t("projects.errors.slugRequired"));
-    if (formData.slug.length > 255)
-      return showErr("Slug jest za długi (max 255 znaków)."); // VARCHAR(255)
+      return showErr("Imię i nazwisko jest za długie (max 255 znaków).");
 
     if (formData.city && formData.city.length > 100)
-      return showErr("Nazwa miasta jest za długa (max 100 znaków)."); // VARCHAR(100)
+      return showErr("Nazwa miasta jest za długa (max 100 znaków).");
 
     // --- POPRAWKI LICZBOWE ---
     if (!formData.amountTarget || formData.amountTarget <= 0)
       return showErr(t("projects.errors.amountTargetPositive"));
 
-    // Zabezpieczenie przed ujemną liczbą zwierząt
     if (formData.animalsCount < 1)
       return showErr("Liczba zwierząt musi wynosić minimum 1.");
 
-    // Zabezpieczenie przed ujemną kwotą zebraną
     if (formData.amountCollected < 0)
       return showErr("Zebrana kwota nie może być ujemna.");
 
@@ -322,13 +446,13 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
     if (!formData.deadline)
       return showErr(t("projects.errors.deadlineRequired"));
 
-    // Sprawdzenie czy data nie jest z przeszłości
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const selectedDate = new Date(formData.deadline);
     if (selectedDate < today)
       return showErr("Termin zbiórki nie może być datą z przeszłości.");
 
+    // --- JĘZYKI ---
     const languages = ["pl", "en", "es"];
     const requiredTransFields = ["title", "description", "country"];
 
@@ -389,7 +513,6 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
 
   return (
     <>
-      {/* PORTALE - Style przeniesione do SCSS (klasy .portal-*-container) */}
       {alert &&
         createPortal(
           <div className="portal-alert-container">
@@ -448,8 +571,16 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
         <div className="create-project-form">
           <p className="mb-4 text-muted">{t("projects.createSubtitle")}</p>
 
-          {/* 1. DANE WNIOSKODAWCY */}
+          {/* ... Reszta formularza (bez zmian w JSX) ... */}
+          {/* Zakładam, że JSX formularza (inputy, selecty) jest identyczny z Twoim kodem.
+              Kluczowa jest tutaj aktualizacja handlerów:
+              - handleAddPhotos (walidacja)
+              - handleAddDocuments (walidacja)
+              - input slugu (mały tweak w onChange dla pewności)
+          */}
+
           <div className="form-section mb-4">
+            {/* ... (DANE WNIOSKODAWCY - BEZ ZMIAN) ... */}
             <h4 className="full-width mb-0">
               {t("projects.sections.applicantData") ||
                 t("requests.sections.applicantData")}
@@ -488,8 +619,8 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
 
           <hr className="my-4" />
 
-          {/* 2. DANE ZWIERZAKA */}
           <div className="form-section mb-4">
+            {/* ... (DANE ZWIERZAKA - BEZ ZMIAN) ... */}
             <h4 className="full-width mb-0">
               {t("projects.sections.basicData")}
             </h4>
@@ -559,6 +690,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                 className="form-input font-mono"
                 value={formData.slug}
                 onChange={(e) => {
+                  // Możemy tu wstępnie filtrować, ale walidacja finalna jest w handleSubmit
                   handleGlobalChange("slug", e.target.value);
                   setIsSlugManuallyEdited(true);
                 }}
@@ -567,6 +699,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                 {t("projects.fields.slugHint", { slug: formData.slug })}
               </span>
             </div>
+            {/* ... (checkbox urgent, status - BEZ ZMIAN) ... */}
             <div className="form-group checkbox-group">
               <input
                 type="checkbox"
@@ -577,7 +710,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                 }
               />
               <label htmlFor="isUrgent" className="form-label">
-                <AlertTriangle size={14} className="urgent-icon" />
+                <AlertTriangle size={14} className="urgent-icon" />{" "}
                 {t("projects.fields.isUrgent")}
               </label>
             </div>
@@ -602,7 +735,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
 
           <hr />
 
-          {/* 4. TREŚCI */}
+          {/* 4. TREŚCI (BEZ ZMIAN) */}
           <h4 className="mb-3">{t("projects.sections.content")}</h4>
           <div className="tabs-language mb-4">
             {["pl", "en", "es"].map((lang) => (
@@ -619,6 +752,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
             ))}
           </div>
           <div className="form-section">
+            {/* ... Inputy tytułu, opisu, kraju, wieku ... */}
             <div className="form-group full-width">
               <label className="form-label">
                 {t("projects.fields.title")} ({activeLang.toUpperCase()})
@@ -685,7 +819,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
 
           <hr className="my-4" />
 
-          {/* 5. FINANSE */}
+          {/* 5. FINANSE (BEZ ZMIAN) */}
           <h4 className="mb-3">{t("projects.sections.finance")}</h4>
           <div className="form-section">
             <div className="form-group">
@@ -746,7 +880,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
           <hr className="my-4" />
           <h4 className="mb-4">{t("projects.sections.media")}</h4>
 
-          {/* --- 6. ZDJĘCIA --- */}
+          {/* --- 6. ZDJĘCIA (ZAKTUALIZOWANY INPUT) --- */}
           <div className="d-flex justify-content-between align-items-center mb-3">
             <label className="section-label mb-0">
               {t("form.fields.photos")}
@@ -756,14 +890,16 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                 type="file"
                 multiple
                 accept="image/*"
-                onChange={handleAddPhotos}
+                onChange={handleAddPhotos} // <--- TU JEST WALIDACJA
                 hidden
               />
               <ImageIcon size={16} /> {t("actions.addPhotos")}
             </label>
           </div>
 
+          {/* ... Grid zdjęć (BEZ ZMIAN) ... */}
           <div className="cover-selection-grid">
+            {/* Existing photos loop... */}
             {request.petPhotos?.map((photo) => {
               const isSelected = selectedFileIds.includes(photo.id);
               const isCover =
@@ -795,7 +931,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                 </div>
               );
             })}
-
+            {/* New photos loop... */}
             {newPhotos.map((photo) => {
               const isCover =
                 coverSelection?.type === "new" &&
@@ -826,7 +962,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
             })}
           </div>
 
-          {/* --- 7. DOKUMENTY --- */}
+          {/* --- 7. DOKUMENTY (ZAKTUALIZOWANY INPUT) --- */}
           <div className="mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <label className="section-label mb-0">
@@ -836,14 +972,16 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                 <input
                   type="file"
                   multiple
-                  onChange={handleAddDocuments}
+                  onChange={handleAddDocuments} // <--- TU JEST WALIDACJA
                   hidden
                 />
                 <Paperclip size={16} /> {t("actions.addDocuments")}
               </label>
             </div>
 
+            {/* ... Lista dokumentów (BEZ ZMIAN) ... */}
             <div className="documents-list">
+              {/* Existing docs loop... */}
               {request.documents?.map((doc) => {
                 const isSelected = selectedFileIds.includes(doc.id);
                 return (
@@ -872,7 +1010,7 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                   </div>
                 );
               })}
-
+              {/* New docs loop... */}
               {newDocuments.map((doc) => (
                 <div key={doc.id} className="document-item new-file">
                   <div className="doc-icon-wrapper">
@@ -881,7 +1019,6 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                   <FileText size={20} color="#3b82f6" />
                   <span className="doc-name" style={{ color: "#1e3a8a" }}>
                     {doc.file.name}
-                    <span className="doc-size-text"></span>
                   </span>
                   <button
                     className="btn-trash"
@@ -891,7 +1028,6 @@ const CreateProjectModal = ({ isOpen, onClose, request, onSuccess }) => {
                   </button>
                 </div>
               ))}
-
               {request.documents?.length === 0 && newDocuments.length === 0 && (
                 <p className="text-muted empty-docs-msg">-</p>
               )}

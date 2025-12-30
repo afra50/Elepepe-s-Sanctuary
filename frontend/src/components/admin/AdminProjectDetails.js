@@ -249,28 +249,37 @@ const AdminProjectDetails = () => {
       fetchProjectDetails();
     } catch (err) {
       console.error("Save error:", err);
-      const errorCode = err.response?.data?.code;
 
-      if (errorCode === "SLUG_EXISTS") {
-        setAlert({
-          variant: "error",
-          message:
-            t("projects.errors.slugExists") ||
-            "Ten link (slug) jest już zajęty.",
-        });
-      } else if (errorCode === "VALIDATION_ERROR") {
-        setAlert({
-          variant: "error",
-          message:
-            t("projects.alerts.validationError") || "Błąd walidacji danych.",
-        });
-      } else {
-        setAlert({
-          variant: "error",
-          message:
-            t("projects.alerts.saveError") || "Wystąpił błąd podczas zapisu.",
-        });
+      // --- NOWA OBSŁUGA BŁĘDÓW (TUTAJ ZMIANA) ---
+      let errorMessage =
+        t("projects.alerts.saveError") || "Wystąpił błąd podczas zapisu.";
+
+      if (err.response && err.response.data) {
+        const { code } = err.response.data;
+
+        // 1. Błędy biznesowe (slug, walidacja)
+        if (code === "SLUG_EXISTS") {
+          errorMessage = t("projects.errors.slugExists");
+        } else if (code === "VALIDATION_ERROR") {
+          errorMessage = t("projects.alerts.validationError");
+        }
+        // 2. Błędy plików (Multer / UploadMiddleware)
+        else if (code === "LIMIT_FILE_SIZE") {
+          errorMessage = t("common.errors.fileTooLarge");
+        } else if (
+          code === "LIMIT_FILE_COUNT" ||
+          code === "LIMIT_UNEXPECTED_FILE"
+        ) {
+          errorMessage = t("common.errors.tooManyFiles");
+        } else if (code === "INVALID_FILE_TYPE") {
+          errorMessage = t("common.errors.unsupportedFileType");
+        }
       }
+
+      setAlert({
+        variant: "error",
+        message: errorMessage,
+      });
     } finally {
       setIsSaving(false);
     }
@@ -416,25 +425,32 @@ const AdminProjectDetails = () => {
   };
 
   const handleSaveNews = async (newsPayload) => {
+    // 1. Walidacja frontendowa (Guard)
+    if (!newsPayload.title?.pl || !newsPayload.content?.pl) {
+      setAlert({
+        variant: "error",
+        message: t("projects.newsModal.errors.titleRequired") || "Błąd danych.",
+      });
+      return;
+    }
+
     setIsSavingNews(true);
     try {
       const formData = new FormData();
 
-      // 1. Pola tekstowe
+      // 2. Dane
       formData.append("title", JSON.stringify(newsPayload.title));
       formData.append("content", JSON.stringify(newsPayload.content));
-      // Konwersja boolean na string, bo FormData przyjmuje tylko stringi/bloby
       formData.append("isVisible", String(newsPayload.isVisible));
 
-      // 2. Pliki (tablica 'files')
+      // 3. Pliki (upload)
       if (newsPayload.filesToUpload && newsPayload.filesToUpload.length > 0) {
         newsPayload.filesToUpload.forEach((file) => {
-          // Upewnij się, że 'file' to obiekt File (Blob)
           formData.append("files", file);
         });
       }
 
-      // 3. Usuwanie
+      // 4. Usuwanie
       if (newsPayload.filesToDelete && newsPayload.filesToDelete.length > 0) {
         formData.append(
           "filesToDelete",
@@ -442,27 +458,22 @@ const AdminProjectDetails = () => {
         );
       }
 
-      // Debug: Sprawdź co leci w konsoli przeglądarki
-      // for (var pair of formData.entries()) {
-      //     console.log(pair[0]+ ', ' + pair[1]);
-      // }
-
       const config = {
         headers: { "Content-Type": "multipart/form-data" },
       };
 
+      // 5. Wysłanie
       if (newsPayload.id) {
-        // EDYCJA
         await api.put(
           `/projects/${id}/updates/${newsPayload.id}`,
           formData,
           config
         );
       } else {
-        // TWORZENIE
         await api.post(`/projects/${id}/updates`, formData, config);
       }
 
+      // 6. Sukces
       setIsNewsModalOpen(false);
       setAlert({
         variant: "success",
@@ -471,10 +482,35 @@ const AdminProjectDetails = () => {
       fetchProjectDetails();
     } catch (err) {
       console.error("Error saving news:", err);
+
+      // --- OBSŁUGA BŁĘDÓW BACKENDU ---
+      let errorMessage =
+        t("projects.news.saveError") || "Nie udało się zapisać aktualności.";
+
+      if (err.response && err.response.data) {
+        const { code } = err.response.data;
+
+        // Mapowanie kodów błędów na tłumaczenia
+        if (code === "LIMIT_FILE_COUNT" || code === "LIMIT_UNEXPECTED_FILE") {
+          errorMessage =
+            t("common.errors.tooManyFiles") || "Przekroczono limit plików.";
+        } else if (code === "LIMIT_FILE_SIZE") {
+          errorMessage =
+            t("common.errors.fileTooLarge") || "Plik jest zbyt duży.";
+        } else if (code === "INVALID_FILE_TYPE") {
+          // <--- DODAJ TO
+          errorMessage =
+            t("common.errors.unsupportedFileType") ||
+            "Nieobsługiwany format pliku.";
+        } else if (code === "VALIDATION_ERROR") {
+          errorMessage =
+            t("common.errors.validationError") || "Błąd walidacji danych.";
+        }
+      }
+
       setAlert({
         variant: "error",
-        message:
-          t("projects.news.saveError") || "Nie udało się zapisać aktualności.",
+        message: errorMessage,
       });
     } finally {
       setIsSavingNews(false);
@@ -541,7 +577,6 @@ const AdminProjectDetails = () => {
 
       {/* --- MODALS --- */}
 
-      {/* 1. News Modal */}
       <CreateNewsModal
         isOpen={isNewsModalOpen}
         onClose={() => setIsNewsModalOpen(false)}
@@ -550,7 +585,6 @@ const AdminProjectDetails = () => {
         isSaving={isSavingNews}
       />
 
-      {/* 2. Original Request Modal (Read-only) */}
       <RequestDetailsModal
         isOpen={isRequestModalOpen}
         onClose={() => setIsRequestModalOpen(false)}
@@ -561,7 +595,6 @@ const AdminProjectDetails = () => {
         onViewProject={null}
       />
 
-      {/* 3. Delete News Confirmation Dialog */}
       {isDeleteConfirmOpen && (
         <div
           className="portal-confirm-container"
@@ -582,7 +615,6 @@ const AdminProjectDetails = () => {
         </div>
       )}
 
-      {/* 4. Save Project Confirmation Dialog (e.g. No Cover) */}
       {confirmSaveDialog.isOpen && (
         <div
           className="portal-confirm-container"
