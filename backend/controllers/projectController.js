@@ -497,6 +497,134 @@ const updateProject = async (req, res) => {
   }
 };
 
+const getPublicProjectBySlug = async (req, res) => {
+  const connection = await db.getConnection();
+
+  try {
+    const { slug } = req.params;
+
+    const rows = await ProjectModel.getPublicProjectBySlug(connection, slug);
+
+    if (!rows.length) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    const project = rows[0];
+
+    // ===== FILES =====
+    const photos = [];
+    const documents = [];
+    let cover = null;
+
+    rows.forEach((row) => {
+      if (!row.file_path) return;
+
+      const fileUrl = `${req.protocol}://${req.get("host")}${row.file_path}`;
+
+      if (row.file_type === "photo") {
+        if (row.is_cover) cover = fileUrl;
+        photos.push(fileUrl);
+      }
+
+      if (row.file_type === "document") {
+        documents.push({
+          name: row.original_name,
+          url: fileUrl,
+        });
+      }
+    });
+
+    // ===== APPLICANT LABEL =====
+    const applicantLabels = {
+      person: {
+        pl: "Opiekun prywatny",
+        en: "Private caregiver",
+        es: "Cuidador particular",
+      },
+      organization: {
+        pl: "Fundacja / Organizacja",
+        en: "Foundation / Organization",
+        es: "Fundación / Organización",
+      },
+      vetClinic: {
+        pl: "Gabinet weterynaryjny",
+        en: "Veterinary clinic",
+        es: "Clínica veterinaria",
+      },
+    };
+
+    // ===== UPDATES =====
+    const updatesRaw = await ProjectModel.getProjectUpdates(
+      connection,
+      project.id
+    );
+
+    const updates = updatesRaw
+      .filter((u) => u.is_visible)
+      .map((u) => ({
+        id: u.id,
+        title: JSON.parse(u.title),
+        content: JSON.parse(u.content),
+        publishedAt: u.published_at,
+        files: u.files.map((f) => ({
+          name: f.original_name,
+          url: `${req.protocol}://${req.get("host")}${f.file_path}`,
+          type: f.file_type,
+        })),
+      }));
+
+    // ===== RESPONSE =====
+    res.status(200).json({
+      id: project.id,
+      slug: project.slug,
+      isUrgent: !!project.is_urgent,
+
+      title: JSON.parse(project.title),
+      description: JSON.parse(project.description),
+
+      animal: {
+        name: project.animal_name,
+        species: project.species,
+        speciesOther: project.species_other
+          ? JSON.parse(project.species_other)
+          : null,
+        count: project.animals_count,
+        age: project.age ? JSON.parse(project.age) : null,
+      },
+
+      location: {
+        city: project.city,
+        country: JSON.parse(project.country),
+      },
+
+      applicant: {
+        label: applicantLabels[project.applicant_type],
+        name: project.full_name,
+      },
+
+      finance: {
+        target: Number(project.amount_target),
+        collected: Number(project.amount_collected),
+        currency: project.currency,
+        deadline: project.deadline,
+      },
+
+      gallery: {
+        cover,
+        photos,
+        documents,
+      },
+
+      updates,
+    });
+  } catch (error) {
+    console.error("getPublicProjectBySlug error:", error);
+    res.status(500).json({ error: "Server error" });
+  } finally {
+    connection.release();
+  }
+};
+
 module.exports = {
   getActiveProjects,
   getAdminProjects,
@@ -504,4 +632,5 @@ module.exports = {
   addProjectUpdate,
   deleteProjectUpdate,
   updateProject,
+  getPublicProjectBySlug,
 };

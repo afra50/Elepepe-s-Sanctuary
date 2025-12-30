@@ -16,6 +16,7 @@ const projectUploads = upload.fields([
 
 // === TRASY PUBLICZNE ===
 router.get("/", projectController.getActiveProjects);
+router.get("/:slug", projectController.getPublicProjectBySlug);
 
 // === TRASY ADMINA ===
 

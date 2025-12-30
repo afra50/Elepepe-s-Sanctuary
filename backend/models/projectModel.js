@@ -277,6 +277,24 @@ const setFileAsCover = async (connection, fileId, projectId) => {
   await connection.query(sql, [fileId, projectId]);
 };
 
+const getPublicProjectBySlug = async (connection, slug) => {
+  const sql = `
+    SELECT 
+      p.*,
+      pf.file_path,
+      pf.file_type,
+      pf.original_name,
+      pf.is_cover
+    FROM projects p
+    LEFT JOIN project_files pf ON pf.project_id = p.id
+    WHERE p.slug = ?
+      AND p.status = 'active'
+  `;
+
+  const [rows] = await connection.query(sql, [slug]);
+  return rows;
+};
+
 module.exports = {
   createProject,
   addProjectFiles,
@@ -293,4 +311,5 @@ module.exports = {
   deleteFiles,
   resetProjectCovers,
   setFileAsCover,
+  getPublicProjectBySlug,
 };
