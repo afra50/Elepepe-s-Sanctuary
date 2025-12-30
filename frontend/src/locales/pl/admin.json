@@ -38,6 +38,7 @@
   "projects": {
     "createTitle": "Kreator Zbiórki",
     "createSubtitle": "Zweryfikuj dane i dodaj tłumaczenia przed utworzeniem zbiórki. Zgłoszenie zostanie automatycznie zatwierdzone.",
+    "confirmDeleteNews": "Czy na pewno chcesz usunąć tę aktualność?",
     "sections": {
       "basicData": "Dane Podstawowe",
       "configuration": "Konfiguracja Zbiórki",
@@ -45,6 +46,9 @@
       "finance": "Finanse i Termin",
       "applicantData": "Dane Wnioskodawcy",
       "media": "Zdjęcia i Dokumenty"
+    },
+    "contentForm": {
+      "header": "Treści"
     },
     "fields": {
       "animalName": "Imię zwierzaka",
@@ -69,12 +73,23 @@
       "age": "Wiek",
       "amountTarget": "Kwota Docelowa",
       "deadline": "Termin (Deadline)",
-      "amountCollected": "Kwota Zebrana"
+      "amountCollected": "Kwota Zebrana",
+      "detailedDescription": "Opis szczegółowy"
+    },
+    "placeholders": {
+      "enterTitle": "Wpisz tytuł",
+      "enterDescription": "Opisz zbiórkę",
+      "speciesOther": "Np. Chomik"
     },
     "alerts": {
       "titleRequired": "Tytuł jest wymagany!",
       "noCoverPhoto": "Nie wybrano zdjęcia głównego. Czy kontynuować bez okładki?",
-      "noPhotos": "Brak zdjęć w zgłoszeniu."
+      "noPhotos": "Brak zdjęć w zgłoszeniu.",
+      "saveSuccess": "Zapisano zmiany!",
+      "saveError": "Błąd zapisu.",
+      "deleteSuccess": "Aktualność usunięta.",
+      "deleteError": "Błąd usuwania aktualności.",
+      "validationError": "Formularz zawiera błędy. Sprawdź poprawność danych."
     },
     "errors": {
       "animalNameRequired": "Imię zwierzaka jest wymagane.",
@@ -83,7 +98,69 @@
       "amountTargetPositive": "Kwota docelowa musi być większa od 0.",
       "deadlineRequired": "Termin (Deadline) jest wymagany.",
       "fieldRequiredInLang": "Pole \"{{field}}\" jest wymagane w języku {{lang}}.",
-      "speciesOtherRequiredInLang": "Pole \"{{field}}\" (Gatunek - Inne) jest wymagane w języku {{lang}}."
+      "speciesOtherRequiredInLang": "Pole \"{{field}}\" (Gatunek - Inne) jest wymagane w języku {{lang}}.",
+      "slugExists": "Ten link (slug) jest już używany przez inną zbiórkę.",
+      "basicDataRequired": "Uzupełnij wymagane pola podstawowe (Imię, Link).",
+      "titleRequired": "Tytuł jest wymagany."
+    },
+    "urgentBadge": "PILNE",
+    "finance": {
+      "title": "Finanse",
+      "editTitle": "Edycja finansów",
+      "editTooltip": "Edytuj kwoty",
+      "target": "Cel",
+      "collected": "Zebrano",
+      "currency": "Waluta"
+    },
+    "news": {
+      "title": "Aktualności (Newsy)",
+      "add": "Dodaj aktualność",
+      "empty": "Brak aktualności dla tej zbiórki.",
+      "public": "Publiczny",
+      "hidden": "Ukryty",
+      "photosCount": "+{{count}} zdjęć"
+    },
+    "media": {
+      "title": "Galeria i Pliki",
+      "subtitle": "Zarządzaj zdjęciami i dokumentami zbiórki.",
+      "photosLabel": "Zdjęcia",
+      "documentsLabel": "Dokumenty",
+      "addPhotos": "Dodaj zdjęcia",
+      "addDocuments": "Dodaj dokumenty",
+      "setCoverTooltip": "Kliknij, aby ustawić jako okładkę",
+      "setCoverHint": "Ustaw jako miniaturę",
+      "deletedTooltip": "Plik oznaczony do usunięcia",
+      "coverBadge": "Miniatura",
+      "deletedBadge": "USUNIĘTE",
+      "newPhoto": "NOWE",
+      "newDoc": "NOWY",
+      "untitledDocument": "Dokument bez nazwy",
+      "noPhotos": "Brak zdjęć. Kliknij \"Dodaj zdjęcia\", aby wgrać.",
+      "noDocuments": "Brak dokumentów."
+    },
+    "newsModal": {
+      "createTitle": "Nowa aktualność",
+      "editTitle": "Edytuj aktualność",
+      "addFiles": "Dodaj pliki do wpisu",
+      "existingFiles": "Istniejące pliki",
+      "defaultFileName": "Plik",
+      "fields": {
+        "title": "Tytuł",
+        "content": "Treść",
+        "isVisible": "Widoczny publicznie"
+      },
+      "placeholders": {
+        "title": "Wpisz nagłówek...",
+        "content": "Co słychać u zwierzaka?"
+      },
+      "errors": {
+        "titleRequired": "Tytuł jest wymagany"
+      }
+    },
+    "sidebar": {
+      "animalData": "Dane zwierzęcia",
+      "requestId": "Zgłoszenie ID",
+      "viewOriginalRequest": "Zobacz oryginał"
     }
   },
   "partnerships": {
@@ -202,13 +279,25 @@
     "addFiles": "Dodaj pliki",
     "addPhotos": "Dodaj zdjęcia",
     "addDocuments": "Dodaj dokumenty",
-    "viewProject": "Zobacz zbiórkę"
+    "viewProject": "Zobacz zbiórkę",
+    "backToList": "Wróć do listy",
+    "publicPreview": "Podgląd publiczny",
+    "saveChanges": "Zapisz zmiany",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "restore": "Przywróć",
+    "download": "Pobierz"
   },
   "common": {
     "years": "lat",
     "confirm": "Potwierdź",
     "cancel": "Anuluj",
-    "ok": "OK"
+    "ok": "OK",
+    "untitled": "Bez tytułu",
+    "done": "Gotowe",
+    "save": "Zapisz",
+    "add": "Dodaj",
+    "selectDate": "Wybierz datę..."
   },
   "form": {
     "sections": {
@@ -278,5 +367,10 @@
       "amount": "Kwota",
       "progress": "Procent ukończenia"
     }
+  },
+  "languages": {
+    "pl": "Polski",
+    "en": "Angielski",
+    "es": "Hiszpański"
   }
 }

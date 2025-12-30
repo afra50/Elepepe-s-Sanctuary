@@ -3,6 +3,7 @@
 - wesprzyj na zbiórkach ma coś robić
 - filtry pomiedzy tel i laptopem jak sa widoczne to przycisk "Filtry" jest widoczny i nie dziala
 - przetlumaczyc Pilne na karcie i sortuj w pasku filtrow
+- odnosnik do grupy na fb
 
 HOME
 - karuzela na najpilniejszych zbiorkach, a jak nie albo malo to uzupelnic tymi co sie czas konczy
@@ -20,13 +21,21 @@ FOOTER
 
 ADMIN
 1. Requests
-    - przekierowanie na zbiorke
+    - walidacja slugu przy akceptacji
 2. Zbiórki
     2.1 Podstrona zbiórki
-        - edycja, zmiana statusow, danych
-        - tworzenie aktualnosci
-        - error state, loader, alert, button
-        - wszystkie dane wyswietlic + uwzglednic wybrany jezyk
+        - walidacja danych na dodawaniu zbiorki (front+backend) + tlumaczenia
+        - wyswietlanie zdjec,plikow dla aktualnosci
+        - obsluga plikow, kompresja
+        - responsywnosc
+    2.2 Create News modal
+        - alerty, walidacja front + backend, zablokowanie przeslania jak nie ma jakiegos jezyka, loader
+        - responsywnosc
+        - obsluga plikow
+        - edycja
+        - tlumaczenia backend
+        - testy
+
 
 BACKEND
 - Joi do walidacji requestów

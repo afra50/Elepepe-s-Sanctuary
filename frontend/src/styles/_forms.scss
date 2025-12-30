@@ -16,7 +16,8 @@
   }
 
   input,
-  textarea {
+  textarea,
+  select {
     width: 100%;
     border-radius: 0.45rem;
     border: 1px solid $color-border;
@@ -41,6 +42,16 @@
     }
   }
 
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b4b3f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1rem;
+    padding-right: 2rem;
+    cursor: pointer;
+  }
+
   textarea {
     resize: none;
     min-height: 140px;
@@ -48,8 +59,10 @@
 
   /* Na przyszłość – jeśli zechcesz walidację */
   &.is-error {
+
     input,
-    textarea {
+    textarea,
+    select {
       border-color: $color-error;
       box-shadow: 0 0 0 3px $color-error-soft;
     }
@@ -143,20 +156,18 @@
   }
 
   /* checked */
-  input[type="radio"]:checked + .radio-option__custom {
+  input[type="radio"]:checked+.radio-option__custom {
     border-color: $color-primary;
-    background-image: radial-gradient(
-      circle,
-      $color-primary 0,
-      $color-primary 55%,
-      transparent 60%
-    );
+    background-image: radial-gradient(circle,
+        $color-primary 0,
+        $color-primary 55%,
+        transparent 60%);
     background-position: center;
     background-repeat: no-repeat;
   }
 
   /* focus */
-  input[type="radio"]:focus-visible + .radio-option__custom {
+  input[type="radio"]:focus-visible+.radio-option__custom {
     box-shadow: 0 0 0 3px rgba($color-primary, 0.28);
     outline: none;
   }
@@ -216,12 +227,12 @@
   }
 
   /* ZAZNACZONE – bez SVG, tylko ::after */
-  input[type="checkbox"]:checked + .checkbox__box {
+  input[type="checkbox"]:checked+.checkbox__box {
     border-color: $color-primary;
     background-color: $color-primary;
   }
 
-  input[type="checkbox"]:checked + .checkbox__box::after {
+  input[type="checkbox"]:checked+.checkbox__box::after {
     content: "";
     position: absolute;
     left: 0.15rem;
@@ -234,7 +245,7 @@
   }
 
   /* focus (klawiatura) */
-  input[type="checkbox"]:focus-visible + .checkbox__box {
+  input[type="checkbox"]:focus-visible+.checkbox__box {
     box-shadow: 0 0 0 3px rgba($color-primary, 0.3);
     outline: none;
   }
@@ -564,9 +575,7 @@
   border-color: $color-secondary;
 }
 
-.date-input__popup
-  .react-datepicker__navigation:hover
-  .react-datepicker__navigation-icon::before {
+.date-input__popup .react-datepicker__navigation:hover .react-datepicker__navigation-icon::before {
   border-color: $color-primary;
 }
 

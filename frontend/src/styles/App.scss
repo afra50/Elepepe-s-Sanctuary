@@ -3,16 +3,14 @@
 /* ==== NUNITO ==== */
 @font-face {
   font-family: "Nunito";
-  src: url("../../public/fonts/Nunito/Nunito-VariableFont_wght.ttf")
-    format("truetype");
+  src: url("../../public/fonts/Nunito/Nunito-VariableFont_wght.ttf") format("truetype");
   font-weight: 100 900;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Nunito";
-  src: url("../../public/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf")
-    format("truetype");
+  src: url("../../public/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf") format("truetype");
   font-weight: 100 900;
   font-style: italic;
 }
@@ -20,16 +18,14 @@
 /* ==== MERRIWEATHER ==== */
 @font-face {
   font-family: "Merriweather";
-  src: url("../../public/fonts/Merriweather/Merriweather-VariableFont_opsz\,wdth\,wght.ttf")
-    format("truetype");
+  src: url("../../public/fonts/Merriweather/Merriweather-VariableFont_opsz\,wdth\,wght.ttf") format("truetype");
   font-weight: 100 900;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Merriweather";
-  src: url("../../public/fonts/Merriweather/Merriweather-Italic-VariableFont_opsz\,wdth\,wght.ttf")
-    format("truetype");
+  src: url("../../public/fonts/Merriweather/Merriweather-Italic-VariableFont_opsz\,wdth\,wght.ttf") format("truetype");
   font-weight: 100 900;
   font-style: italic;
 }
@@ -37,8 +33,7 @@
 /* ==== CAVEAT ==== */
 @font-face {
   font-family: "Caveat";
-  src: url("../../public/fonts/Caveat/Caveat-VariableFont_wght.ttf")
-    format("truetype");
+  src: url("../../public/fonts/Caveat/Caveat-VariableFont_wght.ttf") format("truetype");
   font-weight: 100 900;
   font-style: normal;
 }
@@ -81,6 +76,14 @@
 @import "./components/admin/request_details_view";
 @import "./components/admin/admin_projects";
 @import "./components/admin/project_card";
+@import "./components/admin/admin_project_details";
+
+@import "./components/admin/project/project_header";
+@import "./components/admin/project/project_content_form";
+@import "./components/admin/project/project_sidebar";
+@import "./components/admin/project/project_media";
+@import "./components/admin/project/project_news";
+@import "./components/admin/project/create_news_modal";
 
 * {
   margin: 0;

@@ -1,0 +1,185 @@
+.create-news-modal {
+    font-family: $font-body;
+    color: $color-secondary; // Używamy Twojej zmiennej koloru tekstu
+
+    // --- ZAKŁADKI JĘZYKOWE ---
+    .lang-tabs-simple {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #e5e7eb; // Jasny szary (lub $gray-200 jeśli masz taką zmienną)
+        padding-bottom: 0.5rem;
+
+        .lang-tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 0.8rem;
+            border: 1px solid transparent;
+            border-radius: 0.5rem;
+            background: transparent;
+            color: #9ca3af; // Muted text
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: #f9fafb;
+                color: $color-primary;
+            }
+
+            &.active {
+                // Użycie funkcji SCSS rgba ze zmienną
+                background-color: rgba($color-primary, 0.08);
+                color: $color-primary;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            }
+
+            .tab-flag-sm {
+                width: 16px;
+                height: 12px;
+                object-fit: cover;
+                border-radius: 2px;
+                box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+            }
+        }
+    }
+
+    // --- POLA FORMULARZA ---
+    .form-field {
+        margin-bottom: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+
+        label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #6b7280; // Gray-500
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        input[type="text"],
+        textarea {
+            padding: 0.6rem 0.75rem;
+            border: 1px solid #d1d5db; // Gray-300
+            border-radius: 0.5rem;
+            font-family: $font-body;
+            font-size: 0.95rem;
+            color: $color-secondary;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background-color: $color-white;
+            width: 100%;
+
+            &:focus {
+                outline: none;
+                border-color: $color-primary;
+                // Funkcja SCSS do cienia focusa
+                box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+            }
+
+            &::placeholder {
+                color: #9ca3af;
+            }
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+    }
+
+    // --- PLIKI ---
+    .btn-upload-wrapper {
+        margin-bottom: 0.75rem;
+    }
+
+    .file-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        &__item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            background-color: #f9fafb; // Gray-50
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: #f3f4f6;
+            }
+        }
+
+        &__name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 85%;
+            color: $color-secondary;
+            font-weight: 500;
+        }
+
+        &__btn--remove {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+
+            &:hover {
+                color: #ef4444; // Red-500
+                background-color: #fee2e2; // Red-100
+            }
+        }
+    }
+
+    .existing-files-box {
+        margin-top: 1.5rem;
+        border-top: 1px dashed #e5e7eb;
+        padding-top: 1rem;
+
+        .small-text {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .file-list__item {
+            background-color: $color-white;
+            border-color: #f3f4f6;
+            color: #6b7280;
+        }
+    }
+
+    // --- KROPKI STATUSU ---
+    .file-list__dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: $color-primary; // Nowy plik = kolor główny
+        margin-right: 0.75rem;
+        display: inline-block;
+
+        &.dot-gray {
+            background-color: #d1d5db; // Istniejący plik = szary
+        }
+    }
+}

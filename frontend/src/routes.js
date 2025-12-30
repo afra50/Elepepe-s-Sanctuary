@@ -14,6 +14,7 @@ import AdminDashboard from "./components/admin/AdminDashboard";
 import AdminRequests from "./components/admin/AdminRequests";
 import AdminPartnerships from "./components/admin/AdminPartnerships";
 import AdminProjects from "./components/admin/AdminProjects";
+import AdminProjectDetails from "./components/admin/AdminProjectDetails";
 
 // Import ochrony
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -42,6 +43,7 @@ const routes = [
       { path: "requests", element: <AdminRequests /> },
       { path: "partnerships", element: <AdminPartnerships /> },
       { path: "projects", element: <AdminProjects /> },
+      { path: "projects/:id", element: <AdminProjectDetails /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

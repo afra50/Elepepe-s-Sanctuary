@@ -1,13 +1,15 @@
 // backend/models/projectModel.js
 
 const createProject = async (connection, data) => {
+  // 1. Dodałem 'amount_collected' do listy kolumn
+  // 2. Dodałem jeden znak zapytania '?' więcej w VALUES
   const sql = `
     INSERT INTO projects (
       request_id, status, slug, is_urgent,
       applicant_type, full_name, animal_name, animals_count, species, city,
-      amount_target, currency, deadline,
+      amount_target, amount_collected, currency, deadline,
       title, description, country, species_other, age
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
@@ -22,6 +24,7 @@ const createProject = async (connection, data) => {
     data.species,
     data.city,
     data.amountTarget,
+    data.amountCollected, // <--- DODAŁEM TO POLE (musi pasować kolejnością do SQL)
     data.currency,
     data.deadline,
     data.title,
@@ -47,7 +50,6 @@ const addProjectFiles = async (connection, filesData) => {
   return result;
 };
 
-// --- NOWA FUNKCJA ---
 const getActiveProjects = async (connection) => {
   const sql = `
     SELECT 
@@ -80,24 +82,181 @@ const getAllProjects = async (connection) => {
     LEFT JOIN project_files pf ON pf.project_id = p.id AND pf.is_cover = 1
     ORDER BY p.created_at DESC
   `;
-  // Pobieramy "p.*" bo admin potrzebuje wszystkiego (applicant_type, animal_name itp.)
 
   const [rows] = await connection.query(sql);
-
-  // Opcjonalnie: Jeśli potrzebujesz WSZYSTKICH plików dla każdego projektu w widoku listy,
-  // to musiałbyś zrobić dodatkowe zapytanie lub GROUP_CONCAT.
-  // Ale na liście zazwyczaj wystarczy okładka (cover_image).
-  // Pełne pliki dociągniemy w szczegółach (osobnym endpointem) lub tutaj jeśli lista nie jest ogromna.
-  // W tym podejściu pobieramy tylko okładkę do listy.
-
   return rows;
 };
 
-// --- FUNKCJA DO POBRANIA PLIKÓW DLA PROJEKTU ---
 const getProjectFiles = async (connection, projectId) => {
   const sql = `SELECT * FROM project_files WHERE project_id = ?`;
   const [rows] = await connection.query(sql, [projectId]);
   return rows;
+};
+
+// Dodatkowo: Jeśli potrzebujesz pobrać pojedynczy projekt do edycji w adminie (AdminProjectDetails),
+// będziesz potrzebował takiej funkcji (jeśli jej jeszcze nie masz):
+const getProjectById = async (connection, id) => {
+  const sql = `SELECT * FROM projects WHERE id = ?`;
+  const [rows] = await connection.query(sql, [id]);
+  return rows[0];
+};
+
+/**
+ * Pobiera aktualności dla danego projektu wraz z plikami.
+ * Zwraca tablicę obiektów aktualności, gdzie każda aktualność ma tablicę 'files'.
+ */
+const getProjectUpdates = async (connection, projectId) => {
+  // 1. Pobierz same aktualności
+  // Możesz dodać warunek WHERE is_visible = 1, jeśli to endpoint publiczny,
+  // ale dla admina chcemy widzieć wszystkie. Obsłużymy to w kontrolerze lub zapytaniu.
+  const updatesSql = `
+    SELECT * FROM project_updates 
+    WHERE project_id = ? 
+    ORDER BY created_at DESC
+  `;
+  const [updates] = await connection.query(updatesSql, [projectId]);
+
+  if (updates.length === 0) return [];
+
+  // 2. Pobierz pliki dla tych aktualności
+  // Pobieramy ID znalezionych aktualności
+  const updateIds = updates.map((u) => u.id);
+
+  let files = [];
+  if (updateIds.length > 0) {
+    // Używamy składni IN (?)
+    const filesSql = `
+      SELECT * FROM project_update_files 
+      WHERE project_update_id IN (?)
+    `;
+    const [filesRows] = await connection.query(filesSql, [updateIds]);
+    files = filesRows;
+  }
+
+  // 3. Połącz aktualności z ich plikami
+  // Dla każdej aktualności filtrujemy pasujące pliki
+  const updatesWithFiles = updates.map((update) => {
+    return {
+      ...update,
+      files: files.filter((f) => f.project_update_id === update.id),
+    };
+  });
+
+  return updatesWithFiles;
+};
+
+/**
+ * Tworzy nową aktualizację (news) dla projektu.
+ * Bez plików - same dane tekstowe.
+ */
+const createProjectUpdate = async (connection, data) => {
+  // Jeśli wpis jest widoczny, ustawiamy published_at na teraz, w przeciwnym razie NULL
+  const publishedAt = data.isVisible ? new Date() : null;
+
+  const sql = `
+    INSERT INTO project_updates (project_id, title, content, is_visible, published_at)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  const values = [
+    data.projectId,
+    data.title,
+    data.content,
+    data.isVisible ? 1 : 0,
+    publishedAt,
+  ];
+
+  const [result] = await connection.query(sql, values);
+  return result.insertId;
+};
+
+/**
+ * Usuwa wpis z tabeli project_updates
+ */
+const deleteProjectUpdate = async (connection, id) => {
+  const sql = `DELETE FROM project_updates WHERE id = ?`;
+  const [result] = await connection.query(sql, [id]);
+  return result.affectedRows > 0;
+};
+
+/**
+ * Aktualizuje dane projektu w bazie.
+ */
+const updateProject = async (connection, id, data) => {
+  const sql = `
+    UPDATE projects 
+    SET 
+      status = ?, 
+      slug = ?, 
+      is_urgent = ?,
+      applicant_type = ?, 
+      full_name = ?, 
+      animal_name = ?, 
+      animals_count = ?, 
+      species = ?, 
+      city = ?,
+      amount_target = ?, 
+      amount_collected = ?, 
+      currency = ?, 
+      deadline = ?,
+      title = ?, 
+      description = ?, 
+      country = ?, 
+      species_other = ?, 
+      age = ?
+    WHERE id = ?
+  `;
+
+  const values = [
+    data.status,
+    data.slug,
+    data.isUrgent ? 1 : 0,
+    data.applicantType,
+    data.fullName,
+    data.animalName,
+    data.animalsCount,
+    data.species,
+    data.city,
+    data.amountTarget,
+    data.amountCollected,
+    data.currency,
+    data.deadline,
+    data.title, // string JSON
+    data.description, // string JSON
+    data.country, // string JSON
+    data.speciesOther, // string JSON (lub null)
+    data.age, // string JSON (lub null)
+    id,
+  ];
+
+  const [result] = await connection.query(sql, values);
+  return result.affectedRows > 0;
+};
+
+// Funkcja do aktualizacji flagi is_cover w tabeli plików (reset wszystkich, ustawienie jednego)
+const setProjectCover = async (connection, projectId, fileId) => {
+  // 1. Zresetuj wszystkie flagi is_cover dla tego projektu
+  await connection.query(
+    "UPDATE project_files SET is_cover = 0 WHERE project_id = ?",
+    [projectId]
+  );
+
+  // 2. Jeśli podano ID, ustaw flagę
+  if (fileId) {
+    await connection.query(
+      "UPDATE project_files SET is_cover = 1 WHERE id = ? AND project_id = ?",
+      [fileId, projectId]
+    );
+  }
+};
+
+/**
+ * Sprawdza czy slug jest zajęty przez INNY projekt
+ */
+const checkSlugExists = async (connection, slug, excludeId) => {
+  const sql = `SELECT id FROM projects WHERE slug = ? AND id != ? LIMIT 1`;
+  const [rows] = await connection.query(sql, [slug, excludeId]);
+  return rows.length > 0;
 };
 
 module.exports = {
@@ -106,4 +265,11 @@ module.exports = {
   getActiveProjects,
   getAllProjects,
   getProjectFiles,
+  getProjectById,
+  getProjectUpdates,
+  createProjectUpdate,
+  deleteProjectUpdate,
+  updateProject,
+  setProjectCover,
+  checkSlugExists,
 };

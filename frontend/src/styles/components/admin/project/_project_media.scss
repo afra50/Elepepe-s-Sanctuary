@@ -1,0 +1,333 @@
+// _projectMedia.scss
+
+.admin-project-details-page {
+
+    // --- NAGŁÓWEK SEKCJI MEDIA ---
+    .section-header-media {
+        align-items: flex-start;
+    }
+
+    .title-no-border {
+        border: none;
+        padding: 0;
+        margin-bottom: 0.25rem;
+    }
+
+    .section-subtitle {
+        font-size: 0.85rem;
+        margin: 0;
+        color: lighten($color-secondary, 20%); // Używa zmiennej $color-secondary (lub wstaw szary kolor hex)
+        font-style: italic;
+    }
+
+    // --- NAGŁÓWEK UPLOAD (WSPÓLNY DLA ZDJĘĆ I DOKUMENTÓW) ---
+    .upload-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.8rem;
+    }
+
+    .section-label-bold {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #4b5563;
+        margin-bottom: 0;
+    }
+
+    .docs-title-header {
+        margin-bottom: 0;
+    }
+
+    .btn-upload-link {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.9rem;
+        color: #2563eb;
+        font-weight: 600;
+        transition: color 0.2s;
+
+        &:hover {
+            color: darken(#2563eb, 10%);
+        }
+    }
+
+    // --- ZDJĘCIA ---
+    .media-item-wrapper {
+        width: 7rem !important;
+        height: 7rem !important;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        position: relative;
+        border: 1px solid #e5e7eb;
+        overflow: hidden; // Ważne dla overlay
+
+        &.is-new-file {
+            border: 2px solid #3b82f6;
+        }
+
+        // STAN USUNIĘTY (SOFT DELETE)
+        &.is-deleted {
+            border-color: #fca5a5;
+            cursor: default;
+
+            img {
+                filter: grayscale(100%) opacity(0.4); // Wyszarzenie zdjęcia
+            }
+
+            &:hover {
+                transform: none;
+                box-shadow: none;
+            }
+        }
+
+        &:hover:not(.is-deleted) {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+            .cover-hover-hint {
+                opacity: 1;
+            }
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        // Nakładka "USUNIĘTE" + Przywróć
+        .deleted-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+
+            .deleted-text {
+                font-size: 0.65rem;
+                font-weight: 800;
+                color: #ef4444;
+                background: #fee2e2;
+                padding: 2px 6px;
+                border-radius: 4px;
+            }
+
+            .btn-restore {
+                background: #3b82f6;
+                color: white;
+                border: none;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                transition: transform 0.2s;
+
+                &:hover {
+                    background: #2563eb;
+                    transform: scale(1.1);
+                }
+            }
+        }
+
+        // ... (reszta styli cover-badge, cover-hover-hint, new-badge bez zmian)
+        .cover-badge {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1.4rem;
+            background: rgba(0, 0, 0, 0.65);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            backdrop-filter: blur(2px);
+        }
+
+        .cover-hover-hint {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1.4rem;
+            background: rgba(59, 130, 246, 0.8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .new-badge {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background: #3b82f6;
+            color: white;
+            font-size: 0.6rem;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: 700;
+        }
+    }
+
+    // --- DOKUMENTY (Lista) ---
+    .documents-list-container {
+        // ... (marginy itp. bez zmian)
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px dashed #e5e7eb;
+
+        .docs-title-header {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #6b7280;
+            letter-spacing: 0.03em;
+            margin-bottom: 0;
+        }
+
+        .document-row-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem;
+            border: 1px solid #f3f4f6;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            background: #fff;
+            transition: background 0.2s;
+
+            // STAN USUNIĘTY (WIERSZ)
+            &.is-deleted-row {
+                background: #fef2f2;
+                border-color: #fecaca;
+
+                .doc-name {
+                    text-decoration: line-through;
+                    color: #9ca3af;
+                }
+
+                .text-blue,
+                .text-gray {
+                    color: #d1d5db; // wyszarzone ikony
+                }
+            }
+
+            &:hover:not(.is-deleted-row) {
+                background: #f9fafb;
+                border-color: #e5e7eb;
+            }
+
+            .doc-info {
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                overflow: hidden;
+
+                .text-blue {
+                    color: #3b82f6;
+                }
+
+                .text-gray {
+                    color: #9ca3af;
+                }
+
+                .doc-name {
+                    font-size: 0.9rem;
+                    color: #374151;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 250px;
+                }
+
+                .badge-new {
+                    font-size: 0.6rem;
+                    background: #dbeafe;
+                    color: #1e40af;
+                    padding: 1px 5px;
+                    border-radius: 4px;
+                    font-weight: 700;
+                }
+
+                .badge-deleted {
+                    font-size: 0.6rem;
+                    background: #fee2e2;
+                    color: #ef4444;
+                    padding: 1px 5px;
+                    border-radius: 4px;
+                    font-weight: 700;
+                }
+            }
+
+            .doc-actions {
+                display: flex;
+                gap: 0.5rem;
+
+                .action-btn {
+                    padding: 4px;
+                    border-radius: 4px;
+                    color: #6b7280;
+                    cursor: pointer;
+                    border: none;
+                    background: transparent;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+
+                    &:hover {
+                        background: #e5e7eb;
+                        color: #111827;
+                    }
+
+                    &.btn-delete:hover {
+                        background: #fee2e2;
+                        color: #dc2626;
+                    }
+
+                    &.btn-restore {
+                        color: #2563eb;
+                        font-size: 0.75rem;
+                        font-weight: 600;
+                        background: #dbeafe;
+                        padding: 4px 8px;
+
+                        &:hover {
+                            background: #bfdbfe;
+                            color: #1e40af;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // ... (empty-state-box)
+    .empty-state-box {
+        text-align: center;
+        padding: 1.5rem;
+        background: #f9fafb;
+        border: 1px dashed #e5e7eb;
+        border-radius: 6px;
+        color: #9ca3af;
+        font-size: 0.85rem;
+    }
+}

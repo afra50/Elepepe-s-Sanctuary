@@ -1,0 +1,235 @@
+.admin-project-details-page {
+    .details-header {
+        background: $color-white;
+        padding: 1.5rem;
+        border-radius: $radius-md;
+        box-shadow: $shadow-sm;
+        border: 1px solid rgba($color-border, 0.6);
+        margin-bottom: 2rem;
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .header-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+
+            .page-title {
+                font-family: $font-heading;
+                font-size: 1.75rem;
+                font-weight: 800;
+                margin: 0 0 0.5rem 0;
+                color: $color-secondary;
+                line-height: 1.2;
+            }
+
+            .meta-badges {
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+                flex-wrap: wrap;
+
+                .status-badge {
+                    padding: 4px 10px;
+                    border-radius: 6px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    font-size: 0.75rem;
+                    letter-spacing: 0.05em;
+
+                    &.active {
+                        background: #dcfce7;
+                        color: #166534;
+                        border: 1px solid #bbf7d0;
+                    }
+
+                    &.draft {
+                        background: #f3f4f6;
+                        color: #4b5563;
+                        border: 1px solid #e5e7eb;
+                    }
+
+                    &.completed {
+                        background: #dbeafe;
+                        color: #1e40af;
+                        border: 1px solid #bfdbfe;
+                    }
+
+                    &.cancelled {
+                        background: #fee2e2;
+                        color: #991b1b;
+                        border: 1px solid #fecaca;
+                    }
+                }
+
+                .id-badge {
+                    background: #f3f4f6;
+                    color: #6b7280;
+                    padding: 4px 8px;
+                    border-radius: 6px;
+                    font-family: monospace;
+                    font-size: 0.8rem;
+                    border: 1px solid #e5e7eb;
+                }
+
+                .urgent-badge {
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    background: #ef4444;
+                    color: $color-white;
+                    padding: 4px 8px;
+                    border-radius: 6px;
+                    font-weight: 700;
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                }
+            }
+        }
+
+        // --- BOX FINANSOWY ---
+        .finance-summary-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            min-width: 250px;
+            flex-shrink: 0;
+            position: relative;
+
+            .finance-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 0.5rem;
+
+                .finance-title {
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    color: #6b7280;
+                    font-weight: 700;
+
+                    &.active {
+                        color: $color-primary;
+                    }
+                }
+
+                .icon-btn-small {
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    color: #6b7280;
+                    padding: 4px;
+                    border-radius: 4px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: background 0.2s;
+
+                    &:hover {
+                        background-color: #e5e7eb;
+                        color: $color-secondary;
+                    }
+                }
+            }
+
+            // Tryb Podglądu
+            .fs-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.35rem;
+                font-size: 0.9rem;
+
+                .fs-label {
+                    color: #64748b;
+                }
+
+                .fs-value {
+                    font-weight: 600;
+                    color: $color-secondary;
+                }
+
+                .highlight {
+                    color: $color-primary;
+                    font-weight: 700;
+                }
+            }
+
+            // Tryb Edycji
+            .finance-edit-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                margin-bottom: 8px;
+
+                .finance-input-group {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    font-size: 0.85rem;
+
+                    label {
+                        color: #64748b;
+                        font-weight: 500;
+                    }
+
+                    .mini-input {
+                        width: 80px;
+                        padding: 2px 6px;
+                        border: 1px solid #d1d5db;
+                        border-radius: 4px;
+                        font-size: 0.85rem;
+                        text-align: right;
+                        font-family: inherit;
+
+                        &:focus {
+                            outline: none;
+                            border-color: $color-primary;
+                        }
+                    }
+                }
+
+                .finance-actions {
+                    text-align: right;
+                    margin-top: 5px;
+
+                    .btn-text-primary {
+                        background: none;
+                        border: none;
+                        color: $color-primary;
+                        font-family: $font-body;
+                        font-size: 0.75rem;
+                        font-weight: 700;
+                        cursor: pointer;
+                        display: inline-flex;
+                        align-items: center;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+            }
+
+            .progress-wrapper {
+                margin-top: 0.75rem;
+            }
+        }
+
+        .alert-container {
+            margin-top: 1rem;
+        }
+    }
+}

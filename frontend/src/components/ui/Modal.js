@@ -10,8 +10,8 @@ const Modal = ({
   footer,
   size = "md",
   closeOnOverlayClick = false,
+  className = "", // 1. Dodaj ten prop tutaj (z domyślną pustą wartością)
 }) => {
-  // Obsługa klawisza ESC (możesz to też chcieć zablokować, ale zazwyczaj ESC zostaje)
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") onClose();
@@ -33,11 +33,11 @@ const Modal = ({
   return ReactDOM.createPortal(
     <div
       className="modal-overlay"
-      // 2. Tutaj zmiana: sprawdzamy prop przed wywołaniem onClose
       onClick={closeOnOverlayClick ? onClose : undefined}
     >
       <div
-        className={`modal-container modal--${size}`}
+        // 2. Dodaj ${className} do listy klas
+        className={`modal-container modal--${size} ${className}`}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
