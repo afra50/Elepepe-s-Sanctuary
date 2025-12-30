@@ -14,6 +14,9 @@ import esContact from "./locales/es/contact.json";
 import plHome from "./locales/pl/home.json";
 import enHome from "./locales/en/home.json";
 import esHome from "./locales/es/home.json";
+import plAbout from "./locales/pl/about.json";
+import enAbout from "./locales/en/about.json";
+import esAbout from "./locales/es/about.json";
 import plNotFound from "./locales/pl/notFound.json";
 import enNotFound from "./locales/en/notFound.json";
 import esNotFound from "./locales/es/notFound.json";
@@ -45,6 +48,7 @@ i18n
         request: enRequest,
         contact: enContact,
         home: enHome,
+        about: enAbout,
         notFound: enNotFound,
         login: enLogin,
         admin: enAdmin,
@@ -55,6 +59,7 @@ i18n
         header: plHeader,
         footer: plFooter,
         home: plHome,
+        about: plAbout,
         request: plRequest,
         contact: plContact,
         notFound: plNotFound,
@@ -69,6 +74,7 @@ i18n
         request: esRequest,
         contact: esContact,
         home: esHome,
+        about: esAbout,
         notFound: esNotFound,
         login: esLogin,
         admin: esAdmin,

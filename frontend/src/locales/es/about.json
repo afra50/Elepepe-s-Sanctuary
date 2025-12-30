@@ -1,0 +1,24 @@
+{
+  "banner": {
+    "title": "Santuario de Elepepe",
+    "text": "Ayudamos a ratas, cobayas y otros roedores – desde el corazón.",
+    "cta": "Ayuda"
+  },
+  "intro": {
+    "title": "¿Quiénes somos?",
+    "p1": "El Santuario de Elepepe nació de una pura necesidad del corazón. Crea un refugio seguro para pequeñas criaturas, a menudo subestimadas – ratas y cobayas – que, al igual que otros animales, merecen amor, respeto y cuidado profesional.",
+    "p2": "Todo comenzó con Elepepe, una rata única que despertó un inmenso cariño en su cuidador y se convirtió en su inspiración.",
+    "p3": "Construimos una comunidad de personas sensibles para quienes cada vida es importante. El objetivo no es solo cuidar a los animales, sino también conectar a quienes quieren ayudar con quienes necesitan esa ayuda."
+  },
+  "mission": {
+    "title": "Apoyo en momentos difíciles. Ayuda real.",
+    "text": "La fundación existe para apoyar a los cuidadores abrumados por los costos del tratamiento. A veces, el amor por un animal no es suficiente cuando surgen barreras financieras. Por eso llegamos a quienes más necesitan apoyo. Creamos un espacio seguro donde se pueden compartir historias y buscar salvación juntos para estos pequeños corazones.",
+    "cta": "Mira a quiénes ayudamos"
+  },
+  "more": {
+    "title": "Más sobre nosotros",
+    "partners": "Socios",
+    "contact": "Contáctanos",
+    "team": "Grupo de apoyo"
+  }
+}

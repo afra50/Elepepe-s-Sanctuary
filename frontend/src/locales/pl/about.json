@@ -1,0 +1,24 @@
+{
+  "banner": {
+    "title": "Elepepe's Sanctuary",
+    "text": "Pomagamy szczurkom, świnkom morskim i innym gryzoniom – z potrzeby serca.",
+    "cta": "Pomóż"
+  },
+  "intro": {
+    "title": "Kim jesteśmy?",
+    "p1": "Elepepe's Sanctuary powstało z czystej potrzeby serca. Tworzy bezpieczną przystań dla małych, często niedocenianych istot – szczurków i świnek morskich – które tak samo jak inne zwierzęta zasługują na miłość, szacunek i profesjonalną opiekę.",
+    "p2": "Wszystko zaczęło się od Elepepe – wyjątkowego szczurka, który obudził w swoim opiekunie ogromne uczucie i stał się jego inspiracją.",
+    "p3": "Budujemy społeczność ludzi wrażliwych, dla których każde życie jest ważne. Celem jest nie tylko opieka nad zwierzętami, ale także łączenie tych, którzy chcą pomagać, z tymi, którzy tej pomocy potrzebują."
+  },
+  "mission": {
+    "title": "Wsparcie w trudnych chwilach. Realna pomoc.",
+    "text": "Fundacja istnieje po to, by wspierać opiekunów, których przerastają koszty leczenia. Miłość do zwierzęcia to czasem za mało, gdy pojawiają się bariery finansowe. Dlatego docieramy do tych, którzy najbardziej potrzebują wsparcia. Tworzymy bezpieczną przestrzeń, w której można dzielić się historiami i wspólnie szukać ratunku dla małych serduszek.",
+    "cta": "Zobacz komu pomogliśmy"
+  },
+  "more": {
+    "title": "Więcej o nas",
+    "partners": "Partnerzy",
+    "contact": "Skontaktuj się",
+    "team": "Grupa wsparcia"
+  }
+}

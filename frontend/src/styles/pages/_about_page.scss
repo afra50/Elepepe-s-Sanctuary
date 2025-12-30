@@ -1,220 +1,304 @@
+// _aboutPage.scss
+
 .page-about {
-	min-height: 60vh;
-	// PIERWSZA SEKCJA
+	min-height: 100vh;
+	font-family: $font-body;
+	color: $color-secondary;
+	background-color: $color-background; // Tło bazowe z Twoich zmiennych
+
+	// --- SEKCJA 1: Tekst po lewej, zdjęcie po prawej ---
 	.first-section {
 		max-width: 1200px;
-		display: flex;
-		padding-inline: clamp(1rem, 3vw, 2rem);
-		padding-block: clamp(2rem, 3vw, 5rem);
 		margin: 0 auto;
-		flex-wrap: wrap;
-		gap: 3rem;
+		padding-inline: clamp(1rem, 5vw, 2rem);
+		padding-block: clamp(3rem, 6vw, 6rem);
+		display: flex;
+		align-items: center;
+		gap: 4rem; // Odstęp między tekstem a obrazkiem
 
 		.left-side {
-			width: 40%;
-			color: $color-secondary;
 			flex: 1;
 
 			.left-title {
-				margin-bottom: 2rem;
-				text-align: center;
-				font-size: 2rem;
+				font-family: $font-heading;
+				font-size: clamp(2rem, 4vw, 3rem);
+				margin-bottom: 1.5rem;
+				font-weight: 800;
+				line-height: 1.2;
 			}
-			p {
-				margin: 1.5rem 0;
+
+			.about-text {
+				p {
+					font-size: 1.1rem;
+					line-height: 1.8;
+					color: $brown-700;
+					margin-bottom: 1.5rem;
+
+					&:last-child {
+						margin-bottom: 0;
+					}
+				}
 			}
 		}
 
 		.right-side {
 			flex: 1;
-			background-position: center;
+			height: 450px; // Stała wysokość dla ładnego kadru
 			background-size: cover;
-			background-repeat: no-repeat;
-			width: 100%;
-			height: 350px;
-			border-radius: 1rem;
-			transform: rotate(3deg);
-			box-shadow: $shadow-bg;
-			transition: transform 0.3s ease;
-			&:hover {
-				transform: rotate(0deg);
-			}
+			background-position: center;
+			border-radius: 2rem; // Mocne zaokrąglenie rogów jak na screenie
+			box-shadow: $shadow-md;
+			position: relative;
+			overflow: hidden;
 		}
 	}
-	// DRUGA SEKCJA
+
+	// --- SEKCJA 2: Tekst po prawej, zdjęcie po lewej (odwrócona) ---
 	.second-section {
-		background-color: #ddd;
-		text-align: center;
-		padding-inline: clamp(1rem, 3vw, 2rem);
-		padding-block: clamp(2rem, 3vw, 5rem);
+		background-color: $color-white; // Wyróżnienie tłem
+		padding-block: clamp(3rem, 6vw, 6rem);
 
-		.right-side {
+		.content-wrapper {
 			max-width: 1200px;
+			margin: 0 auto;
+			padding-inline: clamp(1rem, 5vw, 2rem);
 			display: flex;
-
-			margin: 2rem auto;
-			flex-wrap: wrap;
+			flex-direction: column; // Domyślnie kolumna, bo mamy jeszcze przycisk na dole
+			align-items: center;
 			gap: 3rem;
+		}
+
+		// Kontener dla gridu: zdjęcie + tekst
+		.right-side {
+			display: flex;
+			align-items: center;
+			gap: 4rem;
+			width: 100%;
+
+			// Odwrócenie kolejności flexa, żeby zdjęcie było po lewej
 			flex-direction: row-reverse;
-			color: $color-secondary;
 
 			.text-container {
-				width: 50%;
-			}
-
-			.right-title {
-				margin-bottom: 2rem;
-				text-align: center;
-				font-size: 2rem;
-			}
-			p {
-				margin: 1.5rem 0;
+				flex: 1;
 				text-align: left;
-			}
-		}
-		.left-img {
-			flex: 1;
-			background-position: center;
-			background-size: cover;
-			background-repeat: no-repeat;
-			width: 40%;
-			height: 350px;
-			border-radius: 1rem;
-			transform: rotate(-3deg);
-			box-shadow: $shadow-bg;
-			transition: transform 0.3s ease;
-			&:hover {
-				transform: rotate(0deg);
-			}
-		}
 
-		.success-stories {
-			margin-top: 2.5rem;
-		}
-	}
-	// TRZECIA SEKCJA
-	.third-section {
-		.tile-title {
-			margin-bottom: 1rem;
-			margin-top: clamp(3rem, 4vw, 5rem);
-
-			text-align: center;
-			font-size: 2rem;
-			color: $color-secondary;
-		}
-		.titles {
-			display: flex;
-			max-width: 1200px;
-			padding-inline: clamp(1rem, 3vw, 2rem);
-			padding-block: 2rem;
-			margin: 0 auto;
-
-			flex-wrap: wrap;
-			gap: 3rem;
-		}
-		.tile {
-			flex: 1;
-			background-size: cover;
-			background-repeat: no-repeat;
-			min-width: 350px;
-			width: 20%;
-			height: 300px;
-			border-radius: 1rem;
-			position: relative;
-			display: block;
-
-			background-position: center;
-			overflow: hidden;
-			text-decoration: none;
-			box-shadow: $shadow-bg;
-			transition: transform 0.3s ease;
-			&:hover {
-				transform: scale(1.05);
-			}
-
-			& .text {
-				position: absolute;
-				inset: 0;
-
-				display: flex;
-				align-items: center;
-				justify-content: center;
-
-				font-size: 36px;
-				// font-weight: 700;
-				color: #fff;
-				text-align: center;
-
-				background: rgba(0, 0, 0, 0.35);
-				transition: background 0.3s ease;
-			}
-
-			&:hover & .text {
-				background: rgba(0, 0, 0, 0.5);
-			}
-		}
-	}
-}
-
-@media (max-width: 992px) {
-	.page-about {
-		.first-section {
-			flex-direction: column;
-			gap: 2rem;
-			text-align: center;
-			align-items: center;
-			.left-side {
-				flex: auto;
-				width: 80%;
-			}
-
-			.right-side {
-				width: 100%;
-				max-width: 500px;
-				flex: auto;
-				height: 300px;
-				transform: none;
-			}
-		}
-		.second-section {
-			.right-side {
-				flex: auto;
-				flex-direction: column;
-				gap: 2rem;
-				text-align: center;
-				align-items: center;
-
-				.text-container {
-					width: 80%;
+				.right-title {
+					font-family: $font-heading;
+					font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+					margin-bottom: 1.5rem;
+					font-weight: 700;
+					line-height: 1.3;
 				}
 
-				p {
-					text-align: center;
+				.right-text {
+					p {
+						font-size: 1.1rem;
+						line-height: 1.8;
+						color: $brown-700;
+					}
 				}
 			}
 
 			.left-img {
-				width: 100%;
-				max-width: 500px;
-				flex: auto;
-				height: 300px;
-				transform: none;
+				flex: 1;
+				height: 450px;
+				background-size: cover;
+				background-position: center;
+				border-radius: 2rem;
+				box-shadow: $shadow-md;
+
+			}
+		}
+
+		.success-link {
+			text-decoration: none;
+		}
+	}
+
+	// --- SEKCJA 3: Kafelki nawigacyjne ---
+	.third-section {
+		padding-block: clamp(4rem, 5vw, 7rem); // Nieco więcej miejsca
+		background-color: $color-background;
+
+		.text-container {
+			text-align: center;
+			margin-bottom: 4rem; // Większy odstęp od tytułu
+
+			.tile-title {
+				font-family: $font-heading;
+				font-size: clamp(2rem, 4vw, 3rem);
+				color: $color-secondary;
+				font-weight: 800;
+			}
+		}
+
+		.titles {
+			max-width: 1450px; // Szerszy kontener
+			margin: 0 auto;
+			padding-inline: clamp(1rem, 5vw, 2rem);
+
+			display: flex;
+			justify-content: center;
+			gap: 2rem; // Większe odstępy
+			flex-wrap: wrap;
+
+			.tile {
+				flex: 1 1 400px; // Startowa szerokość większa (było 300px)
+				max-width: 450px; // Większy max (było 380px)
+				height: 450px; // Wyższe kafelki (było 350px)
+				border-radius: 2rem; // Bardziej zaokrąglone
+				background-size: cover;
+				background-position: center;
+				position: relative;
+				text-decoration: none;
+				overflow: hidden;
+				box-shadow: $shadow-bg;
+
+				// Overlay bazowy (wspólne style)
+				&::after {
+					content: '';
+					position: absolute;
+					inset: 0;
+					transition: opacity 0.3s ease, background-color 0.3s ease;
+					opacity: 0.35; // Mocne krycie na start, żeby było kolorowo
+				}
+
+				// --- KOLORY OVERLAYÓW ---
+				&.first::after {
+					background-color: $primary-600;
+				}
+
+				&.second::after {
+					background-color: $brown-700;
+				}
+
+				&.third::after {
+					background-color: $accent-darken;
+				}
+
+				// Tekst
+				.text {
+					position: absolute;
+					inset: 0;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					text-align: center;
+					color: $color-white; // Domyślnie biały
+					font-family: $font-body;
+					font-size: 2.3rem; // Większa czcionka
+					font-weight: 800;
+					z-index: 2;
+					padding: 2rem;
+					transition: color 0.4s ease;
+					letter-spacing: 1px;
+					text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+				}
+
+				// --- EFEKT HOVER ---
+				&:hover {
+
+					// Overlay zanika
+					&::after {
+						opacity: 0.1;
+					}
+
+					// Specyficzne kolory tekstu po najechaniu (dla kontrastu ze zdjęciem)
+					&.first .text {
+						color: $accent-darken;
+					}
+
+					&.second .text {
+						color: $accent-darken;
+
+					}
+
+					&.third .text {
+						color: $accent-darken;
+
+					}
+
+				}
 			}
 		}
 	}
 }
 
-@media (max-width: 767px) {
+// --- RESPONSYWNOŚĆ (MEDIA QUERIES) ---
+
+// Tablet (poniżej 992px)
+@media (max-width: 992px) {
 	.page-about {
 		.first-section {
-			.left-side {
+			flex-direction: column; // Tekst nad zdjęciem
+			text-align: center;
+			gap: 2.5rem;
+
+			.right-side {
 				width: 100%;
+				max-width: 600px; // Ograniczenie szerokości
+				height: 350px; // Wyraźna wysokość
+				min-height: 350px; // Zabezpieczenie przed zgnieceniem
+				flex: 0 0 auto; // Nie pozwól flexowi zmieniać rozmiaru
 			}
 		}
+
 		.second-section {
 			.right-side {
+				flex-direction: column; // Tekst nad zdjęciem
+				text-align: center;
+				gap: 2.5rem;
+
 				.text-container {
+					text-align: center;
+					order: 1; // Tekst na górze
+				}
+
+				.left-img {
 					width: 100%;
+					max-width: 600px;
+					height: 350px;
+					min-height: 350px; // Zabezpieczenie
+					flex: 0 0 auto; // Nie pozwól flexowi zmieniać rozmiaru
+					order: 2; // Zdjęcie pod tekstem
+				}
+			}
+		}
+	}
+}
+
+// Mobile (poniżej 600px)
+@media (max-width: 600px) {
+	.page-about {
+		.first-section {
+			.right-side {
+				height: 250px;
+				min-height: 250px;
+				border-radius: 1.5rem;
+			}
+		}
+
+		.second-section {
+			.right-side {
+				.left-img {
+					height: 250px;
+					min-height: 250px;
+					border-radius: 1.5rem;
+				}
+			}
+		}
+
+		.third-section {
+			.titles {
+				gap: 1.5rem;
+			}
+
+			.tile {
+				height: 300px;
+				border-radius: 2rem;
+
+				.text {
+					font-size: 1.5rem;
 				}
 			}
 		}

@@ -14,10 +14,7 @@ PARTNERZY
 - podpiac backend
 
 O NAS
-- tłumaczenia
-- poprawic style lekko?
-- teksty + zdjecia
-- odnosniki
+- zdjecia zmienic na jego
 
 KONTAKT
 - loader
