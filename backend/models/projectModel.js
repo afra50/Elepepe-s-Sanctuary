@@ -233,23 +233,6 @@ const updateProject = async (connection, id, data) => {
   return result.affectedRows > 0;
 };
 
-// Funkcja do aktualizacji flagi is_cover w tabeli plików (reset wszystkich, ustawienie jednego)
-const setProjectCover = async (connection, projectId, fileId) => {
-  // 1. Zresetuj wszystkie flagi is_cover dla tego projektu
-  await connection.query(
-    "UPDATE project_files SET is_cover = 0 WHERE project_id = ?",
-    [projectId]
-  );
-
-  // 2. Jeśli podano ID, ustaw flagę
-  if (fileId) {
-    await connection.query(
-      "UPDATE project_files SET is_cover = 1 WHERE id = ? AND project_id = ?",
-      [fileId, projectId]
-    );
-  }
-};
-
 /**
  * Sprawdza czy slug jest zajęty przez INNY projekt
  */
@@ -257,6 +240,41 @@ const checkSlugExists = async (connection, slug, excludeId) => {
   const sql = `SELECT id FROM projects WHERE slug = ? AND id != ? LIMIT 1`;
   const [rows] = await connection.query(sql, [slug, excludeId]);
   return rows.length > 0;
+};
+
+/**
+ * Pobiera ścieżki plików na podstawie listy ID (do usunięcia z dysku)
+ */
+const getFilesByIds = async (connection, fileIds, projectId) => {
+  if (!fileIds || fileIds.length === 0) return [];
+  const sql = `SELECT file_path FROM project_files WHERE id IN (?) AND project_id = ?`;
+  const [rows] = await connection.query(sql, [fileIds, projectId]);
+  return rows;
+};
+
+/**
+ * Usuwa rekordy plików z bazy
+ */
+const deleteFiles = async (connection, fileIds, projectId) => {
+  if (!fileIds || fileIds.length === 0) return;
+  const sql = `DELETE FROM project_files WHERE id IN (?) AND project_id = ?`;
+  await connection.query(sql, [fileIds, projectId]);
+};
+
+/**
+ * Resetuje flagę okładki dla wszystkich plików projektu
+ */
+const resetProjectCovers = async (connection, projectId) => {
+  const sql = `UPDATE project_files SET is_cover = 0 WHERE project_id = ?`;
+  await connection.query(sql, [projectId]);
+};
+
+/**
+ * Ustawia flagę okładki dla konkretnego pliku
+ */
+const setFileAsCover = async (connection, fileId, projectId) => {
+  const sql = `UPDATE project_files SET is_cover = 1 WHERE id = ? AND project_id = ?`;
+  await connection.query(sql, [fileId, projectId]);
 };
 
 module.exports = {
@@ -270,6 +288,9 @@ module.exports = {
   createProjectUpdate,
   deleteProjectUpdate,
   updateProject,
-  setProjectCover,
   checkSlugExists,
+  getFilesByIds,
+  deleteFiles,
+  resetProjectCovers,
+  setFileAsCover,
 };

@@ -61,7 +61,7 @@ const AdminProjectDetails = () => {
       const response = await api.get(`/projects/admin/${id}`);
       const data = response.data;
 
-      // Safe JSON parsing helper
+      // Helper do JSON
       const parseField = (field) => {
         try {
           return typeof field === "string" ? JSON.parse(field) : field || {};
@@ -70,9 +70,16 @@ const AdminProjectDetails = () => {
         }
       };
 
+      // Przetwarzanie plików: dodajemy flagi isDeleted: false
+      const processedFiles = (data.files || []).map((f) => ({
+        ...f,
+        isDeleted: false,
+        // Upewniamy się, że typ jest poprawny ('photo'/'document')
+        type: f.type || "document",
+      }));
+
       const preparedData = {
         ...data,
-        // Ensure multilingual fields have structure even if empty
         title: { pl: "", en: "", es: "", ...parseField(data.title) },
         description: {
           pl: "",
@@ -83,16 +90,16 @@ const AdminProjectDetails = () => {
         country: { pl: "", en: "", es: "", ...parseField(data.country) },
         age: { pl: "", en: "", es: "", ...parseField(data.age) },
         speciesOther: parseField(data.speciesOther),
+        // Fix daty dla inputa
+        deadline: data.deadline ? data.deadline.split("T")[0] : "",
+        // Przypisujemy przetworzone pliki
+        files: processedFiles,
       };
 
       setFormData(preparedData);
 
-      // Handle news from the new backend structure
-      if (data.news) {
-        setProjectNews(data.news);
-      } else {
-        setProjectNews([]);
-      }
+      if (data.news) setProjectNews(data.news);
+      else setProjectNews([]);
     } catch (err) {
       console.error("Error fetching project:", err);
       setError(t("requests.fetchError") || "Failed to load project details.");
@@ -150,40 +157,98 @@ const AdminProjectDetails = () => {
     setFormData((prev) => ({ ...prev, files: newFiles }));
   };
 
-  // --- SAVE LOGIC (WITH VALIDATION) ---
+  // --- SAVE LOGIC (Z AKTUALIZACJĄ PLIKÓW) ---
   const executeSave = async () => {
-    // Zamknij dialog potwierdzenia zapisu (jeśli był otwarty)
     setConfirmSaveDialog((prev) => ({ ...prev, isOpen: false }));
     setIsSaving(true);
     setAlert(null);
 
     try {
-      // Znajdź ID aktualnej okładki (jeśli jest)
+      // 1. Tworzymy FormData (niezbędne do przesłania plików)
+      const data = new FormData();
+
+      // 2. Dodajemy pola tekstowe
+      data.append("applicantType", formData.applicantType);
+      data.append("fullName", formData.fullName);
+      data.append("animalName", formData.animalName);
+      data.append("animalsCount", formData.animalsCount);
+      data.append("species", formData.species);
+      data.append("city", formData.city || "");
+      data.append("slug", formData.slug);
+      data.append("status", formData.status);
+      data.append("isUrgent", formData.isUrgent);
+      data.append("amountTarget", formData.amountTarget);
+      data.append("amountCollected", formData.amountCollected);
+      data.append("currency", formData.currency);
+      data.append("deadline", formData.deadline);
+
+      // 3. Pola JSON (Joi na backendzie oczekuje stringów dla tych pól)
+      data.append("title", JSON.stringify(formData.title));
+      data.append("description", JSON.stringify(formData.description));
+      data.append("country", JSON.stringify(formData.country));
+      data.append("age", JSON.stringify(formData.age));
+      data.append("speciesOther", JSON.stringify(formData.speciesOther));
+
+      // 4. Okładka
+      // Szukamy pliku, który ma flagę isCover=true i NIE jest usunięty
       const coverFile = formData.files.find((f) => f.isCover && !f.isDeleted);
-      const coverFileId = coverFile ? coverFile.id : null;
 
-      const payload = {
-        ...formData,
-        // Convert objects to JSON strings for backend
-        title: JSON.stringify(formData.title),
-        description: JSON.stringify(formData.description),
-        country: JSON.stringify(formData.country),
-        age: JSON.stringify(formData.age),
-        speciesOther: JSON.stringify(formData.speciesOther),
-        // Pass cover ID explicitly
-        coverFileId: coverFileId,
-      };
+      if (coverFile) {
+        // Jeśli to stary plik -> wysyłamy ID numeryczne (np. "15")
+        // Jeśli to nowy plik -> wysyłamy ID tymczasowe (np. "new-abc")
+        data.append("coverFileId", coverFile.id);
+      } else {
+        data.append("coverFileId", "");
+      }
 
-      await api.put(`/projects/admin/${id}`, payload);
+      // 5. Pliki do usunięcia (tylko STARE, które mają numeryczne ID)
+      const filesToDelete = formData.files
+        .filter((f) => f.isDeleted && !f.isNew)
+        .map((f) => f.id);
+
+      data.append("filesToDelete", JSON.stringify(filesToDelete));
+
+      // 6. Nowe pliki (Upload)
+      const newFileNamesMap = {}; // Mapa: tempId -> oryginalna nazwa pliku
+
+      formData.files.forEach((file) => {
+        // Interesują nas tylko nowe pliki, które nie zostały usunięte
+        if (file.isNew && !file.isDeleted && file.file) {
+          if (file.type === "photo") {
+            // Sztuczka: zmieniamy nazwę pliku w FormData na jego tempId (np. "new-abc.jpg")
+            // Dzięki temu backend wie, który plik fizyczny odpowiada któremu ID w mapie
+            const ext = file.file.name.split(".").pop();
+            const formDataName = `${file.id}.${ext}`;
+
+            data.append("newPhotos", file.file, formDataName);
+            newFileNamesMap[file.id] = file.file.name;
+          } else {
+            const ext = file.file.name.split(".").pop();
+            const formDataName = `${file.id}.${ext}`;
+
+            data.append("newDocuments", file.file, formDataName);
+            newFileNamesMap[file.id] = file.file.name;
+          }
+        }
+      });
+
+      // Wysyłamy mapę nazw, żeby backend mógł zapisać oryginalną nazwę pliku w bazie
+      data.append("newFileNames", JSON.stringify(newFileNamesMap));
+
+      // 7. Wysyłka
+      await api.put(`/projects/admin/${id}`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       setAlert({
         variant: "success",
-        message: t("projects.alerts.saveSuccess"),
+        message: t("projects.alerts.saveSuccess") || "Zapisano zmiany!",
       });
+
+      // Odświeżamy dane, aby pobrać prawdziwe ID nowych plików z bazy
       fetchProjectDetails();
     } catch (err) {
       console.error("Save error:", err);
-      // --- OBSŁUGA BŁĘDÓW Z BACKENDU ---
       const errorCode = err.response?.data?.code;
 
       if (errorCode === "SLUG_EXISTS") {
@@ -197,11 +262,9 @@ const AdminProjectDetails = () => {
         setAlert({
           variant: "error",
           message:
-            t("projects.alerts.validationError") ||
-            "Błąd walidacji danych. Sprawdź formularz.",
+            t("projects.alerts.validationError") || "Błąd walidacji danych.",
         });
       } else {
-        // Domyślny błąd
         setAlert({
           variant: "error",
           message:

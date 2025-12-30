@@ -1,7 +1,11 @@
 // backend/controllers/projectController.js
 const db = require("../config/db");
 const ProjectModel = require("../models/projectModel");
-const Joi = require("joi"); // Upewnij się, że masz zainstalowany 'joi'
+const Joi = require("joi");
+const path = require("path");
+const fs = require("fs").promises;
+const sharp = require("sharp");
+const { v4: uuidv4 } = require("uuid");
 
 // --- SCHEMAT WALIDACJI (Dla edycji projektu) ---
 const updateProjectSchema = Joi.object({
@@ -36,7 +40,9 @@ const updateProjectSchema = Joi.object({
   deadline: Joi.string().required(), // YYYY-MM-DD
 
   // Opcjonalne (np. okładka)
-  coverFileId: Joi.number().integer().allow(null),
+  coverFileId: Joi.alternatives()
+    .try(Joi.number(), Joi.string())
+    .allow(null, ""),
 }).unknown(true); // Pozwala na inne pola (np. files, które ignorujemy w walidacji głównej)
 
 /**
@@ -267,16 +273,17 @@ const deleteProjectUpdate = async (req, res) => {
 
 /**
  * PUT /api/projects/admin/:id
- * Aktualizuje dane projektu
+ * Aktualizuje dane projektu oraz zarządza plikami
  */
 const updateProject = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const { id } = req.params;
 
-    // 1. Walidacja Joi
+    // 1. Walidacja
     const { error, value: data } = updateProjectSchema.validate(req.body, {
       abortEarly: false,
+      allowUnknown: true,
     });
 
     if (error) {
@@ -289,13 +296,12 @@ const updateProject = async (req, res) => {
 
     await connection.beginTransaction();
 
-    // 1.5 Walidacja unikalności Sluga
+    // 2. Slug check
     const isSlugTaken = await ProjectModel.checkSlugExists(
       connection,
       data.slug,
       id
     );
-
     if (isSlugTaken) {
       await connection.rollback();
       return res.status(409).json({
@@ -304,7 +310,7 @@ const updateProject = async (req, res) => {
       });
     }
 
-    // --- NAPRAWA DATY ---
+    // 3. Formatowanie danych
     let formattedDeadline = data.deadline;
     if (
       formattedDeadline &&
@@ -313,44 +319,168 @@ const updateProject = async (req, res) => {
     ) {
       formattedDeadline = formattedDeadline.split("T")[0];
     }
-
-    // --- LOGIKA CZYSZCZENIA SPECIES_OTHER ---
-    // Jeśli gatunek to NIE jest 'other', to musimy wyczyścić pole speciesOther (ustawić na null)
-    // Niezależnie od tego, co przysłał frontend.
     const finalSpeciesOther =
       data.species === "other" ? data.speciesOther : null;
 
-    // 2. Aktualizacja w bazie
+    // 4. Update tekstowy (Model)
     await ProjectModel.updateProject(connection, id, {
       status: data.status,
       slug: data.slug,
-      isUrgent: data.isUrgent,
-
+      isUrgent: data.isUrgent === "true" || data.isUrgent === true,
       applicantType: data.applicantType,
       fullName: data.fullName,
       animalName: data.animalName,
       animalsCount: data.animalsCount,
       species: data.species,
       city: data.city,
-
       amountTarget: data.amountTarget,
       amountCollected: data.amountCollected,
       currency: data.currency,
       deadline: formattedDeadline,
-
       title: data.title,
       description: data.description,
       country: data.country,
-
-      // TU UŻYWAMY PRZELICZONEJ WARTOŚCI:
       speciesOther: finalSpeciesOther,
-
       age: data.age,
     });
 
-    // 3. Obsługa okładki
-    if (data.coverFileId !== undefined) {
-      await ProjectModel.setProjectCover(connection, id, data.coverFileId);
+    // =========================================================
+    // 5. OBSŁUGA PLIKÓW (Teraz używamy Modelu zamiast SQL)
+    // =========================================================
+
+    // A. USUWANIE PLIKÓW
+    if (req.body.filesToDelete) {
+      let filesToDeleteIds = [];
+      try {
+        filesToDeleteIds = JSON.parse(req.body.filesToDelete);
+      } catch (e) {
+        console.error("Error parsing filesToDelete JSON", e);
+      }
+
+      if (Array.isArray(filesToDeleteIds) && filesToDeleteIds.length > 0) {
+        // 1. Pobierz ścieżki z modelu
+        const filesRows = await ProjectModel.getFilesByIds(
+          connection,
+          filesToDeleteIds,
+          id
+        );
+
+        // 2. Usuń z dysku (ZABEZPIECZENIE)
+        for (const file of filesRows) {
+          // --- SPRAWDZENIE BEZPIECZEŃSTWA ---
+          // Jeśli plik pochodzi z folderu 'requests', NIE usuwamy go fizycznie z dysku.
+          // Usuwamy go tylko z bazy danych projektu (krok 3),
+          // aby oryginał w Zgłoszeniach pozostał nienaruszony.
+          if (file.file_path.includes("/uploads/requests/")) {
+            continue;
+          }
+          // ----------------------------------
+
+          try {
+            const filePath = path.join(process.cwd(), file.file_path);
+            await fs.unlink(filePath);
+          } catch (err) {
+            // Ignorujemy błąd jeśli plik już nie istnieje, ale logujemy inne
+            if (err.code !== "ENOENT") {
+              console.warn(
+                `Could not delete file ${file.file_path}:`,
+                err.message
+              );
+            }
+          }
+        }
+
+        // 3. Usuń z bazy (Model)
+        // To usuwa powiązanie pliku z PROJEKTEM. Oryginalne powiązanie z REQUESTEM jest w innej tabeli.
+        await ProjectModel.deleteFiles(connection, filesToDeleteIds, id);
+      }
+    }
+
+    // B. ZARZĄDZANIE OKŁADKĄ (Dla istniejących plików)
+    if (req.body.coverFileId !== undefined) {
+      // 1. Reset (Model)
+      await ProjectModel.resetProjectCovers(connection, id);
+
+      // 2. Set (Model) - tylko jeśli to ID numeryczne (istniejący plik)
+      if (req.body.coverFileId && !isNaN(req.body.coverFileId)) {
+        await ProjectModel.setFileAsCover(connection, req.body.coverFileId, id);
+      }
+    }
+
+    // C. DODAWANIE NOWYCH PLIKÓW (Upload)
+    const filesToInsert = [];
+    let newFileNamesMap = {};
+    if (req.body.newFileNames) {
+      try {
+        newFileNamesMap = JSON.parse(req.body.newFileNames);
+      } catch (e) {}
+    }
+
+    const baseProjectDir = path.join(
+      process.cwd(),
+      "uploads",
+      "projects",
+      String(id)
+    );
+    const photosDir = path.join(baseProjectDir, "photos");
+    const documentsDir = path.join(baseProjectDir, "documents");
+
+    if (req.files && (req.files["newPhotos"] || req.files["newDocuments"])) {
+      if (req.files["newPhotos"]?.length > 0)
+        await fs.mkdir(photosDir, { recursive: true });
+      if (req.files["newDocuments"]?.length > 0)
+        await fs.mkdir(documentsDir, { recursive: true });
+    }
+
+    // --- Zdjęcia ---
+    if (req.files && req.files["newPhotos"]) {
+      for (const file of req.files["newPhotos"]) {
+        const tempId = path.parse(file.originalname).name;
+        const originalRealName = newFileNamesMap[tempId] || file.originalname;
+        const uniqueName = `${uuidv4()}.webp`;
+
+        await sharp(file.buffer)
+          .resize({ width: 1200, withoutEnlargement: true })
+          .webp({ quality: 80 })
+          .toFile(path.join(photosDir, uniqueName));
+
+        // Jeśli nowy plik jest okładką
+        const isCover = req.body.coverFileId === tempId ? 1 : 0;
+
+        filesToInsert.push([
+          id,
+          `/uploads/projects/${id}/photos/${uniqueName}`,
+          "photo",
+          originalRealName,
+          isCover,
+        ]);
+      }
+    }
+
+    // --- Dokumenty ---
+    if (req.files && req.files["newDocuments"]) {
+      for (const file of req.files["newDocuments"]) {
+        const tempId = path.parse(file.originalname).name;
+        const originalRealName = newFileNamesMap[tempId] || file.originalname;
+        let ext = path.extname(originalRealName);
+        if (!ext) ext = ".bin";
+        const uniqueName = `${uuidv4()}${ext}`;
+
+        await fs.writeFile(path.join(documentsDir, uniqueName), file.buffer);
+
+        filesToInsert.push([
+          id,
+          `/uploads/projects/${id}/documents/${uniqueName}`,
+          "document",
+          originalRealName,
+          0,
+        ]);
+      }
+    }
+
+    // D. Zapis nowych plików do bazy (Model)
+    if (filesToInsert.length > 0) {
+      await ProjectModel.addProjectFiles(connection, filesToInsert);
     }
 
     await connection.commit();
@@ -358,11 +488,9 @@ const updateProject = async (req, res) => {
   } catch (error) {
     await connection.rollback();
     console.error("updateProject error:", error);
-
     if (error.code === "ER_DUP_ENTRY") {
       return res.status(409).json({ error: "Slug must be unique." });
     }
-
     res.status(500).json({ error: "Server error during update." });
   } finally {
     connection.release();

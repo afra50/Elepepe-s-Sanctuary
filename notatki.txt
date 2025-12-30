@@ -2,7 +2,7 @@
 - dodac wszedzie error state
 - wesprzyj na zbiórkach ma coś robić
 - filtry pomiedzy tel i laptopem jak sa widoczne to przycisk "Filtry" jest widoczny i nie dziala
-- przetlumaczyc Pilne na karcie i sortuj w pasku filtrow
+- przetlumaczyc Pilne na karcie zbiórki i sortuj w pasku filtrow
 - odnosnik do grupy na fb
 
 HOME
@@ -16,6 +16,8 @@ PARTNERZY
 O NAS
 - tłumaczenia
 - poprawic style lekko?
+- teksty + zdjecia
+- odnosniki
 
 KONTAKT
 - loader
@@ -31,9 +33,7 @@ ADMIN
     - walidacja slugu przy akceptacji
 2. Zbiórki
     2.1 Podstrona zbiórki
-        - walidacja danych na dodawaniu zbiorki (front+backend) + tlumaczenia
         - wyswietlanie zdjec,plikow dla aktualnosci
-        - obsluga plikow, kompresja
         - responsywnosc
     2.2 Create News modal
         - alerty, walidacja front + backend, zablokowanie przeslania jak nie ma jakiegos jezyka, loader
