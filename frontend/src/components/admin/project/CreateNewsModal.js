@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import Modal from "../../ui/Modal";
 import Button from "../../ui/Button";
 import Checkbox from "../../ui/Checkbox";
+import Alert from "../../ui/Alert";
+import Loader from "../../ui/Loader";
 import { useTranslation } from "react-i18next";
 import { Trash2, Paperclip } from "lucide-react";
 
@@ -14,50 +16,68 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
   const languages = ["pl", "en", "es"];
 
   // --- STAN FORMULARZA ---
-  // Teraz title i content to obiekty, a nie stringi
   const [formData, setFormData] = useState({
     title: { pl: "", en: "", es: "" },
     content: { pl: "", en: "", es: "" },
     isVisible: true,
-    files: [],
   });
 
-  const [existingFiles, setExistingFiles] = useState([]);
+  // --- STAN PLIKÓW ---
+  const [files, setFiles] = useState([]);
+  const [filesToDelete, setFilesToDelete] = useState([]);
+
+  // --- STAN ALERTU LOKALNEGO ---
+  const [localAlert, setLocalAlert] = useState(null);
 
   // --- INICJALIZACJA DANYCH ---
   useEffect(() => {
-    if (newsToEdit) {
-      // Helper do parsowania JSON, jeśli przyjdzie string z bazy
-      const parseField = (field) => {
-        try {
-          return typeof field === "string" ? JSON.parse(field) : field || {};
-        } catch (e) {
-          return {};
-        }
-      };
+    if (isOpen) {
+      setFiles([]);
+      setFilesToDelete([]);
+      setActiveLang("pl");
+      setLocalAlert(null);
 
-      setFormData({
-        title: { pl: "", en: "", es: "", ...parseField(newsToEdit.title) },
-        content: { pl: "", en: "", es: "", ...parseField(newsToEdit.content) },
-        isVisible: newsToEdit.isVisible ?? true,
-        files: [],
-      });
-      setExistingFiles(newsToEdit.files || []);
-    } else {
-      // Reset dla nowego wpisu
-      setFormData({
-        title: { pl: "", en: "", es: "" },
-        content: { pl: "", en: "", es: "" },
-        isVisible: true,
-        files: [],
-      });
-      setExistingFiles([]);
+      if (newsToEdit) {
+        const parseField = (field) => {
+          try {
+            return typeof field === "string" ? JSON.parse(field) : field || {};
+          } catch (e) {
+            return {};
+          }
+        };
+
+        setFormData({
+          title: { pl: "", en: "", es: "", ...parseField(newsToEdit.title) },
+          content: {
+            pl: "",
+            en: "",
+            es: "",
+            ...parseField(newsToEdit.content),
+          },
+          isVisible: newsToEdit.isVisible ?? true,
+        });
+
+        if (newsToEdit.files && Array.isArray(newsToEdit.files)) {
+          setFiles(
+            newsToEdit.files.map((f) => ({
+              id: f.id,
+              name: f.originalName || f.name,
+              isNew: false,
+            }))
+          );
+        }
+      } else {
+        setFormData({
+          title: { pl: "", en: "", es: "" },
+          content: { pl: "", en: "", es: "" },
+          isVisible: true,
+        });
+      }
     }
   }, [newsToEdit, isOpen]);
 
   // --- HANDLERY ---
 
-  // Zmiana tekstu w konkretnym języku
   const handleTextChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -66,44 +86,82 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
         [activeLang]: value,
       },
     }));
+    if (localAlert) setLocalAlert(null);
   };
 
   const handleCheckboxChange = (checked) => {
     setFormData((prev) => ({ ...prev, isVisible: checked }));
   };
 
+  const MAX_FILES = 10; // Stała zgodna z backendem
+
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length) {
-      setFormData((prev) => ({
-        ...prev,
-        files: [...prev.files, ...files],
-      }));
-    }
-    e.target.value = "";
-  };
+    const newFiles = Array.from(e.target.files);
+    if (!newFiles.length) return;
 
-  const removeNewFile = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      files: prev.files.filter((_, i) => i !== index),
-    }));
-  };
-
-  const handleSubmit = () => {
-    // Walidacja: wymagany tytuł chociaż w języku PL
-    if (!formData.title.pl.trim()) {
-      alert(
-        t("projects.newsModal.errors.titleRequired") ||
-          "Tytuł (PL) jest wymagany"
-      );
+    // Sprawdź, czy po dodaniu nie przekroczymy limitu
+    // Liczymy tylko pliki, które aktualnie są na liście (files.length) + nowe
+    if (files.length + newFiles.length > MAX_FILES) {
+      setLocalAlert({
+        variant: "error",
+        message: `Możesz dodać maksymalnie ${MAX_FILES} plików.`, // Dodaj do tłumaczeń: projects.newsModal.errors.maxFiles
+      });
+      e.target.value = ""; // Reset inputa
       return;
     }
 
-    onSave({
+    const processedFiles = newFiles.map((file) => ({
+      id: `temp-${Math.random().toString(36).substr(2, 9)}`,
+      name: file.name,
+      isNew: true,
+      file: file,
+    }));
+
+    setFiles((prev) => [...prev, ...processedFiles]);
+    e.target.value = "";
+
+    // Jeśli był jakiś błąd wcześniej, wyczyść go
+    if (localAlert) setLocalAlert(null);
+  };
+
+  const removeFile = (id) => {
+    const fileToRemove = files.find((f) => f.id === id);
+    if (!fileToRemove) return;
+
+    if (!fileToRemove.isNew) {
+      setFilesToDelete((prev) => [...prev, id]);
+    }
+
+    setFiles((prev) => prev.filter((f) => f.id !== id));
+  };
+
+  const handleSubmit = () => {
+    for (const lang of languages) {
+      const title = formData.title[lang];
+      const content = formData.content[lang];
+
+      if (!title?.trim() || !content?.trim()) {
+        setActiveLang(lang);
+        setLocalAlert({
+          variant: "error",
+          message:
+            t("projects.newsModal.errors.allLanguagesRequired", {
+              lang: lang.toUpperCase(),
+            }) ||
+            `Uzupełnij tytuł i treść we wszystkich językach. Brakuje: ${lang.toUpperCase()}`,
+        });
+        return;
+      }
+    }
+
+    const payload = {
       ...formData,
       id: newsToEdit?.id,
-    });
+      filesToUpload: files.filter((f) => f.isNew).map((f) => f.file),
+      filesToDelete: filesToDelete,
+    };
+
+    onSave(payload);
   };
 
   return (
@@ -119,15 +177,36 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
       size="md"
       footer={
         <>
-          <Button variant="ghost" onClick={onClose}>
+          <Button variant="ghost" onClick={onClose} disabled={isSaving}>
             {t("common.cancel")}
           </Button>
-          <Button variant="primary" onClick={handleSubmit} isLoading={isSaving}>
-            {newsToEdit ? t("common.save") : t("common.add")}
+
+          <Button variant="primary" onClick={handleSubmit} disabled={isSaving}>
+            {isSaving ? (
+              <div className="btn-loader-wrapper">
+                <Loader size="sm" variant="inline" />
+              </div>
+            ) : newsToEdit ? (
+              t("common.save")
+            ) : (
+              t("common.add")
+            )}
           </Button>
         </>
       }
     >
+      {/* ALERT BŁĘDÓW */}
+      {localAlert && (
+        <div className="mb-4">
+          <Alert
+            variant={localAlert.variant}
+            onClose={() => setLocalAlert(null)}
+          >
+            {localAlert.message}
+          </Alert>
+        </div>
+      )}
+
       {/* ZAKŁADKI JĘZYKOWE */}
       <div className="lang-tabs-simple mb-3">
         {languages.map((code) => (
@@ -159,6 +238,7 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
           placeholder={`${t(
             "projects.newsModal.placeholders.title"
           )} (${activeLang})`}
+          disabled={isSaving}
         />
       </div>
 
@@ -174,6 +254,7 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
           placeholder={`${t(
             "projects.newsModal.placeholders.content"
           )} (${activeLang})`}
+          disabled={isSaving}
         />
       </div>
 
@@ -182,12 +263,13 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
           name="isVisible"
           checked={formData.isVisible}
           onChange={handleCheckboxChange}
+          disabled={isSaving}
         >
           {t("projects.newsModal.fields.isVisible")}
         </Checkbox>
       </div>
 
-      {/* SEKCJA PLIKÓW (Bez zmian) */}
+      {/* SEKCJA PLIKÓW */}
       <div className="mt-4">
         <div className="btn-upload-wrapper">
           <Button
@@ -195,8 +277,12 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
             size="sm"
             icon={<Paperclip size={16} />}
             onClick={() => fileInputRef.current?.click()}
+            // Zablokuj, jeśli zapisuje LUB jeśli osiągnięto limit plików
+            disabled={isSaving || files.length >= 10}
           >
-            {t("projects.newsModal.addFiles")}
+            {files.length >= 10
+              ? "Limit plików osiągnięty" // projects.newsModal.limitReached
+              : t("projects.newsModal.addFiles")}
           </Button>
           <input
             ref={fileInputRef}
@@ -207,21 +293,30 @@ const CreateNewsModal = ({ isOpen, onClose, newsToEdit, onSave, isSaving }) => {
           />
         </div>
 
-        {formData.files.length > 0 && (
+        {files.length > 0 ? (
           <ul className="file-list mt-2">
-            {formData.files.map((file, idx) => (
-              <li key={idx} className="file-list__item">
-                <span className="file-list__name">{file.name}</span>
+            {files.map((file) => (
+              <li key={file.id} className="file-list__item">
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <span
+                    className={`file-list__dot ${file.isNew ? "" : "dot-gray"}`}
+                  ></span>
+                  <span className="file-list__name">{file.name}</span>
+                </div>
                 <button
                   type="button"
                   className="file-list__btn file-list__btn--remove"
-                  onClick={() => removeNewFile(idx)}
+                  onClick={() => removeFile(file.id)}
+                  disabled={isSaving}
                 >
                   <Trash2 size={12} />
                 </button>
               </li>
             ))}
           </ul>
+        ) : (
+          // Wyświetl komunikat, jeśli brak plików
+          <p>{t("projects.news.noFiles")}</p>
         )}
       </div>
     </Modal>

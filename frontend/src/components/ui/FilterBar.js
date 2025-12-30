@@ -1,25 +1,23 @@
 import React from "react";
-import { ArrowUp, ArrowDown, Filter, X } from "lucide-react";
-import Button from "./Button"; // Upewnij się, że ścieżka jest poprawna
+import { ArrowUp, ArrowDown, Filter } from "lucide-react";
+import Button from "./Button";
+import { useTranslation } from "react-i18next"; // <--- 1. Import
 
 const FilterBar = ({
-  // Sortowanie
   sortBy,
-  sortOrder, // 'asc' | 'desc'
-  sortOptions = [], // Tablica: [{ value: 'date', label: 'Data' }]
+  sortOrder,
+  sortOptions = [],
   onSortChange,
   onOrderToggle,
-  clearLabel,
-
-  // Akcje
+  // clearLabel, // <--- Możesz to usunąć, jeśli będziemy brać z tłumaczeń wewnątrz
   onClear,
-
-  // Specyficzne filtry (przekazane jako dzieci)
   children,
 }) => {
+  const { t } = useTranslation("common"); // <--- 2. Hook (namespace 'common')
+
   return (
     <div className="filter-bar">
-      {/* SEKCJA FILTRÓW (Dropdowny) */}
+      {/* SEKCJA FILTRÓW */}
       <div className="filters-area">
         <div className="filters-icon-wrapper">
           <Filter size={18} />
@@ -31,7 +29,9 @@ const FilterBar = ({
       <div className="actions-area">
         {sortOptions.length > 0 && (
           <div className="sort-group">
-            <span className="sort-label">Sortuj:</span>
+            {/* Tłumaczenie etykiety */}
+            <span className="sort-label">{t("filters.label")}</span>
+
             <select
               value={sortBy}
               onChange={(e) => onSortChange(e.target.value)}
@@ -39,6 +39,9 @@ const FilterBar = ({
             >
               {sortOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
+                  {/* Zakładam, że opt.label jest już przetłumaczone przez rodzica, 
+                      ALE jeśli przekazujesz tam tylko klucze (np. 'date'), 
+                      możesz tu zrobić: t(`filters.sortOptions.${opt.value}`) */}
                   {opt.label}
                 </option>
               ))}
@@ -47,7 +50,12 @@ const FilterBar = ({
             <button
               className="sort-order-btn"
               onClick={onOrderToggle}
-              title={sortOrder === "asc" ? "Rosnąco" : "Malejąco"}
+              // Tłumaczenie tytułów (tooltipów)
+              title={
+                sortOrder === "asc"
+                  ? t("filters.ascending")
+                  : t("filters.descending")
+              }
             >
               {sortOrder === "asc" ? (
                 <ArrowUp size={18} />
@@ -66,7 +74,8 @@ const FilterBar = ({
           onClick={onClear}
           className="clear-btn"
         >
-          {clearLabel}
+          {/* Tłumaczenie przycisku czyszczenia */}
+          {t("filters.clear")}
         </Button>
       </div>
     </div>

@@ -16,5 +16,19 @@
   "pagination": {
     "previous": "Poprzednia",
     "next": "Następna"
+  },
+
+  "filters": {
+    "label": "Sortuj:",
+    "ascending": "Rosnąco",
+    "descending": "Malejąco",
+    "clear": "Wyczyść",
+    "sortOptions": {
+      "date": "Data",
+      "amount": "Kwota",
+      "status": "Status",
+      "name": "Nazwa",
+      "popularity": "Popularność"
+    }
   }
 }
