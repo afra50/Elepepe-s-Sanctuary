@@ -180,6 +180,57 @@ const deleteProjectUpdate = async (connection, id) => {
 };
 
 /**
+ * Dodaje pliki do aktualności
+ */
+const addUpdateFiles = async (connection, filesData) => {
+  if (!filesData || filesData.length === 0) return;
+  // Zakładam tabelę: project_update_files (id, project_update_id, file_path, file_type, original_name)
+  const sql = `
+    INSERT INTO project_update_files (project_update_id, file_path, file_type, original_name) 
+    VALUES ?
+  `;
+  await connection.query(sql, [filesData]);
+};
+
+/**
+ * Pobiera pliki dla konkretnej aktualności
+ */
+const getUpdateFiles = async (connection, updateId) => {
+  const sql = `SELECT * FROM project_update_files WHERE project_update_id = ?`;
+  const [rows] = await connection.query(sql, [updateId]);
+  return rows;
+};
+
+/**
+ * Usuwa pliki aktualności z bazy na podstawie listy ID
+ */
+const deleteUpdateFiles = async (connection, fileIds) => {
+  if (!fileIds || fileIds.length === 0) return;
+  const sql = `DELETE FROM project_update_files WHERE id IN (?)`;
+  await connection.query(sql, [fileIds]);
+};
+
+/**
+ * Aktualizuje sam tekst newsa
+ */
+const updateProjectUpdate = async (connection, updateId, data) => {
+  const publishedAt = data.isVisible ? new Date() : null;
+  // Uwaga: Jeśli news był już opublikowany, może nie chcemy zmieniać daty publikacji?
+  // W prostej wersji nadpisujemy:
+  const sql = `
+    UPDATE project_updates 
+    SET title = ?, content = ?, is_visible = ?
+    WHERE id = ?
+  `;
+  await connection.query(sql, [
+    data.title,
+    data.content,
+    data.isVisible ? 1 : 0,
+    updateId,
+  ]);
+};
+
+/**
  * Aktualizuje dane projektu w bazie.
  */
 const updateProject = async (connection, id, data) => {
@@ -312,4 +363,8 @@ module.exports = {
   resetProjectCovers,
   setFileAsCover,
   getPublicProjectBySlug,
+  addUpdateFiles,
+  getUpdateFiles,
+  deleteUpdateFiles,
+  updateProjectUpdate,
 };

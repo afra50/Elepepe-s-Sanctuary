@@ -118,7 +118,10 @@
       "empty": "No hay noticias para esta recaudación.",
       "public": "Público",
       "hidden": "Oculto",
-      "photosCount": "+{{count}} fotos"
+      "photosCount": "+{{count}} fotos",
+      "noFiles": "No hay archivos añadidos.",
+      "savedSuccess": "¡Actualización guardada con éxito!",
+      "saveError": "No se pudo guardar la actualización."
     },
     "media": {
       "title": "Galería y Archivos",
@@ -154,7 +157,8 @@
         "content": "¿Qué hay de nuevo con la mascota?"
       },
       "errors": {
-        "titleRequired": "El título es obligatorio"
+        "titleRequired": "El título es obligatorio",
+        "allLanguagesRequired": "Complete el título y el contenido en todos los idiomas. Falta: {{lang}}"
       }
     },
     "sidebar": {
@@ -297,7 +301,14 @@
     "done": "Listo",
     "save": "Guardar",
     "add": "Añadir",
-    "selectDate": "Seleccionar fecha..."
+    "selectDate": "Seleccionar fecha...",
+    "errors": {
+      "serverError": "Ocurrió un error inesperado del servidor.",
+      "validationError": "Error de validación. Por favor revise el formulario.",
+      "fileTooLarge": "El archivo es demasiado grande (máximo 10MB).",
+      "tooManyFiles": "Se excedió el límite de archivos.",
+      "unsupportedFileType": "Formato de archivo no compatible. (Permitido: JPG, PNG, WEBP, PDF)"
+    }
   },
   "form": {
     "sections": {

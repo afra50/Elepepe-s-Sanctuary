@@ -118,7 +118,10 @@
       "empty": "Brak aktualności dla tej zbiórki.",
       "public": "Publiczny",
       "hidden": "Ukryty",
-      "photosCount": "+{{count}} zdjęć"
+      "photosCount": "+{{count}} zdjęć",
+      "noFiles": "Brak dodanych plików.",
+      "savedSuccess": "Aktualność została zapisana pomyślnie!",
+      "saveError": "Nie udało się zapisać aktualności."
     },
     "media": {
       "title": "Galeria i Pliki",
@@ -154,7 +157,8 @@
         "content": "Co słychać u zwierzaka?"
       },
       "errors": {
-        "titleRequired": "Tytuł jest wymagany"
+        "titleRequired": "Tytuł jest wymagany",
+        "allLanguagesRequired": "Uzupełnij tytuł i treść we wszystkich językach. Brakuje: {{lang}}"
       }
     },
     "sidebar": {
@@ -297,7 +301,15 @@
     "done": "Gotowe",
     "save": "Zapisz",
     "add": "Dodaj",
-    "selectDate": "Wybierz datę..."
+    "selectDate": "Wybierz datę...",
+
+    "errors": {
+      "serverError": "Wystąpił nieoczekiwany błąd serwera.",
+      "validationError": "Błąd walidacji danych. Sprawdź formularz.",
+      "fileTooLarge": "Plik jest zbyt duży (maksymalnie 10MB).",
+      "tooManyFiles": "Przekroczono limit liczby plików.",
+      "unsupportedFileType": "Nieobsługiwany format pliku. (Dozwolone: JPG, PNG, WEBP, PDF)"
+    }
   },
   "form": {
     "sections": {

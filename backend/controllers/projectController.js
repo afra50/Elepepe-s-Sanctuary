@@ -4,12 +4,31 @@ const ProjectModel = require("../models/projectModel");
 const Joi = require("joi");
 const path = require("path");
 const fs = require("fs").promises;
+const fsSync = require("fs"); // Do sprawdzenia istnienia pliku
 const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
 
-// --- SCHEMAT WALIDACJI (Dla edycji projektu) ---
+// --- HELPERY ---
+
+/**
+ * Sprawdza czy string jest poprawnym JSONem i czy ma wymaganą strukturę (np. klucz 'pl')
+ */
+const validateJsonString = (value, helpers) => {
+  try {
+    const parsed = typeof value === "string" ? JSON.parse(value) : value;
+    if (!parsed || !parsed.pl || !parsed.pl.trim()) {
+      return helpers.message("Pole (PL) jest wymagane w tłumaczeniach.");
+    }
+    return value; // Zwracamy oryginalny string (lub obiekt, backend sobie poradzi)
+  } catch (e) {
+    return helpers.message("Niepoprawny format JSON dla pól tłumaczonych.");
+  }
+};
+
+// --- SCHEMATY WALIDACJI (JOI) ---
+
+// 1. Walidacja edycji projektu
 const updateProjectSchema = Joi.object({
-  // Podstawowe dane
   applicantType: Joi.string()
     .valid("person", "organization", "vetClinic")
     .required(),
@@ -19,31 +38,39 @@ const updateProjectSchema = Joi.object({
   species: Joi.string().valid("rat", "guineaPig", "other").required(),
   city: Joi.string().allow(null, ""),
 
-  // Konfiguracja
   slug: Joi.string().required(),
   status: Joi.string()
     .valid("draft", "active", "completed", "cancelled")
     .required(),
-  isUrgent: Joi.boolean().default(false),
+  isUrgent: Joi.boolean().default(false), // Frontend może przysłać "true" string, Joi to przekonwertuje
 
-  // Treści (Tłumaczenia - JSON strings)
-  title: Joi.string().required(), // Oczekujemy JSON string z frontendu
-  description: Joi.string().required(),
-  country: Joi.string().required(),
-  age: Joi.string().allow(null, ""),
-  speciesOther: Joi.string().allow(null, ""),
+  // Pola JSON (Frontend wysyła JSON stringi)
+  title: Joi.custom(validateJsonString).required(),
+  description: Joi.custom(validateJsonString).required(),
+  country: Joi.custom(validateJsonString).required(),
+  age: Joi.string().allow(null, ""), // Tu też przychodzi JSON string, ale jest opcjonalny
+  speciesOther: Joi.string().allow(null, ""), // JSON string lub null
 
-  // Finanse
   amountTarget: Joi.number().positive().required(),
   amountCollected: Joi.number().min(0).default(0),
   currency: Joi.string().valid("EUR", "PLN").required(),
-  deadline: Joi.string().required(), // YYYY-MM-DD
+  deadline: Joi.string().required(),
 
-  // Opcjonalne (np. okładka)
+  // Opcjonalne
   coverFileId: Joi.alternatives()
     .try(Joi.number(), Joi.string())
     .allow(null, ""),
-}).unknown(true); // Pozwala na inne pola (np. files, które ignorujemy w walidacji głównej)
+}).unknown(true); // Pozwala na pola plików (newPhotos, itp.)
+
+// 2. Walidacja aktualności (News)
+const projectUpdateSchema = Joi.object({
+  title: Joi.custom(validateJsonString).required(),
+  content: Joi.custom(validateJsonString).required(),
+  isVisible: Joi.boolean().default(true), // Joi zamieni string "true" na bool
+  filesToDelete: Joi.string().allow(null, ""), // JSON string tablicy ID
+}).unknown(true); // Pozwala na req.files
+
+// --- KONTROLERY ---
 
 /**
  * GET /api/projects
@@ -102,8 +129,8 @@ const getAdminProjects = async (req, res) => {
       currency: row.currency,
       deadline: row.deadline,
       createdAt: row.created_at,
-      title: row.title,
-      description: row.description,
+      title: row.title, // Tutaj zwracamy raw string JSON z bazy
+      description: row.description, // Tutaj zwracamy raw string JSON z bazy
       age: row.age,
       files: row.cover_image
         ? [
@@ -152,7 +179,6 @@ const getProjectDetails = async (req, res) => {
       isVisible: !!u.is_visible,
       publishedAt: u.published_at,
       createdAt: u.created_at,
-      updatedAt: u.updated_at,
       files: u.files.map((f) => ({
         id: f.id,
         url: `${req.protocol}://${req.get("host")}${f.file_path}`,
@@ -161,36 +187,28 @@ const getProjectDetails = async (req, res) => {
       })),
     }));
 
-    // === TU JEST KLUCZOWA ZMIANA ===
     const response = {
-      // 1. Jawne przypisanie pól snake_case z bazy do camelCase dla frontendu
       id: project.id,
       requestId: project.request_id,
       slug: project.slug,
       status: project.status,
       createdAt: project.created_at,
-
-      // Te pola powodowały błąd (były NULL przy zapisie):
-      applicantType: project.applicant_type, // Baza: applicant_type -> API: applicantType
-      fullName: project.full_name, // Baza: full_name -> API: fullName
-      animalName: project.animal_name, // Baza: animal_name -> API: animalName
-      animalsCount: project.animals_count, // Baza: animals_count -> API: animalsCount
-
-      // Reszta pól
+      applicantType: project.applicant_type,
+      fullName: project.full_name,
+      animalName: project.animal_name,
+      animalsCount: project.animals_count,
       species: project.species,
-      speciesOther: project.species_other,
+      speciesOther: project.species_other, // raw JSON string
       city: project.city,
-      country: project.country,
-      age: project.age,
+      country: project.country, // raw JSON string
+      age: project.age, // raw JSON string
       isUrgent: !!project.is_urgent,
       amountTarget: Number(project.amount_target),
       amountCollected: Number(project.amount_collected),
       currency: project.currency,
       deadline: project.deadline,
-      title: project.title,
-      description: project.description,
-
-      // Pliki i newsy
+      title: project.title, // raw JSON string
+      description: project.description, // raw JSON string
       files: files.map((f) => ({
         id: f.id,
         url: `${req.protocol}://${req.get("host")}${f.file_path}`,
@@ -200,7 +218,6 @@ const getProjectDetails = async (req, res) => {
       })),
       news: formattedUpdates,
     };
-    // ================================
 
     res.status(200).json(response);
   } catch (error) {
@@ -213,35 +230,224 @@ const getProjectDetails = async (req, res) => {
 
 /**
  * POST /api/projects/:id/updates
+ * Dodaje aktualność wraz z plikami
  */
 const addProjectUpdate = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const { id } = req.params;
-    const { title, content, isVisible } = req.body;
 
-    if (!title || !title.pl || !content || !content.pl) {
-      return res
-        .status(400)
-        .json({ error: "Tytuł i treść (wersja PL) są wymagane." });
+    // 1. Walidacja danych wejściowych
+    const { error, value: data } = projectUpdateSchema.validate(req.body, {
+      abortEarly: false,
+    });
+
+    if (error) {
+      return res.status(400).json({
+        code: "VALIDATION_ERROR",
+        message: "Validation failed",
+        details: error.details.map((d) => d.message),
+      });
     }
 
-    const titleJson = JSON.stringify(title);
-    const contentJson = JSON.stringify(content);
+    await connection.beginTransaction();
 
+    // 2. Zapisz tekst aktualności
+    // UWAGA: data.title jest stringiem JSON otrzymanym z frontendu.
+    // Nie robimy tu ponownego JSON.stringify, bo zrobilibyśmy podwójne kodowanie.
     const newUpdateId = await ProjectModel.createProjectUpdate(connection, {
       projectId: id,
-      title: titleJson,
-      content: contentJson,
-      isVisible,
+      title: data.title,
+      content: data.content,
+      isVisible: data.isVisible,
     });
 
-    res.status(201).json({
-      message: "Aktualność dodana",
-      id: newUpdateId,
-    });
+    // 3. Obsługa plików
+    if (req.files && req.files.length > 0) {
+      const filesToInsert = [];
+      const baseDir = path.join(
+        process.cwd(),
+        "uploads",
+        "projects",
+        String(id),
+        "updates"
+      );
+      const photosDir = path.join(baseDir, "photos");
+      const docsDir = path.join(baseDir, "documents");
+
+      await fs.mkdir(photosDir, { recursive: true });
+      await fs.mkdir(docsDir, { recursive: true });
+
+      for (const file of req.files) {
+        let filePath;
+        let fileType;
+        const uniqueId = uuidv4();
+
+        if (file.mimetype.startsWith("image/")) {
+          const filename = `${uniqueId}.webp`;
+          await sharp(file.buffer)
+            .resize({ width: 1000, withoutEnlargement: true })
+            .webp({ quality: 80 })
+            .toFile(path.join(photosDir, filename));
+
+          filePath = `/uploads/projects/${id}/updates/photos/${filename}`;
+          fileType = "photo";
+        } else {
+          let ext = path.extname(file.originalname) || ".bin";
+          const filename = `${uniqueId}${ext}`;
+          await fs.writeFile(path.join(docsDir, filename), file.buffer);
+
+          filePath = `/uploads/projects/${id}/updates/documents/${filename}`;
+          fileType = "document";
+        }
+
+        // Dekodowanie nazwy pliku (jeśli przyszła zakodowana, choć multer zazwyczaj radzi sobie w utf8)
+        const originalName = Buffer.from(file.originalname, "latin1").toString(
+          "utf8"
+        );
+
+        filesToInsert.push([
+          newUpdateId,
+          filePath,
+          fileType,
+          originalName || file.originalname,
+        ]);
+      }
+
+      await ProjectModel.addUpdateFiles(connection, filesToInsert);
+    }
+
+    await connection.commit();
+    res
+      .status(201)
+      .json({ message: "Update added successfully", id: newUpdateId });
   } catch (error) {
+    await connection.rollback();
     console.error("addProjectUpdate error:", error);
+    res.status(500).json({ error: "Server error" });
+  } finally {
+    connection.release();
+  }
+};
+
+/**
+ * PUT /api/projects/:id/updates/:updateId
+ * Edycja aktualności
+ */
+const editProjectUpdate = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const { id, updateId } = req.params;
+
+    // 1. Walidacja
+    const { error, value: data } = projectUpdateSchema.validate(req.body, {
+      abortEarly: false,
+    });
+
+    if (error) {
+      return res.status(400).json({
+        code: "VALIDATION_ERROR",
+        message: "Validation failed",
+        details: error.details.map((d) => d.message),
+      });
+    }
+
+    await connection.beginTransaction();
+
+    // 2. Aktualizacja tekstu
+    await ProjectModel.updateProjectUpdate(connection, updateId, {
+      title: data.title,
+      content: data.content,
+      isVisible: data.isVisible,
+    });
+
+    // 3. Usuwanie plików
+    if (data.filesToDelete) {
+      let idsToDelete = [];
+      try {
+        idsToDelete = JSON.parse(data.filesToDelete);
+      } catch (e) {}
+
+      if (idsToDelete.length > 0) {
+        const [filesRows] = await connection.query(
+          "SELECT file_path FROM project_update_files WHERE id IN (?)",
+          [idsToDelete]
+        );
+
+        for (const file of filesRows) {
+          try {
+            const fullPath = path.join(process.cwd(), file.file_path);
+            // Sprawdzenie czy plik istnieje przed usunięciem
+            if (fsSync.existsSync(fullPath)) {
+              await fs.unlink(fullPath);
+            }
+          } catch (e) {
+            console.warn("File delete error:", e.message);
+          }
+        }
+
+        await ProjectModel.deleteUpdateFiles(connection, idsToDelete);
+      }
+    }
+
+    // 4. Dodawanie nowych plików
+    if (req.files && req.files.length > 0) {
+      const filesToInsert = [];
+      const baseDir = path.join(
+        process.cwd(),
+        "uploads",
+        "projects",
+        String(id),
+        "updates"
+      );
+      const photosDir = path.join(baseDir, "photos");
+      const docsDir = path.join(baseDir, "documents");
+
+      await fs.mkdir(photosDir, { recursive: true });
+      await fs.mkdir(docsDir, { recursive: true });
+
+      for (const file of req.files) {
+        let filePath;
+        let fileType;
+        const uniqueId = uuidv4();
+
+        if (file.mimetype.startsWith("image/")) {
+          const filename = `${uniqueId}.webp`;
+          await sharp(file.buffer)
+            .resize({ width: 1000, withoutEnlargement: true })
+            .webp({ quality: 80 })
+            .toFile(path.join(photosDir, filename));
+
+          filePath = `/uploads/projects/${id}/updates/photos/${filename}`;
+          fileType = "photo";
+        } else {
+          let ext = path.extname(file.originalname) || ".bin";
+          const filename = `${uniqueId}${ext}`;
+          await fs.writeFile(path.join(docsDir, filename), file.buffer);
+
+          filePath = `/uploads/projects/${id}/updates/documents/${filename}`;
+          fileType = "document";
+        }
+
+        const originalName = Buffer.from(file.originalname, "latin1").toString(
+          "utf8"
+        );
+
+        filesToInsert.push([
+          updateId,
+          filePath,
+          fileType,
+          originalName || file.originalname,
+        ]);
+      }
+      await ProjectModel.addUpdateFiles(connection, filesToInsert);
+    }
+
+    await connection.commit();
+    res.status(200).json({ message: "Update edited successfully" });
+  } catch (error) {
+    await connection.rollback();
+    console.error("editProjectUpdate error:", error);
     res.status(500).json({ error: "Server error" });
   } finally {
     connection.release();
@@ -255,17 +461,36 @@ const deleteProjectUpdate = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const { updateId } = req.params;
+
+    const files = await ProjectModel.getUpdateFiles(connection, updateId);
+
+    for (const file of files) {
+      try {
+        const fullPath = path.join(process.cwd(), file.file_path);
+        if (fsSync.existsSync(fullPath)) {
+          await fs.unlink(fullPath);
+        }
+      } catch (e) {
+        console.warn(`Could not delete file ${file.file_path}`, e.message);
+      }
+    }
+
+    if (files.length > 0) {
+      const ids = files.map((f) => f.id);
+      await ProjectModel.deleteUpdateFiles(connection, ids);
+    }
+
     const deleted = await ProjectModel.deleteProjectUpdate(
       connection,
       updateId
     );
-    if (!deleted) {
-      return res.status(404).json({ error: "Nie znaleziono aktualności." });
-    }
-    res.status(200).json({ message: "Aktualność usunięta." });
+
+    if (!deleted) return res.status(404).json({ error: "Update not found." });
+
+    res.status(200).json({ message: "Update deleted." });
   } catch (error) {
     console.error("deleteProjectUpdate error:", error);
-    res.status(500).json({ error: "Błąd serwera." });
+    res.status(500).json({ error: "Server error." });
   } finally {
     connection.release();
   }
@@ -312,13 +537,11 @@ const updateProject = async (req, res) => {
 
     // 3. Formatowanie danych
     let formattedDeadline = data.deadline;
-    if (
-      formattedDeadline &&
-      typeof formattedDeadline === "string" &&
-      formattedDeadline.includes("T")
-    ) {
+    if (formattedDeadline && formattedDeadline.includes("T")) {
       formattedDeadline = formattedDeadline.split("T")[0];
     }
+
+    // Jeśli gatunek nie jest 'other', czyścimy pole speciesOther
     const finalSpeciesOther =
       data.species === "other" ? data.speciesOther : null;
 
@@ -345,7 +568,7 @@ const updateProject = async (req, res) => {
     });
 
     // =========================================================
-    // 5. OBSŁUGA PLIKÓW (Teraz używamy Modelu zamiast SQL)
+    // 5. OBSŁUGA PLIKÓW
     // =========================================================
 
     // A. USUWANIE PLIKÓW
@@ -353,61 +576,47 @@ const updateProject = async (req, res) => {
       let filesToDeleteIds = [];
       try {
         filesToDeleteIds = JSON.parse(req.body.filesToDelete);
-      } catch (e) {
-        console.error("Error parsing filesToDelete JSON", e);
-      }
+      } catch (e) {}
 
       if (Array.isArray(filesToDeleteIds) && filesToDeleteIds.length > 0) {
-        // 1. Pobierz ścieżki z modelu
         const filesRows = await ProjectModel.getFilesByIds(
           connection,
           filesToDeleteIds,
           id
         );
 
-        // 2. Usuń z dysku (ZABEZPIECZENIE)
         for (const file of filesRows) {
-          // --- SPRAWDZENIE BEZPIECZEŃSTWA ---
-          // Jeśli plik pochodzi z folderu 'requests', NIE usuwamy go fizycznie z dysku.
-          // Usuwamy go tylko z bazy danych projektu (krok 3),
-          // aby oryginał w Zgłoszeniach pozostał nienaruszony.
+          // Bezpieczeństwo: nie usuwamy plików z requests
           if (file.file_path.includes("/uploads/requests/")) {
             continue;
           }
-          // ----------------------------------
 
           try {
             const filePath = path.join(process.cwd(), file.file_path);
-            await fs.unlink(filePath);
-          } catch (err) {
-            // Ignorujemy błąd jeśli plik już nie istnieje, ale logujemy inne
-            if (err.code !== "ENOENT") {
-              console.warn(
-                `Could not delete file ${file.file_path}:`,
-                err.message
-              );
+            if (fsSync.existsSync(filePath)) {
+              await fs.unlink(filePath);
             }
+          } catch (err) {
+            console.warn(
+              `Could not delete file ${file.file_path}:`,
+              err.message
+            );
           }
         }
 
-        // 3. Usuń z bazy (Model)
-        // To usuwa powiązanie pliku z PROJEKTEM. Oryginalne powiązanie z REQUESTEM jest w innej tabeli.
         await ProjectModel.deleteFiles(connection, filesToDeleteIds, id);
       }
     }
 
-    // B. ZARZĄDZANIE OKŁADKĄ (Dla istniejących plików)
+    // B. ZARZĄDZANIE OKŁADKĄ
     if (req.body.coverFileId !== undefined) {
-      // 1. Reset (Model)
       await ProjectModel.resetProjectCovers(connection, id);
-
-      // 2. Set (Model) - tylko jeśli to ID numeryczne (istniejący plik)
       if (req.body.coverFileId && !isNaN(req.body.coverFileId)) {
         await ProjectModel.setFileAsCover(connection, req.body.coverFileId, id);
       }
     }
 
-    // C. DODAWANIE NOWYCH PLIKÓW (Upload)
+    // C. DODAWANIE NOWYCH PLIKÓW
     const filesToInsert = [];
     let newFileNamesMap = {};
     if (req.body.newFileNames) {
@@ -436,7 +645,13 @@ const updateProject = async (req, res) => {
     if (req.files && req.files["newPhotos"]) {
       for (const file of req.files["newPhotos"]) {
         const tempId = path.parse(file.originalname).name;
-        const originalRealName = newFileNamesMap[tempId] || file.originalname;
+        // Sprawdź czy mamy oryginalną nazwę z mapy, jeśli nie to weź z pliku
+        // Pamiętaj o dekodowaniu polskich znaków jeśli multer nie ogarnął
+        let originalRealName = newFileNamesMap[tempId] || file.originalname;
+        originalRealName = Buffer.from(originalRealName, "latin1").toString(
+          "utf8"
+        );
+
         const uniqueName = `${uuidv4()}.webp`;
 
         await sharp(file.buffer)
@@ -444,7 +659,7 @@ const updateProject = async (req, res) => {
           .webp({ quality: 80 })
           .toFile(path.join(photosDir, uniqueName));
 
-        // Jeśli nowy plik jest okładką
+        // Jeśli nowy plik jest okładką (przekazany jako ID tymczasowe)
         const isCover = req.body.coverFileId === tempId ? 1 : 0;
 
         filesToInsert.push([
@@ -461,7 +676,11 @@ const updateProject = async (req, res) => {
     if (req.files && req.files["newDocuments"]) {
       for (const file of req.files["newDocuments"]) {
         const tempId = path.parse(file.originalname).name;
-        const originalRealName = newFileNamesMap[tempId] || file.originalname;
+        let originalRealName = newFileNamesMap[tempId] || file.originalname;
+        originalRealName = Buffer.from(originalRealName, "latin1").toString(
+          "utf8"
+        );
+
         let ext = path.extname(originalRealName);
         if (!ext) ext = ".bin";
         const uniqueName = `${uuidv4()}${ext}`;
@@ -478,7 +697,6 @@ const updateProject = async (req, res) => {
       }
     }
 
-    // D. Zapis nowych plików do bazy (Model)
     if (filesToInsert.length > 0) {
       await ProjectModel.addProjectFiles(connection, filesToInsert);
     }
@@ -630,6 +848,7 @@ module.exports = {
   getAdminProjects,
   getProjectDetails,
   addProjectUpdate,
+  editProjectUpdate,
   deleteProjectUpdate,
   updateProject,
   getPublicProjectBySlug,

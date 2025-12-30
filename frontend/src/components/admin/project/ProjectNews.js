@@ -1,5 +1,14 @@
 import React from "react";
-import { Plus, Edit2, Trash2, Eye, EyeOff, Calendar } from "lucide-react";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Eye,
+  EyeOff,
+  Calendar,
+  FileText,
+  Image as ImageIcon,
+} from "lucide-react";
 import Button from "../../ui/Button";
 import { formatDate } from "../../../utils/dateUtils";
 import { useTranslation } from "react-i18next";
@@ -18,18 +27,14 @@ const ProjectNews = ({ news = [], onAddNews, onEditNews, onDeleteNews }) => {
 
     // 2. If it's a string, try to parse it as JSON
     if (typeof field === "string") {
-      // Check if it looks like a JSON object to avoid unnecessary try-catch on simple strings
       if (field.trim().startsWith("{")) {
         try {
           const parsed = JSON.parse(field);
-          // If successful, return the localized string
           return parsed[i18n.language] || parsed["pl"] || "";
         } catch (e) {
-          // If parsing fails, treat it as a regular string
           return field;
         }
       }
-      // If it's a simple string (not JSON), return it as is
       return field;
     }
 
@@ -50,7 +55,6 @@ const ProjectNews = ({ news = [], onAddNews, onEditNews, onDeleteNews }) => {
           <p className="text-muted">{t("projects.news.empty")}</p>
         ) : (
           news.map((item) => {
-            // Prepare translated values before rendering
             const title = getTrans(item.title);
             const content = getTrans(item.content);
 
@@ -97,12 +101,26 @@ const ProjectNews = ({ news = [], onAddNews, onEditNews, onDeleteNews }) => {
                     : content}
                 </p>
 
-                {/* Photo counter */}
-                {item.files?.length > 0 && (
-                  <div className="news-files-badge">
-                    {t("projects.news.photosCount", {
-                      count: item.files.length,
-                    })}
+                {/* --- SEKCJA PLIKÓW (NOWOŚĆ) --- */}
+                {item.files && item.files.length > 0 && (
+                  <div className="news-attachments">
+                    {item.files.map((file) => (
+                      <a
+                        key={file.id}
+                        href={file.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="attachment-chip"
+                        title={file.originalName}
+                      >
+                        {file.type === "photo" ? (
+                          <ImageIcon size={14} className="icon-photo" />
+                        ) : (
+                          <FileText size={14} className="icon-doc" />
+                        )}
+                        <span className="file-name">{file.originalName}</span>
+                      </a>
+                    ))}
                   </div>
                 )}
               </div>

@@ -16,5 +16,19 @@
   "pagination": {
     "previous": "Anterior",
     "next": "Siguiente"
+  },
+
+  "filters": {
+    "label": "Ordenar por:",
+    "ascending": "Ascendente",
+    "descending": "Descendente",
+    "clear": "Limpiar",
+    "sortOptions": {
+      "date": "Fecha",
+      "amount": "Monto",
+      "status": "Estado",
+      "name": "Nombre",
+      "popularity": "Popularidad"
+    }
   }
 }
