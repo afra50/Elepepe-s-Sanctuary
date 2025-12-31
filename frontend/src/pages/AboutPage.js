@@ -29,7 +29,7 @@ function AboutPage() {
         </div>
         <div
           className="right-side right-img"
-          style={{ backgroundImage: "url('/elepepe-photo.jpg')" }}
+          style={{ backgroundImage: "url('/about-1.jpg')" }}
           role="img"
           aria-label="Elepepe sanctuary photo"
         ></div>
@@ -47,7 +47,7 @@ function AboutPage() {
             </div>
             <div
               className="left-img"
-              style={{ backgroundImage: "url(/1-sample.jpg)" }}
+              style={{ backgroundImage: "url(/about-2.jpg)" }}
               role="img"
               aria-label="Rat rescue example"
             ></div>
@@ -70,7 +70,7 @@ function AboutPage() {
           <NavLink
             to="/partnerships"
             className="tile first"
-            style={{ backgroundImage: "url(/3-sample.jpg)" }}
+            style={{ backgroundImage: "url(/about-tile-1.jpg)" }}
           >
             <span className="text">{t("more.partners")}</span>
           </NavLink>
@@ -78,7 +78,7 @@ function AboutPage() {
           <NavLink
             to="/contact"
             className="tile second"
-            style={{ backgroundImage: "url(/2-sample.jpg)" }}
+            style={{ backgroundImage: "url(/about-tile-2.jpg)" }}
           >
             <span className="text">{t("more.contact")}</span>
           </NavLink>
@@ -89,7 +89,7 @@ function AboutPage() {
             target="_blank"
             rel="noopener noreferrer"
             className="tile third"
-            style={{ backgroundImage: "url(/1-sample.jpg)" }}
+            style={{ backgroundImage: "url(/about-tile-3.jpg)" }}
           >
             {/* Jeśli chcesz zmienić tekst na np. "Nasza Społeczność", zaktualizuj plik about.json (klucz more.team) */}
             <span className="text">{t("more.team")}</span>
