@@ -23,6 +23,10 @@
     "message": "No fundraisers match your search. Try changing the search phrase or clearing the filters."
   },
 
+  "urgent": {
+    "label": "URGENT"
+  },
+
   "error": {
     "title": "Failed to load fundraisers",
     "message": "There was a problem connecting to the server. Please try again."

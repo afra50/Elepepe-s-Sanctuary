@@ -23,6 +23,10 @@
     "message": "Nie ma zbiórek pasujących do Twojego wyszukiwania. Spróbuj zmienić frazę lub wyczyścić filtry."
   },
 
+  "urgent": {
+    "label": "PILNE"
+  },
+
   "error": {
     "title": "Nie udało się pobrać zbiórek",
     "message": "Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie."

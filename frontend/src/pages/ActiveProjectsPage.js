@@ -220,6 +220,10 @@ function ActiveProjectsPage() {
                   project.isUrgent ? "is-urgent" : ""
                 }`}
               >
+                {project.isUrgent && (
+                  <span className="urgent-badge">{t("urgent.label")}</span>
+                )}
+
                 <FundraiserCard
                   project={project}
                   onCardClick={() => navigate(`/projects/${project.slug}`)}

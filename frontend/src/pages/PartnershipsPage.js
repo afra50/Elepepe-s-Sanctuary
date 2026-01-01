@@ -87,8 +87,8 @@ function PartnershipsPage() {
       {/* ===== ERROR ===== */}
       {!loading && error && (
         <ErrorState
-          title="Nie udało się załadować partnerów"
-          message="Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie."
+          title={t("error.title")}
+          message={t("error.message")}
           onRetry={fetchPartners}
         />
       )}

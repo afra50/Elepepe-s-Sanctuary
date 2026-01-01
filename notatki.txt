@@ -2,7 +2,6 @@
 - dodac wszedzie error state
 - wesprzyj na zbiórkach ma coś robić
 - filtry pomiedzy tel i laptopem jak sa widoczne to przycisk "Filtry" jest widoczny i nie dziala
-- przetlumaczyc Pilne na karcie zbiórki
 - odnosnik do grupy na fb
 
 HOME

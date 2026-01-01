@@ -23,6 +23,10 @@
     "message": "No hay campañas que coincidan con tu búsqueda. Intenta cambiar el texto o limpiar los filtros."
   },
 
+  "urgent": {
+    "label": "URGENTE"
+  },
+
   "error": {
     "title": "No se pudieron cargar las campañas",
     "message": "Hubo un problema al conectar con el servidor. Por favor, inténtalo de nuevo."

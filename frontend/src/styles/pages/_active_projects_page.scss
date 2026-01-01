@@ -1,6 +1,6 @@
 .active-projects-page {
   padding: clamp(1.5rem, 4vw, 3rem);
-  background-color: rgba($color-background, 0.35);
+  background-color: $color-background;
 }
 
 .active-projects-header {
@@ -49,8 +49,7 @@
 .active-project-wrapper.is-urgent {
   position: relative;
 
-  &::before {
-    content: "PILNE";
+  .urgent-badge {
     position: absolute;
     top: 0.9rem;
     left: 0.9rem;
