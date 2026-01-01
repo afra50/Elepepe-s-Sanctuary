@@ -1,70 +1,149 @@
-function PartnershipsPage() {
-	return (
-		<main className="page-partners">
-			<div className="p-container">
-				<header className="p-hero">
-					<p className="p-hero_icon">Wasze wsparcie jest bezcenne</p>
-					<h1 className="p-hero_title">Nasi partnerzy</h1>
-					<p className="p-hero_intro">
-						Dzięki Wam i wsparciu naszych partnerów możemy każdego dnia pomagać
-						szczurzym podopiecznym. To ludzie i organizacje, które rozumieją,
-						jak ważna jest empatia, cierpliwość i odpowiedzialność wobec
-						najsłabszych.
-					</p>
-				</header>
-			</div>
-			<section className="partners-list">
-				<div className="list-container">
-					<ul className="full-list">
-						<li className="first partner">
-							<img
-								className="partners-logo"
-								src="https://img.redro.pl/obrazy/wektor-fitness-ciala-z-glowa-szczur-twarza-do-logo-retro-emblematy-odznaki-szablonu-etykiety-i-t-shirt-vintage-element-projektu-samodzielnie-na-bialym-tle-400-103457403.jpg"
-								alt="animowany szczur pręży muskuły"
-							/>
-							<p className="text-container">
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis
-								fugit excepturi libero aspernatur neque voluptatem.
-							</p>
-						</li>
+import React, { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
-						<li className="second partner">
-							<img
-								className="partners-logo"
-								src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxRByqI4P7RfCaeb6eGFTM03qD16wRjgqkCg&s"
-								alt="animowany szczur robi groźną mine"
-							/>
-							<p className="text-container">
-								Lorem ipsum dolor, sit amet consectetur adipisicing elit. Non,
-								corporis? Neque adipisci cumque blanditiis sit?
-							</p>
-						</li>
-						<li className="third partner">
-							<img
-								className="partners-logo"
-								src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsoTA68ssYzfvkMiuiCOAEEFvMb8W_UqNMzA&s"
-								alt="animowany szczur"
-							/>
-							<p className="text-container">
-								Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-								Aliquam quibusdam tempore architecto quam cum ratione?
-							</p>
-						</li>
-						<li className="fourth partner">
-							<img
-								className="partners-logo"
-								src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaB9FxSnsBV-Vyw3QZs3DI9pY5tplc_OH5sQ&s"
-								alt="animowany szczur prosi rączkami"
-							/>
-							<p className="text-container">
-								Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-								Eveniet dicta error quia provident vero reiciendis.
-							</p>
-						</li>
-					</ul>
-				</div>
-			</section>
-		</main>
-	);
+import api, { FILES_BASE_URL } from "../utils/api";
+import Loader from "../components/ui/Loader";
+import ErrorState from "../components/ui/ErrorState";
+
+const mapPartnerToUi = (partner, lang) => {
+  const pickByLang = (pl, en, es) => {
+    switch (lang) {
+      case "pl":
+        return pl || en || es || "";
+      case "en":
+        return en || pl || es || "";
+      case "es":
+        return es || en || pl || "";
+      default:
+        return pl || en || es || "";
+    }
+  };
+
+  return {
+    id: partner.id,
+    name: pickByLang(partner.namePl, partner.nameEn, partner.nameEs),
+    description: pickByLang(
+      partner.descriptionPl,
+      partner.descriptionEn,
+      partner.descriptionEs
+    ),
+    country: pickByLang(
+      partner.countryPl,
+      partner.countryEn,
+      partner.countryEs
+    ),
+    logoUrl: partner.logoPath ? `${FILES_BASE_URL}${partner.logoPath}` : null,
+  };
+};
+
+function PartnershipsPage() {
+  const { t, i18n } = useTranslation("partnerships");
+  const lang = i18n.language || "pl";
+
+  const [partners, setPartners] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const fetchPartners = useCallback(() => {
+    setLoading(true);
+    setError(false);
+
+    api
+      .get("/partners")
+      .then((res) => {
+        const data = res.data || [];
+        setPartners(data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch partners:", err);
+        setError(true);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetchPartners();
+  }, [fetchPartners]);
+
+  return (
+    <main className="page-partners">
+      <div className="p-container">
+        <header className="p-hero">
+          <p className="p-hero_icon">{t("badge")}</p>
+
+          <h1 className="p-hero_title">{t("title")}</h1>
+
+          <p className="p-hero_intro">{t("intro")}</p>
+        </header>
+      </div>
+
+      {/* ===== LOADING ===== */}
+      {loading && (
+        <div style={{ padding: "3rem 0" }}>
+          <Loader variant="center" size="md" />
+        </div>
+      )}
+
+      {/* ===== ERROR ===== */}
+      {!loading && error && (
+        <ErrorState
+          title="Nie udało się załadować partnerów"
+          message="Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie."
+          onRetry={fetchPartners}
+        />
+      )}
+
+      {/* ===== EMPTY ===== */}
+      {!loading && !error && partners.length === 0 && (
+        <div className="partners-empty">
+          <p>{t("empty")}</p>
+        </div>
+      )}
+
+      {/* ===== LISTA PARTNERÓW ===== */}
+      {!loading && !error && partners.length > 0 && (
+        <section className="partners-list">
+          <div className="list-container">
+            <ul className="full-list">
+              {partners.map((partner) => {
+                const ui = mapPartnerToUi(partner, lang);
+
+                return (
+                  <li key={ui.id} className="partner">
+                    <div className="partners-logo-wrapper">
+                      {ui.logoUrl ? (
+                        <img
+                          className="partners-logo"
+                          src={ui.logoUrl}
+                          alt={ui.name}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="partners-logo placeholder">
+                          {ui.name?.charAt(0) || "?"}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 👇 TYLKO DOLNA CZĘŚĆ MA PADDING */}
+                    <div className="partner-body">
+                      <h3 className="partner-name">{ui.name}</h3>
+
+                      <p className="text-container">{ui.description}</p>
+
+                      {ui.country && (
+                        <span className="partner-country">{ui.country}</span>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+      )}
+    </main>
+  );
 }
+
 export default PartnershipsPage;
