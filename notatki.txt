@@ -18,6 +18,11 @@ KONTAKT
 
 ADMIN
 - czy robic liste darowizn?
+1. Wpłaty własne
+    - tlumaczenia + tlumaczenia backend
+    - odpowiedzi z backendu po angielsku
+    - testy
+    - style + responsywnosc
 
 BACKEND
 - Joi do walidacji requestów
