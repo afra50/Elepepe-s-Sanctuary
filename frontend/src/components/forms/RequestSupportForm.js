@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import Button from "../ui/Button";
 import RadioGroup from "../ui/RadioGroup";
 import Checkbox from "../ui/Checkbox";
@@ -87,6 +87,20 @@ function RequestSupportForm({ onShowAlert }) {
 
   const petPhotosInputRef = useRef(null);
   const documentsInputRef = useRef(null);
+
+  const currentLang = (i18n.language || "pl").split("-")[0];
+
+  const getPrivacyLink = () => {
+    switch (currentLang) {
+      case "en":
+        return "/docs/policy.pdf";
+      case "es":
+        return "/docs/politica.pdf";
+      case "pl":
+      default:
+        return "/docs/polityka.pdf";
+    }
+  };
 
   // ===== WALIDACJA =====
 
@@ -1578,7 +1592,21 @@ function RequestSupportForm({ onShowAlert }) {
               }
             }}
           >
-            {t("form.fields.consentDataProcessing.label")}
+            {/* 3. Podmień zwykły tekst na Trans z linkiem */}
+            <Trans
+              i18nKey="form.fields.consentDataProcessing.label"
+              ns="request"
+              components={[
+                <a
+                  key="privacy-link"
+                  href={getPrivacyLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  x
+                </a>,
+              ]}
+            />
           </Checkbox>
           <p className="field-error">
             {consentDataProcessingError || "\u00A0"}

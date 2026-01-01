@@ -37,6 +37,9 @@
       "message": {
         "label": "Mensaje",
         "placeholder": "Déjanos saber cómo podemos ayudarte..."
+      },
+      "consentPrivacy": {
+        "label": "He leído la <0>Política de Privacidad</0> y acepto sus términos."
       }
     },
     "errors": {
@@ -55,13 +58,15 @@
         "required": "Escribe un mensaje.",
         "min": "El mensaje es demasiado corto.",
         "max": "El mensaje puede tener un máximo de {{max}} caracteres."
+      },
+      "consentPrivacy": {
+        "required": "Debes aceptar la política de privacidad para enviar un mensaje."
       }
     },
     "alerts": {
       "validation": "Corrija los campos de formulario seleccionados.",
       "success": "El mensaje ha sido enviado."
     },
-    "privacyNote": "Al enviar el formulario, aceptas la política de privacidad.",
     "submit": "Enviar un mensaje"
   }
 }

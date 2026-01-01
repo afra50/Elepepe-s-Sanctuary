@@ -191,7 +191,7 @@
       },
 
       "consentDataProcessing": {
-        "label": "Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zgłoszenia zgodnie z polityką prywatności fundacji."
+        "label": "Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zgłoszenia zgodnie z <0>polityką prywatności fundacji</0>."
       },
 
       "consentTruth": {

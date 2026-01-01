@@ -191,7 +191,7 @@
       },
 
       "consentDataProcessing": {
-        "label": "I consent to the processing of my personal data for the purpose of handling this request, in accordance with the foundation’s privacy policy."
+        "label": "I consent to the processing of my personal data for the purpose of handling the request in accordance with the <0>foundation's privacy policy</0>."
       },
 
       "consentTruth": {

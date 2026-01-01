@@ -2,7 +2,6 @@
 - dodac wszedzie error state
 - wesprzyj na zbiórkach ma coś robić
 - filtry pomiedzy tel i laptopem jak sa widoczne to przycisk "Filtry" jest widoczny i nie dziala
-- odnosnik do grupy na fb
 
 PODSTRONA ZBIÓRKI
 
@@ -11,12 +10,8 @@ O NAS
 
 KONTAKT
 - loader
-- polityka podpiac
 - zmiana danych na prawdziwe - mail
 - alert error jak backend nawali?
-
-FOOTER
-- polityka i regulamin podpiac
 
 ADMIN
 - czy robic liste darowizn?

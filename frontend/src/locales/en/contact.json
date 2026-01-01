@@ -37,6 +37,9 @@
       "message": {
         "label": "Message",
         "placeholder": "Let us know how we can help..."
+      },
+      "consentPrivacy": {
+        "label": "I have read the <0>Privacy Policy</0> and accept its terms."
       }
     },
     "errors": {
@@ -55,13 +58,15 @@
         "required": "Write a message.",
         "min": "The message is too short.",
         "max": "The message can be a maximum of {{max}} characters long."
+      },
+      "consentPrivacy": {
+        "required": "You must accept the privacy policy to send a message."
       }
     },
     "alerts": {
       "validation": "Correct the selected form fields.",
       "success": "The message has been sent."
     },
-    "privacyNote": "By submitting the form, you accept the privacy policy.",
     "submit": "Send a message"
   }
 }

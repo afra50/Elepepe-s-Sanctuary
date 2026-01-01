@@ -2,16 +2,12 @@
   padding-block: clamp(2.5rem, 5vw, 3.5rem);
   min-height: 60vh;
 
-  background: radial-gradient(
-      circle at top left,
+  background: radial-gradient(circle at top left,
       rgba($color-accent, 0.16),
-      transparent 55%
-    ),
-    radial-gradient(
-      circle at bottom right,
+      transparent 55%),
+    radial-gradient(circle at bottom right,
       rgba($color-primary, 0.18),
-      transparent 55%
-    );
+      transparent 55%);
 
   .container {
     max-width: 87.5rem;
