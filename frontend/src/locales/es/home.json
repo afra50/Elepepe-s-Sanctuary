@@ -27,7 +27,10 @@
     }
   },
   "urgent": {
-    "title": "Pequeños en necesidad especial"
+    "title": "Pequeños en necesidad especial",
+    "empty": "Actualmente no hay recaudaciones de fondos urgentes.",
+    "errorTitle": "No se pudieron cargar las recaudaciones de fondos",
+    "errorMessage": "Hubo un problema al conectar con el servidor."
   },
   "banner": {
     "title": "Los finales felices existen",

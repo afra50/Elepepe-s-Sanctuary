@@ -1,47 +1,133 @@
-import React from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
 import Banner from "../components/Banner";
 import FundraiserCard from "../components/FundraiserCard";
+import Slider from "react-slick";
+import api from "../utils/api";
+import Loader from "../components/ui/Loader";
+import ErrorState from "../components/ui/ErrorState";
+
+const getDaysLeft = (endDate) => {
+  if (!endDate) return Infinity;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const end = new Date(endDate);
+  end.setHours(0, 0, 0, 0);
+
+  return Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+};
+
+function SliderArrow({ className, onClick, direction }) {
+  return (
+    <button
+      type="button"
+      className={`slider-arrow ${direction}`}
+      onClick={onClick}
+      aria-label={direction === "prev" ? "Previous" : "Next"}
+    />
+  );
+}
 
 function HomePage() {
-  const { t } = useTranslation("home");
+  const { t, i18n } = useTranslation("home");
+
   const navigate = useNavigate();
 
-  const urgentProjects = [
-    {
-      id: 1,
-      title: "Operacja guza dla Szczurka Benia",
-      image: "/1-sample.jpg",
-      current: 450,
-      goal: 1200,
-      endDate: "2025-12-31", // <--- przykład
-    },
-    {
-      id: 2,
-      title: "Leczenie zapalenia płuc Lusi",
-      image: "/2-sample.jpg",
-      current: 890,
-      goal: 1000,
-      endDate: "2025-11-30",
-    },
-    {
-      id: 3,
-      title: "For Kebab's difficult operation",
-      image: "/3-sample.jpg",
-      current: 0,
-      goal: 2300,
-      endDate: "2026-01-15",
-    },
-  ];
+  const [projects, setProjects] = useState([]);
+  const [loadingUrgent, setLoadingUrgent] = useState(true);
+  const [urgentError, setUrgentError] = useState(false);
 
-  const handleCardClick = (projectId) => {
-    navigate(`/projects/${projectId}`);
-  };
+  useEffect(() => {
+    setLoadingUrgent(true);
+    setUrgentError(false);
 
-  const handleDonateClick = (projectId) => {
-    navigate(`/donate/${projectId}`);
+    api
+      .get("/projects")
+      .then((res) => {
+        const lang = i18n.language || "pl";
+
+        const mapped = res.data.map((p) => ({
+          id: p.id,
+          slug: p.slug,
+          isUrgent: p.isUrgent,
+          title: p.title?.[lang] || p.title?.pl || "",
+          image: p.image,
+          current: p.amountCollected,
+          goal: p.amountTarget,
+          endDate: p.deadline,
+        }));
+
+        setProjects(mapped);
+      })
+      .catch((err) => {
+        console.error("Failed to load projects for homepage", err);
+        setUrgentError(true);
+      })
+      .finally(() => setLoadingUrgent(false));
+  }, [i18n.language]);
+
+  const urgentProjectsForSlider = useMemo(() => {
+    if (!projects.length) return [];
+
+    const urgent = projects.filter((p) => p.isUrgent);
+
+    if (urgent.length >= 3) {
+      return urgent.slice(0, 6); // max np. 6 do slidera
+    }
+
+    const nonUrgentSorted = projects
+      .filter((p) => !p.isUrgent)
+      .sort((a, b) => getDaysLeft(a.endDate) - getDaysLeft(b.endDate));
+
+    return [...urgent, ...nonUrgentSorted].slice(0, 3);
+  }, [projects]);
+
+  const sliderSettings = {
+    dots: false,
+    arrows: true,
+    infinite: true,
+    speed: 450,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3800,
+    pauseOnHover: true,
+    prevArrow: <SliderArrow direction="prev" />,
+    nextArrow: <SliderArrow direction="next" />,
+
+    responsive: [
+      // === duże tablety / mniejsze laptopy ===
+      {
+        breakpoint: 1400,
+        settings: {
+          slidesToShow: 3,
+          arrows: false,
+        },
+      },
+
+      // === tablet pionowo ===
+      {
+        breakpoint: 992,
+        settings: {
+          slidesToShow: 2,
+          arrows: false,
+        },
+      },
+
+      // === mobile ===
+      {
+        breakpoint: 767,
+        settings: {
+          slidesToShow: 1,
+          arrows: false,
+          swipe: true,
+        },
+      },
+    ],
   };
 
   return (
@@ -75,16 +161,29 @@ function HomePage() {
         <div className="container">
           <h2 className="section-title">{t("urgent.title")}</h2>
 
-          <div className="projects-grid">
-            {urgentProjects.map((project) => (
-              <FundraiserCard
-                key={project.id}
-                project={project}
-                onCardClick={handleCardClick}
-                onDonateClick={handleDonateClick}
-              />
-            ))}
-          </div>
+          {loadingUrgent ? (
+            <Loader variant="center" size="md" />
+          ) : urgentError ? (
+            <ErrorState
+              title={t("urgent.errorTitle")}
+              message={t("urgent.errorMessage")}
+              onRetry={() => window.location.reload()}
+            />
+          ) : urgentProjectsForSlider.length === 0 ? (
+            <p>{t("urgent.empty")}</p>
+          ) : (
+            <Slider {...sliderSettings}>
+              {urgentProjectsForSlider.map((project) => (
+                <div key={project.id} className="urgent-slide">
+                  <FundraiserCard
+                    project={project}
+                    onCardClick={() => navigate(`/projects/${project.slug}`)}
+                    onDonateClick={() => navigate(`/projects/${project.slug}`)}
+                  />
+                </div>
+              ))}
+            </Slider>
+          )}
         </div>
       </section>
 
