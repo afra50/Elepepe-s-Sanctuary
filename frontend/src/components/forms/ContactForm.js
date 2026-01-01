@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import Button from "../ui/Button";
+import Checkbox from "../ui/Checkbox";
 
 const initialForm = {
   fullName: "",
   email: "",
   message: "",
+  consentPrivacy: false,
 };
 
 const MAX_NAME_LENGTH = 80;
@@ -13,55 +15,60 @@ const MAX_EMAIL_LENGTH = 120;
 const MAX_MESSAGE_LENGTH = 1500;
 
 function ContactForm({ onShowAlert }) {
-  const { t } = useTranslation("contact");
+  // 1. Pobieramy i18n
+  const { t, i18n } = useTranslation("contact");
+
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
+  // 2. Logika wyboru pliku PDF (taka sama jak w Footer)
+  const currentLang = (i18n.language || "pl").split("-")[0];
+
+  const getPrivacyLink = () => {
+    switch (currentLang) {
+      case "en":
+        return "/docs/policy.pdf";
+      case "es":
+        return "/docs/politica.pdf";
+      case "pl":
+      default:
+        return "/docs/polityka.pdf";
+    }
+  };
+
   const validateField = (name, value) => {
-    const trimmed = value.trim();
+    const trimmed = typeof value === "string" ? value.trim() : value;
 
     switch (name) {
       case "fullName": {
-        if (!trimmed) {
-          return t("form.errors.fullName.required");
-        }
-        if (trimmed.length < 3) {
-          return t("form.errors.fullName.min");
-        }
-        if (trimmed.length > MAX_NAME_LENGTH) {
+        if (!trimmed) return t("form.errors.fullName.required");
+        if (trimmed.length < 3) return t("form.errors.fullName.min");
+        if (trimmed.length > MAX_NAME_LENGTH)
           return t("form.errors.fullName.max", { max: MAX_NAME_LENGTH });
-        }
         return "";
       }
 
       case "email": {
-        if (!trimmed) {
-          return t("form.errors.email.required");
-        }
-        if (trimmed.length < 5) {
-          return t("form.errors.email.min");
-        }
-        if (trimmed.length > MAX_EMAIL_LENGTH) {
+        if (!trimmed) return t("form.errors.email.required");
+        if (trimmed.length < 5) return t("form.errors.email.min");
+        if (trimmed.length > MAX_EMAIL_LENGTH)
           return t("form.errors.email.max", { max: MAX_EMAIL_LENGTH });
-        }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(trimmed)) {
-          return t("form.errors.email.format");
-        }
+        if (!emailRegex.test(trimmed)) return t("form.errors.email.format");
         return "";
       }
 
       case "message": {
-        if (!trimmed) {
-          return t("form.errors.message.required");
-        }
-        if (trimmed.length < 10) {
-          return t("form.errors.message.min");
-        }
-        if (trimmed.length > MAX_MESSAGE_LENGTH) {
+        if (!trimmed) return t("form.errors.message.required");
+        if (trimmed.length < 10) return t("form.errors.message.min");
+        if (trimmed.length > MAX_MESSAGE_LENGTH)
           return t("form.errors.message.max", { max: MAX_MESSAGE_LENGTH });
-        }
+        return "";
+      }
+
+      case "consentPrivacy": {
+        if (!value) return t("form.errors.consentPrivacy.required");
         return "";
       }
 
@@ -80,56 +87,63 @@ function ContactForm({ onShowAlert }) {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
+    let newValue = type === "checkbox" ? checked : value;
 
-    let limitedValue = value;
-    if (name === "fullName" && value.length > MAX_NAME_LENGTH) {
-      limitedValue = value.slice(0, MAX_NAME_LENGTH);
-    }
-    if (name === "email" && value.length > MAX_EMAIL_LENGTH) {
-      limitedValue = value.slice(0, MAX_EMAIL_LENGTH);
-    }
-    if (name === "message" && value.length > MAX_MESSAGE_LENGTH) {
-      limitedValue = value.slice(0, MAX_MESSAGE_LENGTH);
+    if (type !== "checkbox") {
+      if (name === "fullName" && newValue.length > MAX_NAME_LENGTH) {
+        newValue = newValue.slice(0, MAX_NAME_LENGTH);
+      }
+      if (name === "email" && newValue.length > MAX_EMAIL_LENGTH) {
+        newValue = newValue.slice(0, MAX_EMAIL_LENGTH);
+      }
+      if (name === "message" && newValue.length > MAX_MESSAGE_LENGTH) {
+        newValue = newValue.slice(0, MAX_MESSAGE_LENGTH);
+      }
     }
 
-    setForm((prev) => ({ ...prev, [name]: limitedValue }));
+    setForm((prev) => ({ ...prev, [name]: newValue }));
 
     if (hasSubmitted) {
       setErrors((prev) => ({
         ...prev,
-        [name]: validateField(name, limitedValue),
+        [name]: validateField(name, newValue),
+      }));
+    }
+  };
+
+  const handleCheckboxChange = (newVal) => {
+    setForm((prev) => ({ ...prev, consentPrivacy: newVal }));
+    if (hasSubmitted) {
+      setErrors((prev) => ({
+        ...prev,
+        consentPrivacy: validateField("consentPrivacy", newVal),
       }));
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     setHasSubmitted(true);
 
     const validationErrors = validateForm(form);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
-      // są błędy – pokazujemy alert o walidacji
       onShowAlert?.({
         variant: "error",
-        message: t("form.alerts.validation"), // np. "Popraw zaznaczone pola."
+        message: t("form.alerts.validation"),
       });
       return;
     }
 
-    // tutaj później podłączymy backend / fetch
     console.log("Contact form data:", form);
 
-    // success alert
     onShowAlert?.({
       variant: "success",
-      message: t("form.alerts.success"), // np. "Wiadomość została wysłana."
+      message: t("form.alerts.success"),
     });
 
-    // reset formularza
     setForm(initialForm);
     setHasSubmitted(false);
     setErrors({});
@@ -137,14 +151,9 @@ function ContactForm({ onShowAlert }) {
 
   const getError = (field) => (hasSubmitted ? errors[field] : "");
 
-  const fullNameError = getError("fullName");
-  const emailError = getError("email");
-  const messageError = getError("message");
-
   return (
     <form className="contact-form" onSubmit={handleSubmit} noValidate>
-      {/* Imię i nazwisko */}
-      <div className={`form-field ${fullNameError ? "is-error" : ""}`}>
+      <div className={`form-field ${getError("fullName") ? "is-error" : ""}`}>
         <label htmlFor="fullName">{t("form.fields.fullName.label")}</label>
         <input
           id="fullName"
@@ -156,11 +165,10 @@ function ContactForm({ onShowAlert }) {
           maxLength={MAX_NAME_LENGTH}
           required
         />
-        <p className="field-error">{fullNameError || "\u00A0"}</p>
+        <p className="field-error">{getError("fullName") || "\u00A0"}</p>
       </div>
 
-      {/* Email */}
-      <div className={`form-field ${emailError ? "is-error" : ""}`}>
+      <div className={`form-field ${getError("email") ? "is-error" : ""}`}>
         <label htmlFor="email">{t("form.fields.email.label")}</label>
         <input
           id="email"
@@ -172,11 +180,10 @@ function ContactForm({ onShowAlert }) {
           maxLength={MAX_EMAIL_LENGTH}
           required
         />
-        <p className="field-error">{emailError || "\u00A0"}</p>
+        <p className="field-error">{getError("email") || "\u00A0"}</p>
       </div>
 
-      {/* Wiadomość */}
-      <div className={`form-field ${messageError ? "is-error" : ""}`}>
+      <div className={`form-field ${getError("message") ? "is-error" : ""}`}>
         <label htmlFor="message">{t("form.fields.message.label")}</label>
         <textarea
           id="message"
@@ -188,10 +195,40 @@ function ContactForm({ onShowAlert }) {
           maxLength={MAX_MESSAGE_LENGTH}
           required
         />
-        <p className="field-error">{messageError || "\u00A0"}</p>
+        <p className="field-error">{getError("message") || "\u00A0"}</p>
       </div>
 
-      <p className="form-privacy-note">{t("form.privacyNote")}</p>
+      {/* --- ZGODA NA PRZETWARZANIE DANYCH --- */}
+      <div
+        className={`form-field checkbox-field ${
+          getError("consentPrivacy") ? "is-error" : ""
+        }`}
+      >
+        <Checkbox
+          name="consentPrivacy"
+          checked={form.consentPrivacy}
+          onChange={handleCheckboxChange}
+        >
+          {/* ZMIANA TUTAJ: Używamy propsa 'components' */}
+          <Trans
+            i18nKey="form.fields.consentPrivacy.label"
+            ns="contact"
+            components={[
+              /* To jest element pod indeksem 0 w tablicy, czyli <0> w JSONie */
+              <a
+                key="privacy-link"
+                href={getPrivacyLink()} // Twój dynamiczny link do PDF
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {/* Treść tutaj nie ma znaczenia, zostanie nadpisana przez tekst z JSON wewnątrz tagów <0>...</0> */}
+                x
+              </a>,
+            ]}
+          />
+        </Checkbox>
+        <p className="field-error">{getError("consentPrivacy") || "\u00A0"}</p>
+      </div>
 
       <div className="form-actions">
         <Button type="submit" variant="primary" size="md">

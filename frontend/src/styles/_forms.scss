@@ -78,6 +78,15 @@
     font-size: 0.8rem;
     color: rgba($color-secondary, 0.7);
   }
+
+  a {
+    text-decoration: none;
+    color: $color-accent;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 /* Akcje formularza (np. przycisk submit) */

@@ -191,7 +191,7 @@
       },
 
       "consentDataProcessing": {
-        "label": "Doy mi consentimiento para el tratamiento de mis datos personales con el fin de gestionar esta solicitud, de acuerdo con la política de privacidad de la fundación."
+        "label": "Doy mi consentimiento para el procesamiento de mis datos personales con el fin de gestionar la solicitud de acuerdo con la <0>política de privacidad de la fundación</0>."
       },
 
       "consentTruth": {

@@ -37,6 +37,9 @@
       "message": {
         "label": "Wiadomość",
         "placeholder": "Napisz, w czym możemy pomóc..."
+      },
+      "consentPrivacy": {
+        "label": "Zapoznałem się z <0>Polityką Prywatności</0> i akceptuję jej postanowienia."
       }
     },
     "errors": {
@@ -55,13 +58,15 @@
         "required": "Napisz wiadomość.",
         "min": "Wiadomość jest zbyt krótka.",
         "max": "Wiadomość może mieć maksymalnie {{max}} znaków."
+      },
+      "consentPrivacy": {
+        "required": "Musisz zaakceptować politykę prywatności, aby wysłać wiadomość."
       }
     },
     "alerts": {
       "validation": "Popraw zaznaczone pola formularza.",
       "success": "Wiadomość została wysłana."
     },
-    "privacyNote": "Wysyłając formularz, akceptujesz politykę prywatności.",
     "submit": "Wyślij wiadomość"
   }
 }

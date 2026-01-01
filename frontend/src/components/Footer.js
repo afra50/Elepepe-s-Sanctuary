@@ -4,8 +4,38 @@ import { useTranslation } from "react-i18next";
 import { FaFacebook } from "react-icons/fa";
 
 function Footer() {
-  const { t } = useTranslation("footer");
+  const { t, i18n } = useTranslation("footer");
   const currentYear = new Date().getFullYear();
+
+  // Pobieramy aktualny język (np. 'pl', 'en', 'es')
+  // Jeśli język jest złożony (np. 'en-US'), bierzemy tylko pierwszą część
+  const currentLang = (i18n.language || "pl").split("-")[0];
+
+  // Helper do pobierania ścieżki regulaminu
+  const getTermsLink = () => {
+    switch (currentLang) {
+      case "en":
+        return "/docs/terms_conditions.pdf";
+      case "es":
+        return "/docs/terminos_condiciones.pdf";
+      case "pl":
+      default:
+        return "/docs/regulamin.pdf";
+    }
+  };
+
+  // Helper do pobierania ścieżki polityki prywatności
+  const getPrivacyLink = () => {
+    switch (currentLang) {
+      case "en":
+        return "/docs/policy.pdf";
+      case "es":
+        return "/docs/politica.pdf";
+      case "pl":
+      default:
+        return "/docs/polityka.pdf";
+    }
+  };
 
   return (
     <footer className="site-footer">
@@ -79,7 +109,7 @@ function Footer() {
 
           <div className="links">
             <a
-              href="/regulations.pdf"
+              href={getTermsLink()} // Używamy helpera
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -87,7 +117,7 @@ function Footer() {
             </a>
             <span className="separator">|</span>
             <a
-              href="/privacy-policy.pdf"
+              href={getPrivacyLink()} // Używamy helpera
               target="_blank"
               rel="noopener noreferrer"
             >
