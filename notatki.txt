@@ -21,12 +21,14 @@ KONTAKT
 FOOTER
 - polityka i regulamin podpiac
 
+ADMIN
+- czy robic liste darowizn?
+
 BACKEND
 - Joi do walidacji requestów
 
 NA KONIEC
-- regulamin
-- polityka - languagedetector?, formularz kontaktowy, fomularz zgloszenia + tworzenie zbiorki na jego podstawie
+- polityka i regulamin - jak bedzie lista darowizn u admina to dopisac?
 - index.html + html lang - tak jak na zebrane
 - seo - robots + google search console + sitemap + og img
 - cors, wyl x-powered-by, ratelimiter, slow-down, logi (winston? logger?), helmet, cookies http only, samesite:strict, secure, compression, morgan, proxy, ssl
