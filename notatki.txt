@@ -10,9 +10,6 @@ HOME
 
 PODSTRONA ZBIÓRKI
 
-PARTNERZY
-- podpiac backend
-
 O NAS
 - teksty poprawic jak wysle
 
