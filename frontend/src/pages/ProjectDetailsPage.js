@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import {
+  MapPin,
+  Calendar,
+  User,
+  Heart,
+  FileText,
+  AlertTriangle,
+  Clock,
+  Share2,
+} from "lucide-react";
 
 import api from "../utils/api";
 import Loader from "../components/ui/Loader";
 import ErrorState from "../components/ui/ErrorState";
+import Button from "../components/ui/Button"; // Zakładam, że masz ten komponent
 
 function ProjectDetailsPage() {
   const { slug } = useParams();
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation(); // Zakładam namespace 'projects' lub 'common'
   const lang = i18n.language || "pl";
 
   const [project, setProject] = useState(null);
@@ -23,7 +34,6 @@ function ProjectDetailsPage() {
       .get(`/projects/${slug}`)
       .then((res) => {
         setProject(res.data);
-        console.log("PROJECT DETAILS:", res.data); // 👈 mega ważne
       })
       .catch((err) => {
         console.error("Failed to load project", err);
@@ -32,9 +42,28 @@ function ProjectDetailsPage() {
       .finally(() => setLoading(false));
   }, [slug]);
 
-  if (loading) {
-    return <Loader variant="center" size="md" />;
-  }
+  // --- Helpery ---
+  const calculateProgress = (collected, target) => {
+    if (!target || target <= 0) return 0;
+    const percent = (collected / target) * 100;
+    return Math.min(Math.round(percent), 100);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleDateString(lang, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const handleDonate = () => {
+    // Tu logika przekierowania do płatności lub scroll do formularza
+    console.log("Donate clicked for", project?.id);
+  };
+
+  if (loading) return <Loader variant="center" size="lg" />;
 
   if (error) {
     return (
@@ -46,110 +75,220 @@ function ProjectDetailsPage() {
     );
   }
 
-  if (!project) {
-    return null;
-  }
+  if (!project) return null;
+
+  // Obliczenia
+  const progress = calculateProgress(
+    project.finance.collected,
+    project.finance.target
+  );
+  const title = project.title?.[lang] || project.title?.["pl"];
+  const description =
+    project.description?.[lang] || project.description?.["pl"];
+  const animalName = project.animal.name;
+  const applicantName = project.applicant?.name;
 
   return (
     <main className="project-details-page">
-      {/* ===== HERO ===== */}
-      <section>
-        <h1>{project.title?.[lang]}</h1>
+      {/* Tło nagłówka (opcjonalne, np. rozmyte zdjęcie) */}
+      <div
+        className="project-bg-blur"
+        style={{ backgroundImage: `url(${project.gallery.cover})` }}
+      ></div>
 
-        {project.isUrgent && <strong>PILNE</strong>}
+      <div className="container project-grid">
+        {/* === LEWA KOLUMNA: TREŚĆ === */}
+        <div className="left-column">
+          {/* Header */}
+          <header className="project-header">
+            <div className="badges">
+              {project.isUrgent && (
+                <span className="badge badge--urgent">
+                  <AlertTriangle size={14} /> PILNE
+                </span>
+              )}
+              <span className="badge badge--category">
+                {project.animal.species === "rat" ? "Szczurek" : "Zwierzę"}
+              </span>
+            </div>
 
-        <p>
-          {project.applicant?.label?.[lang]} –{" "}
-          <strong>{project.applicant?.name}</strong>
-        </p>
-      </section>
+            <h1 className="project-title">{title}</h1>
 
-      {/* ===== FINANSE ===== */}
-      <section>
-        <h2>Finanse</h2>
-        <p>
-          Zebrano: {project.finance.collected} {project.finance.currency}
-        </p>
-        <p>
-          Cel: {project.finance.target} {project.finance.currency}
-        </p>
-        <p>Termin: {project.finance.deadline}</p>
-      </section>
+            <div className="project-meta">
+              <span className="meta-item">
+                <User size={16} /> {applicantName}
+              </span>
+              <span className="meta-item">
+                <MapPin size={16} /> {project.location.city}
+              </span>
+              <span className="meta-item">
+                <Clock size={16} /> {formatDate(project.finance.deadline)}
+              </span>
+            </div>
+          </header>
 
-      {/* ===== ZWIERZĘ ===== */}
-      <section>
-        <h2>Podopieczni</h2>
-        <p>
-          Imię: <strong>{project.animal.name}</strong>
-        </p>
-        <p>Liczba: {project.animal.count}</p>
-        <p>Gatunek: {project.animal.species}</p>
+          {/* Galeria (Cover + Miniatury) */}
+          <div className="project-gallery">
+            <div className="cover-image-wrapper">
+              <img
+                src={project.gallery.cover}
+                alt={title}
+                className="cover-image"
+              />
+            </div>
+            {project.gallery.photos.length > 0 && (
+              <div className="gallery-thumbs">
+                {project.gallery.photos.slice(0, 4).map((url, idx) => (
+                  <div
+                    key={idx}
+                    className="thumb"
+                    style={{ backgroundImage: `url(${url})` }}
+                  ></div>
+                ))}
+                {project.gallery.photos.length > 4 && (
+                  <div className="thumb more-count">
+                    +{project.gallery.photos.length - 4}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
-        {project.animal.speciesOther?.[lang] && (
-          <p>Inne: {project.animal.speciesOther[lang]}</p>
-        )}
+          {/* Opis */}
+          <section className="project-section description-section">
+            <h2>O zbiórce</h2>
+            <div className="description-content">
+              {/* Proste renderowanie nowych linii */}
+              {description.split("\n").map((line, i) => (
+                <p key={i}>{line}</p>
+              ))}
+            </div>
+          </section>
 
-        {project.animal.age?.[lang] && <p>Wiek: {project.animal.age[lang]}</p>}
-      </section>
+          {/* Dane podopiecznego (Tabela/Grid) */}
+          <section className="project-section animal-info-section">
+            <h3>Komu pomagasz?</h3>
+            <div className="animal-card">
+              <div className="info-row">
+                <span className="label">Imię:</span>
+                <span className="value">{animalName}</span>
+              </div>
+              <div className="info-row">
+                <span className="label">Gatunek:</span>
+                <span className="value">
+                  {project.animal.speciesOther?.[lang] ||
+                    project.animal.species}
+                </span>
+              </div>
+              <div className="info-row">
+                <span className="label">Wiek:</span>
+                <span className="value">
+                  {project.animal.age?.[lang] || "-"}
+                </span>
+              </div>
+            </div>
+          </section>
 
-      {/* ===== LOKALIZACJA ===== */}
-      <section>
-        <h2>Lokalizacja</h2>
-        <p>
-          {project.location.city}, {project.location.country?.[lang]}
-        </p>
-      </section>
+          {/* Dokumenty */}
+          {project.gallery.documents.length > 0 && (
+            <section className="project-section documents-section">
+              <h3>Dokumenty i Faktury</h3>
+              <ul className="docs-list">
+                {project.gallery.documents.map((doc, idx) => (
+                  <li key={idx}>
+                    <a
+                      href={doc.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="doc-link"
+                    >
+                      <FileText size={18} />
+                      <span>{doc.name}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
-      {/* ===== OPIS ===== */}
-      <section>
-        <h2>Opis</h2>
-        <p>{project.description?.[lang]}</p>
-      </section>
+          {/* Aktualności */}
+          <section className="project-section updates-section">
+            <h3>Aktualności ({project.updates.length})</h3>
+            <div className="updates-timeline">
+              {project.updates.length === 0 ? (
+                <p className="no-updates">
+                  Brak aktualności. Bądź pierwszą osobą, która wesprze!
+                </p>
+              ) : (
+                project.updates.map((u) => (
+                  <article key={u.id} className="update-card">
+                    <div className="update-date">
+                      <Calendar size={14} /> {formatDate(u.publishedAt)}
+                    </div>
+                    <h4 className="update-title">{u.title?.[lang]}</h4>
+                    <p className="update-content">{u.content?.[lang]}</p>
+                  </article>
+                ))
+              )}
+            </div>
+          </section>
+        </div>
 
-      {/* ===== GALERIA ===== */}
-      <section>
-        <h2>Galeria</h2>
+        {/* === PRAWA KOLUMNA: SIDEBAR (Sticky) === */}
+        <div className="right-column">
+          <div className="donation-card sticky-card">
+            {/* Pasek postępu */}
+            <div className="progress-container">
+              <div className="progress-labels">
+                <span className="collected">
+                  {project.finance.collected} {project.finance.currency}
+                </span>
+                <span className="target">
+                  z {project.finance.target} {project.finance.currency}
+                </span>
+              </div>
+              <div className="progress-bar-bg">
+                <div
+                  className="progress-bar-fill"
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              <div className="progress-info">
+                <span>
+                  <strong>{progress}%</strong> celu
+                </span>
+                {/* Opcjonalnie: liczba wpłat jeśli API zwraca */}
+              </div>
+            </div>
 
-        {project.gallery.cover && (
-          <>
-            <p>Okładka:</p>
-            <img src={project.gallery.cover} alt="" style={{ maxWidth: 300 }} />
-          </>
-        )}
+            <div className="actions">
+              <Button
+                variant="primary"
+                size="lg"
+                className="btn-donate-full"
+                onClick={handleDonate}
+                icon={<Heart size={20} fill="currentColor" />}
+              >
+                Wesprzyj teraz
+              </Button>
 
-        <p>Zdjęcia:</p>
-        <ul>
-          {project.gallery.photos.map((url, idx) => (
-            <li key={idx}>{url}</li>
-          ))}
-        </ul>
+              <Button
+                variant="outline"
+                size="md"
+                className="btn-share-full"
+                icon={<Share2 size={18} />}
+              >
+                Udostępnij
+              </Button>
+            </div>
 
-        <p>Dokumenty:</p>
-        <ul>
-          {project.gallery.documents.map((doc, idx) => (
-            <li key={idx}>
-              <a href={doc.url} target="_blank" rel="noreferrer">
-                {doc.name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* ===== AKTUALNOŚCI ===== */}
-      <section>
-        <h2>Aktualności</h2>
-
-        {project.updates.length === 0 && <p>Brak aktualności.</p>}
-
-        {project.updates.map((u) => (
-          <article key={u.id}>
-            <h3>{u.title?.[lang]}</h3>
-            <small>{u.publishedAt}</small>
-            <p>{u.content?.[lang]}</p>
-          </article>
-        ))}
-      </section>
+            <div className="organizer-mini">
+              <small>Organizator:</small>
+              <div className="organizer-name">{applicantName}</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
