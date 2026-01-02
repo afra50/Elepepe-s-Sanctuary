@@ -1,0 +1,29 @@
+{
+  "urgent": "PILNE",
+
+  "sections": {
+    "about": "O zbiórce",
+    "animal": "Komu pomagasz?",
+    "documents": "Dokumenty i faktury",
+    "updates": "Aktualności",
+    "noUpdates": "Brak aktualności."
+  },
+
+  "animal": {
+    "name": "Imię",
+    "species": "Gatunek",
+    "age": "Wiek"
+  },
+
+  "actions": {
+    "donate": "Wesprzyj teraz",
+    "share": "Udostępnij"
+  },
+
+  "target": "celu",
+
+  "error": {
+    "title": "Nie udało się załadować zbiórki",
+    "message": "Spróbuj ponownie za chwilę."
+  }
+}

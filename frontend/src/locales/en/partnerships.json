@@ -7,5 +7,11 @@
   "error": {
     "title": "Failed to load partners",
     "message": "There was a problem connecting to the server. Please try again."
+  },
+
+  "invite": {
+    "title": "Become our partner",
+    "text": "The Elepepe's Sanctuary Foundation works to save, treat, and improve the quality of life of animals. We collaborate with individuals and organizations who, like us, genuinely want to help and support our efforts. Partnerships can include supporting aid campaigns and fundraisers, participating in adoption initiatives, educational activities, and joint animal-related projects. We value relationships based on trust, empathy, and a shared goal. If you would like to learn more about our work or see opportunities for collaboration, please contact us via the form. Together, we can do more for those in need.",
+    "cta": "Contact us!"
   }
 }

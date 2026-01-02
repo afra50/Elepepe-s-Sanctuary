@@ -7,5 +7,11 @@
   "error": {
     "title": "Nie udało się załadować partnerów",
     "message": "Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie"
+  },
+
+  "invite": {
+    "title": "Zostań naszym partnerem",
+    "text": "Fundacja Elepepe's Sanctuary działa na rzecz ratowania, leczenia i poprawy jakości życia zwierząt. Współpracujemy z osobami oraz organizacjami, które podobnie jak my chcą realnie pomagać i wspierać nasze działania. Partnerstwo może obejmować m.in. wsparcie akcji pomocowych i zbiórek, udział w inicjatywach adopcyjnych, działania edukacyjne oraz wspólne projekty na rzecz zwierząt. Zależy nam na relacjach opartych na zaufaniu, empatii i wspólnym celu. Jeśli chcesz dowiedzieć się więcej o naszej działalności lub widzisz przestrzeń do współpracy, zapraszamy do kontaktu poprzez formularz. Razem możemy zrobić więcej dla tych, którzy tego potrzebują.",
+    "cta": "Skontaktuj się z nami!"
   }
 }

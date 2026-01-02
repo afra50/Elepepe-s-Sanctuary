@@ -1,0 +1,30 @@
+{
+  "urgent": "URGENTE",
+
+  "sections": {
+    "about": "Sobre la recaudación de fondos",
+    "animal": "¿A quién ayudas?",
+    "documents": "Documentos y facturas",
+
+    "updates": "Noticias",
+    "noUpdates": "Sin noticias"
+  },
+
+  "animal": {
+    "name": "Nombre",
+    "species": "Especie",
+    "age": "Edad"
+  },
+
+  "actions": {
+    "donate": "Dona ahora",
+    "share": "Comparte"
+  },
+
+  "target": "objetivo",
+
+  "error": {
+    "title": "No se puede cargar la recaudación de fondos",
+    "message": "Inténtalo de nuevo en un momento"
+  }
+}
