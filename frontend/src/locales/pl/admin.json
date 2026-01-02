@@ -203,6 +203,46 @@
       "fetchError": "Nie udało się pobrać listy wpłat lub projektów."
     }
   },
+  "payouts": {
+    "title": "Wypłaty dla Beneficjentów",
+    "subtitle": "Ewidencja środków przekazanych organizatorom zbiórek.",
+    "add": "Dodaj przelew",
+    "cancelAdd": "Anuluj dodawanie",
+    "newPayout": "Nowy przelew wychodzący",
+    "save": "Zatwierdź przelew",
+    "emptyState": "Brak zarejestrowanych wypłat.",
+    "confirmDelete": "Czy na pewno chcesz usunąć ten przelew? Zmniejszy to sumę wypłaconych środków w projekcie.",
+    "fields": {
+      "project": "Zbiórka źródłowa",
+      "projectPlaceholder": "Wybierz zbiórkę...",
+      "recipient": "Odbiorca (Beneficjent)",
+      "date": "Data przelewu",
+      "amount": "Kwota przelewu",
+      "note": "Tytuł przelewu / Notatka"
+    },
+    "summary": {
+      "target": "Cel zbiórki:",
+      "collected": "Zebrano:",
+      "paid": "Wypłacono dotąd:",
+      "remaining": "Do wypłaty:"
+    },
+    "table": {
+      "date": "Data",
+      "recipient": "Odbiorca",
+      "project": "Zbiórka",
+      "amount": "Kwota",
+      "note": "Tytuł"
+    },
+    "alerts": {
+      "fetchError": "Błąd pobierania danych.",
+      "validationError": "Wypełnij wszystkie wymagane pola.",
+      "amountPositive": "Kwota musi być dodatnia.",
+      "addSuccess": "Przelew został zarejestrowany.",
+      "addError": "Błąd zapisu przelewu.",
+      "deleteSuccess": "Przelew usunięty.",
+      "deleteError": "Nie udało się usunąć przelewu."
+    }
+  },
   "partnerships": {
     "subtitle": "Zarządzaj partnerami wspierającymi Elepepe’s Sanctuary – informacje o nich pojawią się na stronie.",
     "current": "Aktualni partnerzy",

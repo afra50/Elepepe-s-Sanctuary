@@ -58,6 +58,7 @@ const getActiveProjects = async (connection) => {
       p.is_urgent,
       p.amount_target,
       p.amount_collected,
+      p.amount_paid,
       p.currency,
       p.deadline,
       p.title,
@@ -77,6 +78,11 @@ const getAllProjects = async (connection) => {
   const sql = `
     SELECT 
       p.*, 
+      
+      COALESCE(p.amount_target, 0) AS amount_target,
+      COALESCE(p.amount_collected, 0) AS amount_collected,
+      COALESCE(p.amount_paid, 0) AS amount_paid,
+      
       pf.file_path AS cover_image
     FROM projects p
     LEFT JOIN project_files pf ON pf.project_id = p.id AND pf.is_cover = 1
@@ -341,7 +347,6 @@ const getPublicProjectBySlug = async (connection, slug) => {
     WHERE p.slug = ?
       AND p.status = 'active'
   `;
-
   const [rows] = await connection.query(sql, [slug]);
   return rows;
 };

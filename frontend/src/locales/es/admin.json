@@ -201,6 +201,46 @@
       "fetchError": "No se pudo obtener la lista de donaciones o proyectos."
     }
   },
+  "payouts": {
+    "title": "Pagos a Beneficiarios",
+    "subtitle": "Registros de fondos transferidos a los organizadores de recaudaciones.",
+    "add": "Añadir pago",
+    "cancelAdd": "Cancelar",
+    "newPayout": "Nueva transferencia saliente",
+    "save": "Confirmar transferencia",
+    "emptyState": "No se encontraron pagos registrados.",
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este pago? Esto reducirá el monto total pagado para el proyecto.",
+    "fields": {
+      "project": "Recaudación de fondos",
+      "projectPlaceholder": "Seleccionar recaudación...",
+      "recipient": "Destinatario (Beneficiario)",
+      "date": "Fecha de transferencia",
+      "amount": "Importe de transferencia",
+      "note": "Título / Nota"
+    },
+    "summary": {
+      "target": "Objetivo:",
+      "collected": "Recaudado:",
+      "paid": "Pagado hasta ahora:",
+      "remaining": "Restante por pagar:"
+    },
+    "table": {
+      "date": "Fecha",
+      "recipient": "Destinatario",
+      "project": "Proyecto",
+      "amount": "Importe",
+      "note": "Título"
+    },
+    "alerts": {
+      "fetchError": "Error al obtener datos.",
+      "validationError": "Por favor, complete todos los campos obligatorios.",
+      "amountPositive": "El importe debe ser positivo.",
+      "addSuccess": "Pago registrado con éxito.",
+      "addError": "Error al guardar el pago.",
+      "deleteSuccess": "Pago eliminado.",
+      "deleteError": "No se pudo eliminar el pago."
+    }
+  },
   "partnerships": {
     "subtitle": "Gestionar los socios que apoyan Elepepe's Sanctuary: la información sobre ellos aparecerá en el sitio web.",
     "current": "Socios actuales",
