@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const requestRoutes = require("./routes/requestRoutes");
 const partnerRoutes = require("./routes/partnerRoutes");
 const projectRoutes = require("./routes/projectRoutes");
+const internalDonationRoutes = require("./routes/internalDonationRoutes");
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/requests", requestRoutes);
 app.use("/api/partners", partnerRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/internal-donations", internalDonationRoutes);
 
 // 404 (Dla nieznanych tras)
 app.use((req, res, next) => {
