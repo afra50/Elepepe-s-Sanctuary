@@ -5,6 +5,7 @@ import api, { FILES_BASE_URL } from "../utils/api";
 import Loader from "../components/ui/Loader";
 import ErrorState from "../components/ui/ErrorState";
 import Button from "../components/ui/Button";
+import { NavLink } from "react-router-dom";
 
 const mapPartnerToUi = (partner, lang) => {
 	const pickByLang = (pl, en, es) => {
@@ -143,26 +144,31 @@ function PartnershipsPage() {
 					</div>
 				</section>
 			)}
-			<section className="invitation">
-				<div className="invitation-text">
-					<h2>Zostań naszym partnerem</h2>
-					<p>
-						Fundacja Elepepe's Sanctuary działa na rzecz ratowania, leczenia i
-						poprawy jakości życia szczurów. Współpracujemy z osobami oraz
-						organizacjami, które podobnie jak my chcą realnie pomagać i wspierać
-						nasze działania. Partnerstwo może obejmować m.in. wsparcie akcji
-						pomocowych i zbiórek, udział w inicjatywach adopcyjnych, działania
-						edukacyjne oraz wspólne projekty na rzecz zwierząt. Zależy nam na
-						relacjach opartych na zaufaniu, empatii i wspólnym celu. Jeśli
-						chcesz dowiedzieć się więcej o naszej działalności lub widzisz
-						przestrzeń do współpracy, zapraszamy do kontaktu poprzez formularz.
-						Razem możemy zrobić więcej dla szczurów, które tego potrzebują.
-					</p>
+			<section className="invitation-bg">
+				<div className="invitation">
+					<div className="invitation-text">
+						<h2>Zostań naszym partnerem</h2>
+						<p>
+							Fundacja Elepepe's Sanctuary działa na rzecz ratowania, leczenia i
+							poprawy jakości życia szczurów. Współpracujemy z osobami oraz
+							organizacjami, które podobnie jak my chcą realnie pomagać i
+							wspierać nasze działania. Partnerstwo może obejmować m.in.
+							wsparcie akcji pomocowych i zbiórek, udział w inicjatywach
+							adopcyjnych, działania edukacyjne oraz wspólne projekty na rzecz
+							zwierząt. Zależy nam na relacjach opartych na zaufaniu, empatii i
+							wspólnym celu. Jeśli chcesz dowiedzieć się więcej o naszej
+							działalności lub widzisz przestrzeń do współpracy, zapraszamy do
+							kontaktu poprzez formularz. Razem możemy zrobić więcej dla
+							szczurów, które tego potrzebują.
+						</p>
+					</div>
 				</div>
 				<div className="invitation-button">
-					<a className="invitation-link" href="/contact">
-						<Button variant="primary">Skontaktuj się z nami! </Button>
-					</a>
+					<NavLink to="/contact" className="invitation-link">
+						<Button variant="primary" size="lg" className="invitation-link-btn">
+							Skontaktuj się z nami!
+						</Button>
+					</NavLink>
 				</div>
 			</section>
 		</main>
