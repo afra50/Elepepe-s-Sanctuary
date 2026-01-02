@@ -5,6 +5,7 @@ import api, { FILES_BASE_URL } from "../utils/api";
 import Loader from "../components/ui/Loader";
 import ErrorState from "../components/ui/ErrorState";
 import Button from "../components/ui/Button";
+import { NavLink } from "react-router-dom";
 
 const mapPartnerToUi = (partner, lang) => {
 	const pickByLang = (pl, en, es) => {
@@ -163,9 +164,11 @@ function PartnershipsPage() {
 					</div>
 				</div>
 				<div className="invitation-button">
-					<a className="invitation-link" href="/contact">
-						<Button variant="primary">Skontaktuj się z nami! </Button>
-					</a>
+					<NavLink to="/contact" className="invitation-link">
+						<Button variant="primary" size="lg" className="invitation-link-btn">
+							Skontaktuj się z nami!
+						</Button>
+					</NavLink>
 				</div>
 			</section>
 		</main>
