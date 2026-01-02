@@ -3,9 +3,6 @@
 - wesprzyj na zbiórkach ma coś robić
 - filtry pomiedzy tel i laptopem jak sa widoczne to przycisk "Filtry" jest widoczny i nie dziala
 
-HOME
-- karuzela na najpilniejszych zbiorkach, a jak nie albo malo to uzupelnic tymi co sie czas konczy
-
 PODSTRONA ZBIÓRKI
 
 O NAS

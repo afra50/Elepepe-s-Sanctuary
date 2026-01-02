@@ -27,7 +27,10 @@
     }
   },
   "urgent": {
-    "title": "Little ones in special need"
+    "title": "Little ones in special need",
+    "empty": "Currently no urgent fundraisers.",
+    "errorTitle": "Could not load fundraisers",
+    "errorMessage": "There was a problem connecting to the server."
   },
   "banner": {
     "title": "Happy Endings Do Exist",

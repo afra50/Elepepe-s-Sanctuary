@@ -221,11 +221,80 @@
     background-color: $color-white;
     padding-block: 5rem;
     margin-top: 4rem;
+    position: relative;
 
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 2rem;
+    }
+
+    .urgent-slide {
+      padding: 0 0.75rem;
+
+      .fundraiser-card {
+        background-color: $bg-glass;
+        box-shadow: none;
+        border: 1px solid $color-border;
+
+        &__img-wrapper {
+          height: 260px;
+        }
+      }
+    }
+
+    .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 6;
+
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+
+      background-color: rgba($color-primary, 0.85);
+      backdrop-filter: blur(6px);
+      box-shadow: $shadow-sm;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      transition: background-color 0.25s ease, transform 0.25s ease,
+        box-shadow 0.25s ease;
+
+      &::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-top: 2px solid $color-white;
+        border-right: 2px solid $color-white;
+      }
+
+      &:hover {
+        background-color: $primary-600;
+        transform: translateY(-50%) scale(1.08);
+        box-shadow: $shadow-md;
+      }
+
+      &.prev {
+        left: -3rem;
+
+        &::before {
+          transform: rotate(-135deg);
+        }
+      }
+
+      &.next {
+        right: -3rem;
+
+        &::before {
+          transform: rotate(45deg);
+        }
+      }
     }
   }
 }

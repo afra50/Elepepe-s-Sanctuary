@@ -27,7 +27,10 @@
     }
   },
   "urgent": {
-    "title": "Maluchy w szczególnej potrzebie"
+    "title": "Maluchy w szczególnej potrzebie",
+    "empty": "Obecnie brak pilnych zbiórek.",
+    "errorTitle": "Nie udało się załadować zbiórek",
+    "errorMessage": "Wystąpił problem z połączeniem z serwerem."
   },
   "banner": {
     "title": "Szczęśliwe zakończenia istnieją",
