@@ -12,6 +12,7 @@ import FilterBar from "../ui/FilterBar";
 import ErrorState from "../ui/ErrorState";
 import Alert from "../../components/ui/Alert";
 import ConfirmDialog from "../../components/ui/ConfirmDialog";
+import Select from "../ui/Select"; // <--- 1. Import nowego Selecta
 
 // Importy logiki/danych
 import RequestCard from "../../components/admin/RequestCard";
@@ -31,7 +32,6 @@ const initialFilters = {
 
 const AdminRequests = () => {
   const { t } = useTranslation("admin");
-
   const navigate = useNavigate();
 
   // --- STANY DANYCH ---
@@ -50,8 +50,8 @@ const AdminRequests = () => {
   const [filters, setFilters] = useState(initialFilters);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
-  // --- NOWE STANY: ALERT I CONFIRM ---
-  const [alert, setAlert] = useState(null); // { variant, message }
+  // --- STANY UI: ALERT I CONFIRM ---
+  const [alert, setAlert] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
     message: "",
@@ -104,9 +104,7 @@ const AdminRequests = () => {
     setRequestDetails(null);
   };
 
-  // --- 3. LOGIKA ZMIANY STATUSU Z CONFIRM I ALERTEM ---
-
-  // Krok 1: Wywołanie okna potwierdzenia
+  // --- 3. LOGIKA ZMIANY STATUSU ---
   const requestStatusChange = (newStatus) => {
     if (!selectedRequest) return;
 
@@ -144,11 +142,8 @@ const AdminRequests = () => {
     });
   };
 
-  // Krok 2: Faktyczne wykonanie zmiany (po kliknięciu "Potwierdź")
   const executeStatusChange = async () => {
     const { targetStatus } = confirmDialog;
-
-    // Zamykamy dialog
     setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
 
     if (!selectedRequest || !targetStatus) return;
@@ -158,18 +153,16 @@ const AdminRequests = () => {
         status: targetStatus,
       });
 
-      // SUKCES - Ustawiamy Alert
       setAlert({
         variant: "success",
         message:
           t("status.successMessage") || "Status został zmieniony pomyślnie!",
       });
 
-      handleCloseDetails(); // Zamknij modal szczegółów
-      fetchRequests(); // Odśwież listę
+      handleCloseDetails();
+      fetchRequests();
     } catch (err) {
       console.error("Błąd zmiany statusu:", err);
-      // BŁĄD - Ustawiamy Alert
       setAlert({
         variant: "error",
         message:
@@ -178,29 +171,22 @@ const AdminRequests = () => {
     }
   };
 
-  // Funkcja anulowania dialogu
   const cancelStatusChange = () => {
     setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
   };
 
   const handleApprove = () => {
-    // Zamiast ConfirmDialog, otwieramy kreator zbiórki
     setIsCreateProjectOpen(true);
-    // (Możesz zamknąć modal szczegółów, jeśli chcesz, ale lepiej zostawić otwarty "pod spodem" lub zamknąć go)
-    // Tutaj decydujesz: czy kreator jest "na wierzchu" szczegółów?
-    // Jeśli tak, to użyj Portalu w CreateProjectModal (jest w kodzie Modala).
   };
 
   const handleProjectCreatedSuccess = () => {
-    // Ta funkcja wykona się po sukcesie w modalu
     setAlert({
       variant: "success",
       message:
         t("status.projectCreatedSuccess") || "Zbiórka została utworzona!",
     });
-    fetchRequests(); // Odśwież listę
-    handleCloseDetails(); // Zamknij modal szczegółów
-    // CreateProjectModal zamknie się sam w swoim kodzie (onClose)
+    fetchRequests();
+    handleCloseDetails();
   };
 
   const handleReject = () => requestStatusChange("rejected");
@@ -252,36 +238,52 @@ const AdminRequests = () => {
     return result;
   }, [requests, activeTab, filters]);
 
+  // --- OPCJE SELECTÓW (Definicje) ---
   const sortOptions = [
     { value: "createdAt", label: t("filters.sortOptions.date") },
     { value: "deadline", label: t("filters.sortOptions.deadline") },
     { value: "amount", label: t("filters.sortOptions.amount") },
   ];
 
+  const speciesOptions = [
+    { value: "all", label: t("filters.allSpecies") },
+    { value: "rat", label: t("form.fields.species.options.rat") },
+    { value: "guineaPig", label: t("form.fields.species.options.guineaPig") },
+    { value: "other", label: t("form.fields.species.options.other") },
+  ];
+
+  const applicantTypeOptions = [
+    { value: "all", label: t("filters.allTypes") },
+    { value: "person", label: t("form.fields.applicantType.options.person") },
+    {
+      value: "organization",
+      label: t("form.fields.applicantType.options.organization"),
+    },
+    {
+      value: "vetClinic",
+      label: t("form.fields.applicantType.options.vetClinic"),
+    },
+  ];
+
+  const languageOptions = [
+    { value: "all", label: t("filters.allLanguages") },
+    { value: "pl", label: "🇵🇱 Polski" },
+    { value: "en", label: "🇬🇧 English" },
+    { value: "es", label: "🇪🇸 Español" },
+  ];
+
   const handleViewProject = (requestDetails) => {
-    // Sprawdź, czy masz ID projektu.
-    // Jeśli ID wniosku (request) to to samo co ID projektu, użyj requestDetails.id.
-    // Jeśli backend zwraca pole 'projectId', użyj go.
-
-    // Zakładając, że ID jest takie samo lub backend zwraca "id":
     const projectId = requestDetails.projectId || requestDetails.id;
-
     if (projectId) {
       navigate(`/admin/projects/${projectId}`);
     } else {
       console.error("Brak ID projektu do przekierowania");
-      // Opcjonalnie alert
     }
   };
 
   return (
     <div className="admin-requests-page">
-      {/* PORTALE: Przenoszą te elementy na sam koniec <body>,
-          dzięki czemu mają one najwyższy priorytet wyświetlania (z-index)
-          i nie są przykrywane przez Modal.
-      */}
-
-      {/* 1. ALERT (TOAST) */}
+      {/* 1. ALERT (TOAST) - Zachowany */}
       {alert &&
         createPortal(
           <div
@@ -289,7 +291,7 @@ const AdminRequests = () => {
               position: "fixed",
               top: "20px",
               right: "20px",
-              zIndex: 99999, // Bardzo wysoki indeks, by być nad wszystkim
+              zIndex: 99999,
             }}
           >
             <Alert
@@ -303,7 +305,7 @@ const AdminRequests = () => {
           document.body
         )}
 
-      {/* 2. CONFIRM DIALOG */}
+      {/* 2. CONFIRM DIALOG - Zachowany */}
       {confirmDialog.isOpen &&
         createPortal(
           <div style={{ position: "relative", zIndex: 100000 }}>
@@ -320,7 +322,7 @@ const AdminRequests = () => {
           document.body
         )}
 
-      {/* --- GŁÓWNA ZAWARTOŚĆ STRONY --- */}
+      {/* --- GŁÓWNA ZAWARTOŚĆ --- */}
       <header className="page-header">
         <div>
           <h1 className="page-title">{t("menu.requests")}</h1>
@@ -365,45 +367,37 @@ const AdminRequests = () => {
           onClear={() => setFilters(initialFilters)}
           clearLabel={t("filters.clear")}
         >
-          <select
-            value={filters.species}
-            onChange={(e) => handleFilterChange("species", e.target.value)}
-          >
-            <option value="all">{t("filters.allSpecies")}</option>
-            <option value="rat">{t("form.fields.species.options.rat")}</option>
-            <option value="guineaPig">
-              {t("form.fields.species.options.guineaPig")}
-            </option>
-            <option value="other">
-              {t("form.fields.species.options.other")}
-            </option>
-          </select>
-          <select
-            value={filters.applicantType}
-            onChange={(e) =>
-              handleFilterChange("applicantType", e.target.value)
-            }
-          >
-            <option value="all">{t("filters.allTypes")}</option>
-            <option value="person">
-              {t("form.fields.applicantType.options.person")}
-            </option>
-            <option value="organization">
-              {t("form.fields.applicantType.options.organization")}
-            </option>
-            <option value="vetClinic">
-              {t("form.fields.applicantType.options.vetClinic")}
-            </option>
-          </select>
-          <select
-            value={filters.language}
-            onChange={(e) => handleFilterChange("language", e.target.value)}
-          >
-            <option value="all">{t("filters.allLanguages")}</option>
-            <option value="pl">🇵🇱 Polski</option>
-            <option value="en">🇬🇧 English</option>
-            <option value="es">🇪🇸 Español</option>
-          </select>
+          {/* --- ZAMIANA STARYCH SELECTÓW NA NOWE KOMPONENTY SELECT --- */}
+
+          {/* Filtr Gatunku */}
+          <div style={{ minWidth: "180px" }}>
+            <Select
+              value={filters.species}
+              onChange={(val) => handleFilterChange("species", val)}
+              options={speciesOptions}
+              placeholder={t("filters.allSpecies")}
+            />
+          </div>
+
+          {/* Filtr Typu Wnioskodawcy */}
+          <div style={{ minWidth: "180px" }}>
+            <Select
+              value={filters.applicantType}
+              onChange={(val) => handleFilterChange("applicantType", val)}
+              options={applicantTypeOptions}
+              placeholder={t("filters.allTypes")}
+            />
+          </div>
+
+          {/* Filtr Języka */}
+          <div style={{ minWidth: "180px" }}>
+            <Select
+              value={filters.language}
+              onChange={(val) => handleFilterChange("language", val)}
+              options={languageOptions}
+              placeholder={t("filters.allLanguages")}
+            />
+          </div>
         </FilterBar>
       </div>
 
@@ -452,11 +446,10 @@ const AdminRequests = () => {
       <CreateProjectModal
         isOpen={isCreateProjectOpen}
         onClose={() => setIsCreateProjectOpen(false)}
-        request={requestDetails || selectedRequest} // Fallback to list data if details aren't loaded
+        request={requestDetails || selectedRequest}
         onSuccess={handleProjectCreatedSuccess}
       />
 
-      {/* MODAL ZE SZCZEGÓŁAMI */}
       <RequestDetailsModal
         isOpen={!!selectedRequest}
         onClose={handleCloseDetails}
@@ -465,11 +458,9 @@ const AdminRequests = () => {
         isLoading={isDetailsLoading}
         error={detailsError}
         onRetry={() => handleOpenDetails(selectedRequest)}
-        // Akcje zmiany statusu
         onApprove={handleApprove}
         onReject={handleReject}
         onPending={handlePending}
-        // NOWA AKCJA
         onViewProject={handleViewProject}
       />
     </div>

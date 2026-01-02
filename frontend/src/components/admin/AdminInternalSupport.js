@@ -1,32 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Plus, Trash2, Calendar } from "lucide-react";
 import api from "../../utils/api";
 
-// Importy komponentów UI
+// UI Components
 import Button from "../ui/Button";
 import Loader from "../ui/Loader";
 import Alert from "../ui/Alert";
 import ErrorState from "../ui/ErrorState";
 import ConfirmDialog from "../ui/ConfirmDialog";
 import DatePickerField from "../ui/DatePickerField";
+import Pagination from "../ui/Pagination";
+import FilterBar from "../ui/FilterBar";
+import SearchableSelect from "../ui/SearchableSelect";
+import Select from "../ui/Select";
 
 const AdminInternalSupport = () => {
   const { t, i18n } = useTranslation("admin");
   const lang = i18n.language || "pl";
 
-  // --- STANY DANYCH ---
+  // --- DATA STATE ---
   const [donations, setDonations] = useState([]);
   const [projects, setProjects] = useState([]);
 
-  // --- STANY UI ---
+  // --- UI STATE ---
   const [loading, setLoading] = useState(true);
-  const [pageError, setPageError] = useState(null); // Błąd krytyczny (brak danych)
-  const [actionAlert, setActionAlert] = useState(null); // Alert sukcesu/błędu akcji
+  const [pageError, setPageError] = useState(null);
+  const [actionAlert, setActionAlert] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [confirmDeleteId, setConfirmDeleteId] = useState(null); // ID do usunięcia
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
-  // --- STAN FORMULARZA ---
+  // --- FILTER & PAGINATION STATE ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [sortBy, setSortBy] = useState("date");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [filterProjectId, setFilterProjectId] = useState("");
+  const [filterCurrency, setFilterCurrency] = useState("");
+
+  // --- FORM STATE ---
   const [formData, setFormData] = useState({
     project_id: "",
     amount: "",
@@ -35,20 +47,20 @@ const AdminInternalSupport = () => {
     note: "",
   });
 
-  // --- 1. POBIERANIE DANYCH ---
+  // --- 1. FETCH DATA ---
   const fetchData = async () => {
     setLoading(true);
     setPageError(null);
     try {
       const [donationsRes, projectsRes] = await Promise.all([
         api.get("/internal-donations"),
-        api.get("/projects/admin?status=active"), // Tylko aktywne projekty do listy
+        api.get("/projects/admin?status=active"),
       ]);
       setDonations(donationsRes.data);
       setProjects(projectsRes.data);
     } catch (err) {
       console.error("Error fetching data", err);
-      setPageError("Nie udało się pobrać listy wpłat lub projektów.");
+      setPageError(t("foundationSupport.alerts.fetchError"));
     } finally {
       setLoading(false);
     }
@@ -58,7 +70,76 @@ const AdminInternalSupport = () => {
     fetchData();
   }, []);
 
-  // --- 2. HANDLERY FORMULARZA ---
+  // --- HELPERS ---
+  const getProjectTitle = (projectOrTitle) => {
+    const rawTitle = projectOrTitle?.title || projectOrTitle?.project_title;
+    if (!rawTitle) return t("common.untitled");
+    try {
+      const titleObj =
+        typeof rawTitle === "string" ? JSON.parse(rawTitle) : rawTitle;
+      return titleObj[lang] || titleObj["pl"] || t("common.untitled");
+    } catch (e) {
+      return rawTitle;
+    }
+  };
+
+  // --- PREPARE SELECT OPTIONS ---
+  const projectOptions = useMemo(() => {
+    return projects.map((p) => ({
+      value: p.id,
+      label: `${getProjectTitle(p)} (ID: ${p.id})`,
+    }));
+  }, [projects, lang]);
+
+  const currencyOptions = [
+    { value: "PLN", label: "PLN" },
+    { value: "EUR", label: "EUR" },
+  ];
+
+  // --- 2. FILTER & SORT LOGIC ---
+  const processedDonations = useMemo(() => {
+    let result = [...donations];
+
+    // Filter by project
+    if (filterProjectId) {
+      result = result.filter((d) => d.project_id === parseInt(filterProjectId));
+    }
+
+    // Filter by currency
+    if (filterCurrency) {
+      result = result.filter((d) => d.currency === filterCurrency);
+    }
+
+    // Sort
+    result.sort((a, b) => {
+      let valA, valB;
+      if (sortBy === "amount") {
+        valA = parseFloat(a.amount);
+        valB = parseFloat(b.amount);
+      } else {
+        valA = new Date(a.donation_date).getTime();
+        valB = new Date(b.donation_date).getTime();
+      }
+      if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+      if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    return result;
+  }, [donations, filterProjectId, filterCurrency, sortBy, sortOrder]);
+
+  // --- 3. PAGINATION LOGIC ---
+  const totalPages = Math.ceil(processedDonations.length / itemsPerPage);
+  const paginatedDonations = processedDonations.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterProjectId, filterCurrency, sortBy, sortOrder]);
+
+  // --- 4. HANDLERS ---
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -70,105 +151,89 @@ const AdminInternalSupport = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prosta walidacja
     if (!formData.project_id || !formData.amount) {
       setActionAlert({
         variant: "error",
-        message: "Wybierz projekt i podaj kwotę.",
+        message: t("foundationSupport.alerts.validationError"),
+      });
+      return;
+    }
+
+    const amountValue = parseFloat(formData.amount);
+    if (isNaN(amountValue) || amountValue <= 0) {
+      setActionAlert({
+        variant: "error",
+        message: t("foundationSupport.alerts.amountPositive"),
+      });
+      return;
+    }
+
+    if (formData.note && formData.note.length > 1000) {
+      setActionAlert({
+        variant: "error",
+        message: t("foundationSupport.alerts.noteTooLong"),
       });
       return;
     }
 
     try {
-      const res = await api.post("/internal-donations", formData);
-
-      // Sukces
+      await api.post("/internal-donations", formData);
       setActionAlert({
         variant: "success",
-        message: "Wpłata została dodana pomyślnie.",
+        message: t("foundationSupport.alerts.addSuccess"),
       });
-
-      // Dodaj nową wpłatę do listy lokalnie (żeby nie przeładowywać wszystkiego)
-      // Uwaga: Backend powinien zwrócić pełny obiekt wpłaty, ale jeśli nie zwraca tytułu projektu,
-      // musimy go "dokleić" ręcznie dla UI, albo po prostu odświeżyć listę.
-      // Najbezpieczniej:
       fetchData();
-
-      // Reset formularza i zamknięcie
       setFormData({
         ...formData,
         amount: "",
         note: "",
-        project_id: "", // Resetuj wybór projektu
-        donation_date: new Date().toISOString().split("T")[0], // Data dzisiejsza
+        project_id: "",
+        donation_date: new Date().toISOString().split("T")[0],
       });
       setIsFormVisible(false);
     } catch (err) {
       console.error("Error adding donation", err);
+      const errorMsg =
+        err.response?.data?.message || t("foundationSupport.alerts.addError");
       setActionAlert({
         variant: "error",
-        message: "Błąd podczas zapisywania wpłaty.",
+        message: errorMsg,
       });
     }
   };
 
-  // --- 3. HANDLERY USUWANIA ---
-  const handleDeleteClick = (id) => {
-    setConfirmDeleteId(id);
-  };
-
   const handleConfirmDelete = async () => {
     if (!confirmDeleteId) return;
-
     try {
       await api.delete(`/internal-donations/${confirmDeleteId}`);
       setActionAlert({
         variant: "success",
-        message: "Wpłata została usunięta.",
+        message: t("foundationSupport.alerts.deleteSuccess"),
       });
-      // Aktualizacja stanu lokalnego
       setDonations((prev) => prev.filter((d) => d.id !== confirmDeleteId));
+
+      if (paginatedDonations.length === 1 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
     } catch (err) {
       console.error("Error deleting", err);
       setActionAlert({
         variant: "error",
-        message: "Nie udało się usunąć wpłaty.",
+        message: t("foundationSupport.alerts.deleteError"),
       });
     } finally {
       setConfirmDeleteId(null);
     }
   };
 
-  // --- HELPERY ---
-  const getProjectTitle = (project) => {
-    if (!project || !project.title) return "Usunięty projekt";
-    try {
-      // Obsługa tytułu wielojęzycznego (JSON string lub obiekt)
-      const titleObj =
-        typeof project.title === "string"
-          ? JSON.parse(project.title)
-          : project.title;
-      return titleObj[lang] || titleObj["pl"] || "Bez tytułu";
-    } catch (e) {
-      return project.title;
-    }
-  };
-
-  // --- RENDEROWANIE ---
+  // --- RENDER ---
   return (
     <div className="admin-internal-support">
-      {/* NAGŁÓWEK - ZAWSZE WIDOCZNY */}
       <header className="page-header">
         <div className="header-content">
-          <h1 className="page-title">
-            {t("menu.foundationSupport") || "Wpłaty własne"}
-          </h1>
-          <p className="page-subtitle">
-            Zarządzaj środkami wpłacanymi przez fundację na zbiórki.
-          </p>
+          <h1 className="page-title">{t("foundationSupport.title")}</h1>
+          <p className="page-subtitle">{t("foundationSupport.subtitle")}</p>
         </div>
-
-        {/* Przycisk dodawania widoczny tylko gdy nie ma błędu krytycznego */}
         {!pageError && !loading && (
           <div className="header-actions">
             <Button
@@ -176,15 +241,16 @@ const AdminInternalSupport = () => {
               icon={isFormVisible ? null : <Plus size={18} />}
               onClick={() => setIsFormVisible(!isFormVisible)}
             >
-              {isFormVisible ? "Anuluj dodawanie" : "Dodaj wpłatę"}
+              {isFormVisible
+                ? t("foundationSupport.cancelAdd")
+                : t("foundationSupport.add")}
             </Button>
           </div>
         )}
       </header>
 
-      {/* ALERT AKCJI (Toast) */}
       {actionAlert && (
-        <div style={{ marginBottom: "1.5rem" }}>
+        <div className="alert-wrapper">
           <Alert
             variant={actionAlert.variant}
             onClose={() => setActionAlert(null)}
@@ -195,10 +261,9 @@ const AdminInternalSupport = () => {
         </div>
       )}
 
-      {/* OBSŁUGA STANU BŁĘDU KRYTYCZNEGO */}
       {pageError ? (
         <ErrorState
-          title="Błąd wczytywania danych"
+          title={t("foundationSupport.alerts.fetchError")}
           message={pageError}
           onRetry={fetchData}
         />
@@ -206,46 +271,50 @@ const AdminInternalSupport = () => {
         <Loader variant="center" size="lg" />
       ) : (
         <>
-          {/* SEKJA FORMULARZA (ROZWIJANA) */}
+          {/* --- FORM SECTION --- */}
           <div className={`form-collapsible ${isFormVisible ? "open" : ""}`}>
             <div className="form-card">
-              <h3>Nowa wpłata</h3>
+              <h3>{t("foundationSupport.newDonation")}</h3>
               <form onSubmit={handleSubmit}>
                 <div className="form-grid">
-                  {/* Wybór projektu */}
-                  <div className="form-group">
-                    <label htmlFor="project_id">Projekt</label>
-                    <select
-                      id="project_id"
-                      name="project_id"
+                  {/* Project Select */}
+                  <div className="form-field">
+                    <label htmlFor="project_id">
+                      {t("foundationSupport.fields.project")}
+                    </label>
+                    <SearchableSelect
+                      options={projectOptions}
                       value={formData.project_id}
-                      onChange={handleChange}
-                    >
-                      <option value="">-- Wybierz zbiórkę --</option>
-                      {projects.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {getProjectTitle(p)} (ID: {p.id})
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(val) =>
+                        setFormData({ ...formData, project_id: val })
+                      }
+                      placeholder={t(
+                        "foundationSupport.fields.projectPlaceholder"
+                      )}
+                    />
                   </div>
 
-                  {/* Data */}
-                  <div className="form-group">
-                    <label htmlFor="donation_date">Data wpłaty</label>
+                  {/* Date Picker */}
+                  <div className="form-field">
+                    <label htmlFor="donation_date">
+                      {t("foundationSupport.fields.date")}
+                    </label>
                     <DatePickerField
                       id="donation_date"
                       name="donation_date"
                       value={formData.donation_date}
                       onChange={handleDateChange}
                       placeholder="RRRR-MM-DD"
+                      minDate={null}
                     />
                   </div>
 
-                  {/* Kwota i Waluta */}
-                  <div className="form-group">
-                    <label htmlFor="amount">Kwota</label>
-                    <div className="amount-group">
+                  {/* Amount & Currency */}
+                  <div className="form-field">
+                    <label htmlFor="amount">
+                      {t("foundationSupport.fields.amount")}
+                    </label>
+                    <div className="amount-row">
                       <input
                         type="number"
                         step="0.01"
@@ -254,63 +323,115 @@ const AdminInternalSupport = () => {
                         value={formData.amount}
                         onChange={handleChange}
                         placeholder="0.00"
-                        className="form-input"
+                        className="amount-input"
                       />
-                      <select
-                        name="currency"
-                        value={formData.currency}
-                        onChange={handleChange}
-                      >
-                        <option value="PLN">PLN</option>
-                        <option value="EUR">EUR</option>
-                        <option value="USD">USD</option>
-                      </select>
+                      <div className="currency-select-wrapper">
+                        <Select
+                          value={formData.currency}
+                          onChange={(val) =>
+                            setFormData({ ...formData, currency: val })
+                          }
+                          options={currencyOptions}
+                          placeholder="PLN"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Notatka - pełna szerokość */}
-                  <div className="form-group form-row-full">
-                    <label htmlFor="note">Notatka (opcjonalnie)</label>
+                  {/* Note (Full Width) */}
+                  <div className="form-field form-row-full">
+                    <label htmlFor="note">
+                      {t("foundationSupport.fields.note")}
+                    </label>
                     <input
                       type="text"
                       id="note"
                       name="note"
                       value={formData.note}
                       onChange={handleChange}
-                      placeholder="Np. pokrycie faktury FV/123/2025"
-                      className="form-input"
+                      placeholder={t(
+                        "foundationSupport.fields.notePlaceholder"
+                      )}
                     />
                   </div>
                 </div>
 
                 <div className="form-actions">
                   <Button type="submit" variant="success">
-                    Zapisz wpłatę
+                    {t("foundationSupport.save")}
                   </Button>
                 </div>
               </form>
             </div>
           </div>
 
-          {/* TABELA DANYCH */}
+          {/* --- FILTER BAR --- */}
+          <FilterBar
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSortChange={setSortBy}
+            onOrderToggle={() =>
+              setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
+            }
+            onClear={() => {
+              setFilterProjectId("");
+              setFilterCurrency("");
+              setSortBy("date");
+              setSortOrder("desc");
+            }}
+            sortOptions={[
+              { value: "date", label: t("filters.sortOptions.date") },
+              { value: "amount", label: t("filters.sortOptions.amount") },
+            ]}
+          >
+            {/* Project Filter */}
+            <div className="filter-item-project">
+              <SearchableSelect
+                options={[
+                  { value: "", label: t("filters.allProjects") },
+                  ...projectOptions,
+                ]}
+                value={filterProjectId ? parseInt(filterProjectId) : ""}
+                onChange={(val) => setFilterProjectId(val)}
+                placeholder={t("filters.filterByProject")}
+              />
+            </div>
+
+            {/* Currency Filter */}
+            <div className="filter-item-currency">
+              <Select
+                value={filterCurrency}
+                onChange={(e) => setFilterCurrency(e)}
+                options={[
+                  { value: "", label: t("filters.allCurrencies") },
+                  ...currencyOptions,
+                ]}
+                placeholder={t("filters.filterByCurrency")}
+              />
+            </div>
+          </FilterBar>
+
+          {/* --- DATA TABLE --- */}
           <div className="table-wrapper">
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Data</th>
-                  <th>Projekt</th>
-                  <th>Kwota</th>
-                  <th>Notatka</th>
-                  <th style={{ textAlign: "right" }}>Akcje</th>
+                  <th>{t("foundationSupport.table.date")}</th>
+                  <th>{t("foundationSupport.table.project")}</th>
+                  <th>{t("foundationSupport.table.amount")}</th>
+                  <th>{t("foundationSupport.table.note")}</th>
+                  <th style={{ textAlign: "right" }}>
+                    {t("foundationSupport.table.actions")}
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {donations.length === 0 ? (
+                {paginatedDonations.length === 0 ? (
                   <tr className="empty-state-row">
-                    <td colSpan="5">Brak zarejestrowanych wpłat własnych.</td>
+                    <td colSpan="5">{t("foundationSupport.emptyState")}</td>
                   </tr>
                 ) : (
-                  donations.map((d) => (
+                  paginatedDonations.map((d) => (
                     <tr key={d.id}>
                       <td>
                         <div className="cell-date">
@@ -322,11 +443,11 @@ const AdminInternalSupport = () => {
                         <span className="cell-highlight">
                           {d.project_title
                             ? getProjectTitle({ title: d.project_title })
-                            : "Projekt usunięty"}
+                            : t("foundationSupport.projectDeleted")}
                         </span>
                       </td>
                       <td className="col-amount">
-                        +{d.amount} {d.currency}
+                        {d.amount} {d.currency}
                       </td>
                       <td>
                         <div className="col-note" title={d.note}>
@@ -337,8 +458,8 @@ const AdminInternalSupport = () => {
                         <div className="cell-actions">
                           <button
                             className="action-btn-icon danger"
-                            onClick={() => handleDeleteClick(d.id)}
-                            title="Usuń wpłatę (cofnie saldo projektu)"
+                            onClick={() => setConfirmDeleteId(d.id)}
+                            title={t("actions.delete")}
                           >
                             <Trash2 size={18} />
                           </button>
@@ -350,15 +471,23 @@ const AdminInternalSupport = () => {
               </tbody>
             </table>
           </div>
+
+          {/* --- PAGINATION --- */}
+          <div className="pagination-wrapper">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
         </>
       )}
 
-      {/* MODAL POTWIERDZENIA */}
       <ConfirmDialog
         isOpen={!!confirmDeleteId}
-        message="Czy na pewno chcesz usunąć tę wpłatę? Kwota zostanie odjęta od zebranej sumy w zbiórce."
-        confirmLabel="Usuń"
-        cancelLabel="Anuluj"
+        message={t("foundationSupport.confirmDelete")}
+        confirmLabel={t("actions.delete")}
+        cancelLabel={t("common.cancel")}
         variant="danger"
         onConfirm={handleConfirmDelete}
         onCancel={() => setConfirmDeleteId(null)}

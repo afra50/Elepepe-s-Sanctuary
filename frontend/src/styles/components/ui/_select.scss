@@ -1,0 +1,164 @@
+.searchable-select {
+    position: relative;
+    width: 100%;
+    font-family: $font-body; // Używamy zmiennej czcionki
+
+    &__control {
+        // Stylizacja bazująca na Twoim .form-field select/input
+        border-radius: $radius-md; // Użycie zmiennej promienia
+        border: 1px solid $color-border;
+        padding: 0.7rem 0.85rem;
+        font-size: 0.95rem;
+        color: $color-secondary;
+        background-color: rgba($color-white, 0.96); // Użycie zmiennej white
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.15s ease;
+
+        &:hover {
+            border-color: $primary-600; // Kolor hover z palety
+        }
+
+        // Opcjonalnie: stan aktywny/otwarty
+        .searchable-select:focus-within & {
+            border-color: $color-primary;
+            box-shadow: 0 0 0 3px rgba($color-primary, 0.18);
+        }
+    }
+
+    .value-display {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &.placeholder {
+            color: rgba($color-secondary, 0.55); // Placeholder oparty na secondary
+        }
+    }
+
+    .icons {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: $secondary-muted; // Użycie muted secondary
+    }
+
+    .clear-icon {
+        display: flex;
+        align-items: center;
+        padding: 2px;
+        border-radius: 50%;
+        transition: background-color 0.15s ease, color 0.15s ease;
+
+        &:hover {
+            background-color: rgba($color-secondary, 0.1);
+            color: $color-error; // Użycie koloru błędu (czerwonego)
+        }
+    }
+
+    /* DROPDOWN */
+    &__dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        margin-top: 0.3rem;
+        background: $color-white;
+        border: 1px solid $color-border;
+        border-radius: $radius-md;
+        box-shadow: $shadow-md; // Użycie Twojego cienia
+        z-index: 50;
+        overflow: hidden;
+    }
+
+    .search-box {
+        padding: 0.5rem;
+        border-bottom: 1px solid rgba($color-border, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: rgba($color-background, 0.3); // Lekki odcień tła strony
+
+        input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            outline: none;
+            font-family: $font-body;
+            font-size: 0.9rem;
+            padding: 0;
+            color: $color-secondary;
+
+            &::placeholder {
+                color: rgba($color-secondary, 0.5);
+            }
+        }
+
+        .search-icon {
+            color: $secondary-muted;
+        }
+    }
+
+    .options-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 200px;
+        overflow-y: auto;
+
+        // Stylizacja paska przewijania (opcjonalnie, pasująca do designu)
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba($color-secondary, 0.2);
+            border-radius: 10px;
+        }
+    }
+
+    .option-item {
+        padding: 0.6rem 0.85rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: $color-secondary;
+        transition: background-color 0.1s ease, color 0.1s ease;
+
+        &:hover {
+            background-color: rgba($color-primary, 0.08); // Bardzo jasny primary
+            color: $primary-600;
+        }
+
+        &.selected {
+            background-color: rgba($color-primary, 0.12); // Wyraźniejszy primary
+            font-weight: 700;
+            color: $color-primary;
+        }
+    }
+
+    .no-results {
+        padding: 0.8rem;
+        text-align: center;
+        color: $secondary-muted;
+        font-size: 0.85rem;
+    }
+
+    // Stan disabled (opcjonalnie, jeśli używasz)
+    &.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+
+        .searchable-select__control {
+            background-color: rgba($color-secondary, 0.05);
+        }
+    }
+}

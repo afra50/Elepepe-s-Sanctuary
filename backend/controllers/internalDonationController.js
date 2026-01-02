@@ -1,6 +1,9 @@
 // backend/controllers/internalDonationController.js
-const db = require("../config/db"); // Twoja konfiguracja połączenia z bazą
+const db = require("../config/db");
 const internalDonationModel = require("../models/internalDonationModel");
+const projectModel = require("../models/projectModel");
+const { convertCurrency } = require("../utils/currencyService");
+const Joi = require("joi"); // <--- Import Joi
 
 // GET /internal-donations
 const getInternalDonations = async (req, res) => {
@@ -11,79 +14,142 @@ const getInternalDonations = async (req, res) => {
     console.error(error);
     res
       .status(500)
-      .json({ message: "Błąd serwera podczas pobierania wpłat własnych." });
+      .json({ message: "Server error while fetching internal donations." });
   }
 };
 
 // POST /internal-donations
 const addInternalDonation = async (req, res) => {
   try {
-    const { project_id, amount, currency, donation_date, note } = req.body;
+    // 1. Definicja Schematu Walidacji
+    const schema = Joi.object({
+      project_id: Joi.number().integer().required().messages({
+        "any.required": "Project is required.",
+        "number.base": "Project ID must be a number.",
+      }),
+      amount: Joi.number()
+        .positive()
+        .precision(2)
+        .max(99999999.99)
+        .required()
+        .messages({
+          "number.base": "Amount must be a number.",
+          "number.positive": "Amount must be a positive number.",
+          "number.max": "Amount is too large (max 99,999,999.99).",
+          "any.required": "Amount is required.",
+        }),
+      currency: Joi.string().length(3).uppercase().default("PLN"),
+      donation_date: Joi.date().iso().required().messages({
+        "any.required": "Date is required.",
+      }),
+      note: Joi.string().max(1000).allow("", null).messages({
+        "string.max": "Note is too long (max 1000 characters).",
+      }),
+    });
 
-    if (!project_id || !amount) {
-      return res.status(400).json({ message: "Projekt i kwota są wymagane." });
+    // 2. Walidacja danych
+    // 'value' zawiera dane po konwersji (np. string "100" zamieni na liczbę 100)
+    const { error, value } = schema.validate(req.body);
+
+    if (error) {
+      // Zwracamy pierwszy napotkany błąd walidacji
+      return res.status(400).json({ message: error.details[0].message });
     }
 
-    // 1. Dodaj wpłatę do tabeli internal_donations
+    // Od teraz używamy 'value' zamiast 'req.body', bo 'value' jest bezpieczne i sformatowane
+    const { project_id, amount, currency, donation_date, note } = value;
+
+    // --- LOGIKA BIZNESOWA ---
+
+    const project = await projectModel.getProjectById(db, project_id);
+    if (!project) {
+      return res.status(404).json({ message: "Project not found." });
+    }
+
+    const projectCurrency = project.currency;
+    // Joi już ustawiło default na 'PLN' jeśli currency nie podano, ale dla pewności:
+    const donationCurrency = currency || "PLN";
+
+    let finalAmountForProject = amount;
+
+    if (donationCurrency !== projectCurrency) {
+      finalAmountForProject = await convertCurrency(
+        amount,
+        donationCurrency,
+        projectCurrency
+      );
+    }
+
     const newId = await internalDonationModel.createInternalDonation(db, {
       project_id,
       amount,
-      currency,
+      currency: donationCurrency,
+      convertedAmount: finalAmountForProject,
       donation_date,
       note,
     });
 
-    // 2. Zaktualizuj amount_collected w tabeli projects (dodajemy kwotę)
-    await internalDonationModel.updateProjectFunds(db, project_id, amount);
+    await internalDonationModel.updateProjectFunds(
+      db,
+      project_id,
+      finalAmountForProject
+    );
 
     res.status(201).json({
       id: newId,
-      message: "Wpłata dodana i saldo projektu zaktualizowane.",
+      message: `Donation added. Converted ${amount} ${donationCurrency} to ${parseFloat(
+        finalAmountForProject
+      ).toFixed(2)} ${projectCurrency}.`,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Błąd serwera podczas dodawania wpłaty." });
+    res.status(500).json({
+      message: error.message || "Server error while adding donation.",
+    });
   }
 };
 
 // DELETE /internal-donations/:id
 const deleteInternalDonation = async (req, res) => {
+  // ... (bez zmian)
   try {
     const { id } = req.params;
-
-    // 1. Pobierz dane wpłaty, żeby wiedzieć jaką kwotę i któremu projektowi odjąć
     const donation = await internalDonationModel.getInternalDonationById(
       db,
       id
     );
 
     if (!donation) {
-      return res.status(404).json({ message: "Wpłata nie znaleziona." });
+      return res.status(404).json({ message: "Donation not found." });
     }
 
-    // 2. Usuń wpłatę
     const isDeleted = await internalDonationModel.deleteInternalDonation(
       db,
       id
     );
 
     if (isDeleted) {
-      // 3. Odejmij kwotę od salda projektu (przekazujemy kwotę z minusem)
-      // Uwaga: Parsujemy na float, żeby upewnić się, że to liczba
-      const amountToSubtract = -Math.abs(parseFloat(donation.amount));
+      const valueToSubtract = donation.converted_amount
+        ? parseFloat(donation.converted_amount)
+        : parseFloat(donation.amount);
+
+      const amountToSubtract = -Math.abs(valueToSubtract);
+
       await internalDonationModel.updateProjectFunds(
         db,
         donation.project_id,
         amountToSubtract
       );
 
-      res.json({ message: "Wpłata usunięta, saldo projektu skorygowane." });
+      res.json({
+        message: "Donation deleted, project funds adjusted correctly.",
+      });
     } else {
-      res.status(400).json({ message: "Nie udało się usunąć wpłaty." });
+      res.status(400).json({ message: "Failed to delete donation." });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Błąd serwera podczas usuwania wpłaty." });
+    res.status(500).json({ message: "Server error while deleting donation." });
   }
 };
 

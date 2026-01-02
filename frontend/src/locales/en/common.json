@@ -30,5 +30,12 @@
       "name": "Name",
       "popularity": "Popularity"
     }
+  },
+
+  "select": {
+    "placeholder": "Select...",
+    "searchPlaceholder": "Search...",
+    "noResults": "No results found",
+    "clear": "Clear selection"
   }
 }

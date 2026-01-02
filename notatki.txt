@@ -14,12 +14,7 @@ KONTAKT
 - alert error jak backend nawali?
 
 ADMIN
-- czy robic liste darowizn?
-1. Wpłaty własne
-    - tlumaczenia + tlumaczenia backend
-    - odpowiedzi z backendu po angielsku
-    - testy
-    - style + responsywnosc
+- ujednolicic filtry - albo wszedzie schowane na mobile albo widoczne, bo jest roznie
 
 BACKEND
 - Joi do walidacji requestów

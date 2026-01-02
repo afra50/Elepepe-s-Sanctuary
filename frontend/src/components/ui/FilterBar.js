@@ -1,56 +1,53 @@
+// ui/FilterBar.jsx
 import React from "react";
 import { ArrowUp, ArrowDown, Filter } from "lucide-react";
 import Button from "./Button";
-import { useTranslation } from "react-i18next"; // <--- 1. Import
+import Select from "./Select"; // <--- IMPORTUJEMY NOWY KOMPONENT
+import { useTranslation } from "react-i18next";
 
 const FilterBar = ({
   sortBy,
   sortOrder,
-  sortOptions = [],
+  sortOptions = [], // Tablica [{ value: 'date', label: 'Data' }, ...]
   onSortChange,
   onOrderToggle,
-  // clearLabel, // <--- Możesz to usunąć, jeśli będziemy brać z tłumaczeń wewnątrz
   onClear,
   children,
 }) => {
-  const { t } = useTranslation("common"); // <--- 2. Hook (namespace 'common')
+  const { t } = useTranslation("common");
 
   return (
     <div className="filter-bar">
-      {/* SEKCJA FILTRÓW */}
+      {/* SEKCJA FILTRÓW (LEWA) */}
       <div className="filters-area">
         <div className="filters-icon-wrapper">
           <Filter size={18} />
         </div>
+        {/* Tu renderowane są children (inne filtry). 
+            Jeśli w children też są <select>, musisz je podmienić w rodzicu (AdminInternalSupport). */}
         {children}
       </div>
 
-      {/* SEKCJA SORTOWANIA i CZYSZCZENIA */}
+      {/* SEKCJA SORTOWANIA (PRAWA) */}
       <div className="actions-area">
         {sortOptions.length > 0 && (
           <div className="sort-group">
-            {/* Tłumaczenie etykiety */}
             <span className="sort-label">{t("filters.label")}</span>
 
-            <select
-              value={sortBy}
-              onChange={(e) => onSortChange(e.target.value)}
-              className="sort-select"
-            >
-              {sortOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {/* Zakładam, że opt.label jest już przetłumaczone przez rodzica, 
-                      ALE jeśli przekazujesz tam tylko klucze (np. 'date'), 
-                      możesz tu zrobić: t(`filters.sortOptions.${opt.value}`) */}
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+            {/* PODMIANA: Zamiast <select> używamy <Select> */}
+            {/* Musimy nadać mu stałą szerokość lub klasę, żeby się nie rozjeżdżał */}
+            <div style={{ minWidth: "180px" }}>
+              <Select
+                value={sortBy}
+                onChange={(val) => onSortChange(val)} // Select zwraca wartość bezpośrednio
+                options={sortOptions}
+                placeholder={t("filters.label")} // Lub inny tekst
+              />
+            </div>
 
             <button
               className="sort-order-btn"
               onClick={onOrderToggle}
-              // Tłumaczenie tytułów (tooltipów)
               title={
                 sortOrder === "asc"
                   ? t("filters.ascending")
@@ -74,7 +71,6 @@ const FilterBar = ({
           onClick={onClear}
           className="clear-btn"
         >
-          {/* Tłumaczenie przycisku czyszczenia */}
           {t("filters.clear")}
         </Button>
       </div>
