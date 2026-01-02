@@ -16,6 +16,7 @@ import api from "../utils/api";
 import Loader from "../components/ui/Loader";
 import ErrorState from "../components/ui/ErrorState";
 import Button from "../components/ui/Button"; // Zakładam, że masz ten komponent
+import ProgressBar from "../components/ui/ProgressBar";
 
 function ProjectDetailsPage() {
   const { slug } = useParams();
@@ -56,6 +57,29 @@ function ProjectDetailsPage() {
       month: "long",
       day: "numeric",
     });
+  };
+
+  const getSpeciesLabel = (animal, lang) => {
+    if (!animal) return "";
+
+    if (animal.species === "other") {
+      return animal.speciesOther?.[lang] || animal.speciesOther?.pl || "";
+    }
+
+    const map = {
+      rat: {
+        pl: "Szczur",
+        en: "Rat",
+        es: "Rata",
+      },
+      guineaPig: {
+        pl: "Świnka morska",
+        en: "Guinea pig",
+        es: "Cobaya",
+      },
+    };
+
+    return map[animal.species]?.[lang] || map[animal.species]?.pl || "";
   };
 
   const handleDonate = () => {
@@ -108,7 +132,7 @@ function ProjectDetailsPage() {
                 </span>
               )}
               <span className="badge badge--category">
-                {project.animal.species === "rat" ? "Szczurek" : "Zwierzę"}
+                {getSpeciesLabel(project.animal, lang)}
               </span>
             </div>
 
@@ -216,9 +240,7 @@ function ProjectDetailsPage() {
             <h3>Aktualności ({project.updates.length})</h3>
             <div className="updates-timeline">
               {project.updates.length === 0 ? (
-                <p className="no-updates">
-                  Brak aktualności. Bądź pierwszą osobą, która wesprze!
-                </p>
+                <p className="no-updates">Brak aktualności.</p>
               ) : (
                 project.updates.map((u) => (
                   <article key={u.id} className="update-card">
@@ -247,12 +269,10 @@ function ProjectDetailsPage() {
                   z {project.finance.target} {project.finance.currency}
                 </span>
               </div>
-              <div className="progress-bar-bg">
-                <div
-                  className="progress-bar-fill"
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
+              <ProgressBar
+                current={project.finance.collected}
+                goal={project.finance.target}
+              />
               <div className="progress-info">
                 <span>
                   <strong>{progress}%</strong> celu

@@ -1,401 +1,407 @@
 .project-details-page {
-    position: relative;
-    background-color: #f9fafb; // Jasne tło całej strony
-    padding-bottom: 4rem;
-    font-family: $font-body; // Twoja czcionka
+  position: relative;
+  background-color: #f9fafb; // Jasne tło całej strony
+  padding-bottom: 4rem;
+  font-family: $font-body; // Twoja czcionka
 
-    // Rozmyte tło pod headerem (efekt estetyczny)
-    .project-bg-blur {
-        position: absolute;
-        top: 0;
-        left: 0;
+  // Rozmyte tło pod headerem (efekt estetyczny)
+  .project-bg-blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+    filter: blur(20px) opacity(0.3);
+    z-index: 0;
+    mask-image: linear-gradient(to bottom, black, transparent);
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+
+    // Desktop: 2 kolumny (lewa szersza)
+    @media (min-width: 1024px) {
+      grid-template-columns: 1fr 380px;
+      gap: 3rem;
+    }
+  }
+
+  // --- LEWA KOLUMNA ---
+  .left-column {
+    background: transparent;
+  }
+
+  .project-header {
+    margin-bottom: 2rem;
+
+    .badges {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+
+      .badge {
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        &--urgent {
+          background-color: $color-error;
+          color: $color-white;
+        }
+
+        &--category {
+          background-color: lighten($color-accent, 10%);
+          color: $accent-darken;
+        }
+      }
+    }
+
+    .project-title {
+      font-family: $font-heading;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: $color-secondary;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .project-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      color: $secondary-muted;
+      font-size: 0.95rem;
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+    }
+  }
+
+  .project-gallery {
+    margin-bottom: 3rem;
+
+    .cover-image-wrapper {
+      width: 100%;
+      border-radius: $radius-md;
+      overflow: hidden;
+      box-shadow: $shadow-md;
+      margin-bottom: 1rem;
+
+      .cover-image {
         width: 100%;
-        height: 300px;
+        height: auto;
+        max-height: 500px;
+        object-fit: cover;
+        display: block;
+      }
+    }
+
+    .gallery-thumbs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+
+      .thumb {
+        aspect-ratio: 1/1;
         background-size: cover;
         background-position: center;
-        filter: blur(20px) opacity(0.3);
-        z-index: 0;
-        mask-image: linear-gradient(to bottom, black, transparent);
+        border-radius: 8px;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+
+        &:hover {
+          opacity: 1;
+        }
+
+        &.more-count {
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-weight: bold;
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+
+  .project-section {
+    background: $color-white;
+    padding: 2rem;
+    border-radius: $radius-md;
+    box-shadow: $shadow-sm;
+    border: 1px solid rgba($color-border, 0.5);
+    margin-bottom: 2rem;
+
+    h2,
+    h3 {
+      font-family: $font-heading;
+      color: $color-secondary;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #f3f4f6;
+      padding-bottom: 0.5rem;
     }
 
-    .container {
+    .description-content {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: $brown-700;
+
+      p {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  .animal-info-section {
+    .animal-card {
+      background: #f9fafb;
+      padding: 1rem;
+      border-radius: 8px;
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e5e7eb;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .label {
+          color: $secondary-muted;
+        }
+
+        .value {
+          font-weight: 700;
+          color: $color-secondary;
+        }
+      }
+    }
+  }
+
+  .documents-section {
+    .docs-list {
+      list-style: none;
+      padding: 0;
+
+      li {
+        margin-bottom: 0.5rem;
+      }
+
+      .doc-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: $color-primary;
+        font-weight: 600;
+        padding: 0.5rem;
+        border-radius: 6px;
+        transition: background 0.2s;
+
+        &:hover {
+          background-color: rgba($color-primary, 0.1);
+        }
+      }
+    }
+  }
+
+  .updates-section {
+    .updates-timeline {
+      position: relative;
+      border-left: 2px solid #e5e7eb;
+      padding-left: 1.5rem;
+      margin-left: 0.5rem;
+
+      .no-updates {
+        color: $color-secondary;
+      }
+
+      .update-card {
+        margin-bottom: 2rem;
         position: relative;
-        z-index: 1;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem 1rem;
-    }
 
-    .project-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 2rem;
-
-        // Desktop: 2 kolumny (lewa szersza)
-        @media (min-width: 1024px) {
-            grid-template-columns: 1fr 380px;
-            gap: 3rem;
+        &::before {
+          content: "";
+          position: absolute;
+          left: -1.9rem;
+          top: 0;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: $color-primary;
+          border: 2px solid white;
         }
+
+        .update-date {
+          font-size: 0.85rem;
+          color: $secondary-muted;
+          margin-bottom: 0.25rem;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .update-title {
+          font-size: 1.1rem;
+          margin-bottom: 0.5rem;
+          color: $color-secondary;
+        }
+
+        .update-content {
+          font-size: 0.95rem;
+          color: #4b5563;
+          background: #f9fafb;
+          padding: 1rem;
+          border-radius: 8px;
+        }
+      }
+    }
+  }
+
+  // --- PRAWA KOLUMNA: SIDEBAR ---
+  .right-column {
+    .sticky-card {
+      position: sticky;
+      top: 2rem; // Przylepianie podczas scrollowania
+      background: $color-white;
+      padding: 2rem;
+      border-radius: $radius-md;
+      box-shadow: $shadow-md; // Mocniejszy cień, żeby "odstawało"
+      border: 1px solid rgba($color-border, 0.5);
     }
 
-    // --- LEWA KOLUMNA ---
-    .left-column {
-        background: transparent;
-    }
-
-    .project-header {
+    .donation-card {
+      .progress-container {
         margin-bottom: 2rem;
 
-        .badges {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
+        .progress-labels {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          margin-bottom: 0.5rem;
 
-            .badge {
-                padding: 4px 10px;
-                border-radius: 4px;
-                font-size: 0.75rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                display: flex;
-                align-items: center;
-                gap: 4px;
-
-                &--urgent {
-                    background-color: #fee2e2;
-                    color: #dc2626;
-                }
-
-                &--category {
-                    background-color: #e0e7ff;
-                    color: #4338ca;
-                }
-            }
-        }
-
-        .project-title {
-            font-family: $font-heading;
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
+          .collected {
+            font-size: 1.5rem;
             font-weight: 800;
-            color: $color-secondary;
-            margin-bottom: 1rem;
-            line-height: 1.2;
+            color: $color-primary;
+          }
+
+          .target {
+            font-size: 0.9rem;
+            color: $secondary-muted;
+          }
         }
 
-        .project-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            color: #6b7280;
-            font-size: 0.95rem;
+        .progress {
+          margin-top: 0.75rem;
 
-            .meta-item {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-            }
-        }
-    }
+          &__track {
+            background-color: $primary-light;
+          }
 
-    .project-gallery {
-        margin-bottom: 3rem;
+          &__fill {
+            background-color: $color-primary;
+          }
 
-        .cover-image-wrapper {
-            width: 100%;
-            border-radius: $radius-md;
-            overflow: hidden;
-            box-shadow: $shadow-md;
-            margin-bottom: 1rem;
-
-            .cover-image {
-                width: 100%;
-                height: auto;
-                max-height: 500px;
-                object-fit: cover;
-                display: block;
-            }
+          &__label {
+            display: none;
+          }
         }
 
-        .gallery-thumbs {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 0.5rem;
-
-            .thumb {
-                aspect-ratio: 1/1;
-                background-size: cover;
-                background-position: center;
-                border-radius: 8px;
-                cursor: pointer;
-                opacity: 0.8;
-                transition: opacity 0.2s;
-
-                &:hover {
-                    opacity: 1;
-                }
-
-                &.more-count {
-                    background-color: rgba(0, 0, 0, 0.5);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-weight: bold;
-                    font-size: 1.2rem;
-                }
-            }
+        .progress-info {
+          margin-top: 0.5rem;
+          font-size: 0.85rem;
+          color: $secondary-muted;
+          text-align: right;
         }
-    }
+      }
 
-    .project-section {
-        background: $color-white;
-        padding: 2rem;
-        border-radius: $radius-md;
-        box-shadow: $shadow-sm;
-        border: 1px solid rgba($color-border, 0.5);
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
         margin-bottom: 2rem;
 
-        h2,
-        h3 {
-            font-family: $font-heading;
-            color: $color-secondary;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #f3f4f6;
-            padding-bottom: 0.5rem;
+        .btn-donate-full {
+          width: 100%;
+          justify-content: center;
+          font-weight: 800;
+          padding: 1rem;
+          font-size: 1.1rem;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+          &:hover {
+            transform: translateY(-2px);
+          }
         }
 
-        .description-content {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: #374151;
-
-            p {
-                margin-bottom: 1rem;
-            }
+        .btn-share-full {
+          width: 100%;
+          justify-content: center;
         }
+      }
+
+      .organizer-mini {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 1rem;
+        text-align: center;
+
+        small {
+          color: #9ca3af;
+        }
+
+        .organizer-name {
+          font-weight: 700;
+          color: $color-secondary;
+          margin-top: 2px;
+        }
+      }
     }
-
-    .animal-info-section {
-        .animal-card {
-            background: #f9fafb;
-            padding: 1rem;
-            border-radius: 8px;
-
-            .info-row {
-                display: flex;
-                justify-content: space-between;
-                padding: 0.75rem 0;
-                border-bottom: 1px solid #e5e7eb;
-
-                &:last-child {
-                    border-bottom: none;
-                }
-
-                .label {
-                    color: #6b7280;
-                }
-
-                .value {
-                    font-weight: 700;
-                    color: $color-secondary;
-                }
-            }
-        }
-    }
-
-    .documents-section {
-        .docs-list {
-            list-style: none;
-            padding: 0;
-
-            li {
-                margin-bottom: 0.5rem;
-            }
-
-            .doc-link {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                text-decoration: none;
-                color: $color-primary;
-                font-weight: 600;
-                padding: 0.5rem;
-                border-radius: 6px;
-                transition: background 0.2s;
-
-                &:hover {
-                    background-color: rgba($color-primary, 0.1);
-                }
-            }
-        }
-    }
-
-    .updates-section {
-        .updates-timeline {
-            position: relative;
-            border-left: 2px solid #e5e7eb;
-            padding-left: 1.5rem;
-            margin-left: 0.5rem;
-
-            .update-card {
-                margin-bottom: 2rem;
-                position: relative;
-
-                &::before {
-                    content: '';
-                    position: absolute;
-                    left: -1.9rem;
-                    top: 0;
-                    width: 12px;
-                    height: 12px;
-                    border-radius: 50%;
-                    background: $color-primary;
-                    border: 2px solid white;
-                }
-
-                .update-date {
-                    font-size: 0.85rem;
-                    color: #6b7280;
-                    margin-bottom: 0.25rem;
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                }
-
-                .update-title {
-                    font-size: 1.1rem;
-                    margin-bottom: 0.5rem;
-                    color: $color-secondary;
-                }
-
-                .update-content {
-                    font-size: 0.95rem;
-                    color: #4b5563;
-                    background: #f9fafb;
-                    padding: 1rem;
-                    border-radius: 8px;
-                }
-            }
-        }
-    }
-
-    // --- PRAWA KOLUMNA: SIDEBAR ---
-    .right-column {
-        .sticky-card {
-            position: sticky;
-            top: 2rem; // Przylepianie podczas scrollowania
-            background: $color-white;
-            padding: 2rem;
-            border-radius: $radius-md;
-            box-shadow: $shadow-md; // Mocniejszy cień, żeby "odstawało"
-            border: 1px solid rgba($color-border, 0.5);
-        }
-
-        .donation-card {
-            .progress-container {
-                margin-bottom: 2rem;
-
-                .progress-labels {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: baseline;
-                    margin-bottom: 0.5rem;
-
-                    .collected {
-                        font-size: 1.5rem;
-                        font-weight: 800;
-                        color: $color-primary;
-                    }
-
-                    .target {
-                        font-size: 0.9rem;
-                        color: #6b7280;
-                    }
-                }
-
-                .progress-bar-bg {
-                    width: 100%;
-                    height: 12px;
-                    background-color: #e5e7eb;
-                    border-radius: 6px;
-                    overflow: hidden;
-                }
-
-                .progress-bar-fill {
-                    height: 100%;
-                    background-color: $color-primary;
-                    transition: width 0.5s ease-out;
-                }
-
-                .progress-info {
-                    margin-top: 0.5rem;
-                    font-size: 0.85rem;
-                    color: #6b7280;
-                    text-align: right;
-                }
-            }
-
-            .actions {
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-                margin-bottom: 2rem;
-
-                .btn-donate-full {
-                    width: 100%;
-                    justify-content: center;
-                    font-weight: 800;
-                    padding: 1rem;
-                    font-size: 1.1rem;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-                    &:hover {
-                        transform: translateY(-2px);
-                    }
-                }
-
-                .btn-share-full {
-                    width: 100%;
-                    justify-content: center;
-                }
-            }
-
-            .organizer-mini {
-                border-top: 1px solid #e5e7eb;
-                padding-top: 1rem;
-                text-align: center;
-
-                small {
-                    color: #9ca3af;
-                }
-
-                .organizer-name {
-                    font-weight: 700;
-                    color: $color-secondary;
-                    margin-top: 2px;
-                }
-            }
-        }
-    }
+  }
 }
 
 // Responsywność dla mobile
 @media (max-width: 768px) {
-    .project-details-page {
-        .project-header {
-            text-align: center;
+  .project-details-page {
+    .project-header {
+      text-align: center;
 
-            .badges {
-                justify-content: center;
-            }
+      .badges {
+        justify-content: center;
+      }
 
-            .project-meta {
-                justify-content: center;
-            }
-        }
-
-        // Na mobile sidebar ląduje na dole, ale często chcemy "Donate" na górze
-        // Możesz użyć order: -1 w flexie, jeśli zmienisz grid na flex
-        // Tutaj zostawiam klasycznie: najpierw treść, potem wpłata na dole (chyba że dasz sticky button na dole ekranu)
+      .project-meta {
+        justify-content: center;
+      }
     }
+
+    // Na mobile sidebar ląduje na dole, ale często chcemy "Donate" na górze
+    // Możesz użyć order: -1 w flexie, jeśli zmienisz grid na flex
+    // Tutaj zostawiam klasycznie: najpierw treść, potem wpłata na dole (chyba że dasz sticky button na dole ekranu)
+  }
 }
