@@ -32,7 +32,7 @@ const DateInput = forwardRef(
   }
 );
 
-function DatePickerField({ id, name, value, onChange, placeholder }) {
+function DatePickerField({ id, name, value, onChange, placeholder, minDate }) {
   const { i18n } = useTranslation();
 
   const selectedDate = value ? new Date(value) : null;
@@ -44,7 +44,11 @@ function DatePickerField({ id, name, value, onChange, placeholder }) {
   const dateFormat = baseLang === "en" ? "dd/MM/yyyy" : "dd.MM.yyyy";
 
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // żeby nie było problemów z godziną
+  today.setHours(0, 0, 0, 0);
+
+  // LOGIKA: Jeśli przekazano minDate (nawet null), użyj go.
+  // Jeśli nie (undefined), użyj 'today'.
+  const actualMinDate = minDate !== undefined ? minDate : today;
 
   return (
     <div className="date-input">
@@ -59,7 +63,8 @@ function DatePickerField({ id, name, value, onChange, placeholder }) {
         customInput={<DateInput id={id} name={name} />}
         calendarClassName="date-input__popup"
         popperClassName="date-input__popper"
-        minDate={today} // ⬅️ BLOKADA DAT PRZESZŁYCH
+        // 👇 TUTAJ ZMIANA:
+        minDate={actualMinDate}
       />
     </div>
   );

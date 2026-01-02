@@ -8,6 +8,7 @@ import Loader from "../../components/ui/Loader";
 import SearchBar from "../ui/SearchBar";
 import FilterBar from "../ui/FilterBar";
 import ErrorState from "../ui/ErrorState";
+import Select from "../ui/Select";
 
 import ProjectCard from "../../components/admin/ProjectCard";
 import api from "../../utils/api";
@@ -18,7 +19,7 @@ const initialFilters = {
   sortOrder: "desc",
   species: "all",
   applicantType: "all",
-  isUrgent: "all", // Filtr Pilne
+  isUrgent: "all",
 };
 
 const AdminProjects = () => {
@@ -35,7 +36,7 @@ const AdminProjects = () => {
   const [filters, setFilters] = useState(initialFilters);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
 
-  // --- POBIERANIE DANYCH Z API ---
+  // --- POBIERANIE DANYCH ---
   const fetchProjects = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -64,13 +65,12 @@ const AdminProjects = () => {
   const processedProjects = useMemo(() => {
     let result = [...projects];
 
-    // 1. Zakładki (Status)
+    // 1. Zakładki
     if (activeTab !== "all") {
       result = result.filter((p) => p.status === activeTab);
     }
 
     // 2. Filtry
-    // A. Szukajka
     if (filters.search) {
       const q = filters.search.toLowerCase();
       result = result.filter((p) => {
@@ -79,52 +79,39 @@ const AdminProjects = () => {
           titleObj =
             typeof p.title === "string" ? JSON.parse(p.title) : p.title;
         } catch (e) {}
-
         const titlePL = titleObj?.pl?.toLowerCase() || "";
         return titlePL.includes(q) || p.animalName.toLowerCase().includes(q);
       });
     }
 
-    // B. Gatunek
     if (filters.species !== "all") {
       result = result.filter((p) => p.species === filters.species);
     }
 
-    // C. Typ wnioskodawcy
     if (filters.applicantType !== "all") {
       result = result.filter((p) => p.applicantType === filters.applicantType);
     }
 
-    // D. Pilne
     if (filters.isUrgent !== "all") {
       const shouldBeUrgent = filters.isUrgent === "true";
       result = result.filter((p) => Boolean(p.isUrgent) === shouldBeUrgent);
     }
 
-    // 3. Sortowanie - ZMODYFIKOWANE
+    // 3. Sortowanie
     result.sort((a, b) => {
       const field = filters.sortBy;
       let valA, valB;
 
-      // --- NOWOŚĆ: Sortowanie po Progresie ---
       if (field === "progress") {
-        // Obliczamy % (zabezpieczenie przed dzieleniem przez 0)
-        // Jeśli cel to 0, traktujemy progres jako 0
         valA = a.amountTarget > 0 ? a.amountCollected / a.amountTarget : 0;
         valB = b.amountTarget > 0 ? b.amountCollected / b.amountTarget : 0;
-      }
-      // Sortowanie po Kwotach
-      else if (field === "amountTarget" || field === "amountCollected") {
+      } else if (field === "amountTarget" || field === "amountCollected") {
         valA = Number(a[field]);
         valB = Number(b[field]);
-      }
-      // Sortowanie po Datach
-      else if (field === "deadline" || field === "createdAt") {
+      } else if (field === "deadline" || field === "createdAt") {
         valA = new Date(a[field]).getTime();
         valB = new Date(b[field]).getTime();
-      }
-      // Fallback (np. stringi)
-      else {
+      } else {
         valA = a[field];
         valB = b[field];
       }
@@ -141,30 +128,45 @@ const AdminProjects = () => {
     return result;
   }, [projects, activeTab, filters]);
 
+  // --- OPCJE SELECTÓW (Definicje) ---
   const sortOptions = [
+    { value: "createdAt", label: t("filters.sortOptions.date") },
+    { value: "deadline", label: t("filters.sortOptions.deadline") },
+    { value: "amountTarget", label: t("projects.fields.amountTarget") },
+    { value: "amountCollected", label: t("projects.fields.amountCollected") },
+    { value: "progress", label: t("filters.sortOptions.progress") },
+  ];
+
+  const speciesOptions = [
+    { value: "all", label: t("filters.allSpecies") },
+    { value: "rat", label: t("form.fields.species.options.rat") },
+    { value: "guineaPig", label: t("form.fields.species.options.guineaPig") },
+    { value: "other", label: t("form.fields.species.options.other") },
+  ];
+
+  const applicantTypeOptions = [
+    { value: "all", label: t("filters.allTypes") },
+    { value: "person", label: t("form.fields.applicantType.options.person") },
     {
-      value: "createdAt",
-      label: t("filters.sortOptions.date"),
+      value: "organization",
+      label: t("form.fields.applicantType.options.organization"),
     },
     {
-      value: "deadline",
-      label: t("filters.sortOptions.deadline"),
-    },
-    {
-      value: "amountTarget",
-      label: t("projects.fields.amountTarget"),
-    },
-    {
-      value: "amountCollected",
-      label: t("projects.fields.amountCollected"),
-    },
-    {
-      value: "progress",
-      label: t("filters.sortOptions.progress"),
+      value: "vetClinic",
+      label: t("form.fields.applicantType.options.vetClinic"),
     },
   ];
 
-  // Handler kliknięcia w kartę -> Przekierowanie do edycji/szczegółów
+  const urgencyOptions = [
+    {
+      value: "all",
+      label: t("filters.allPriorities") || "Wszystkie priorytety",
+    },
+    { value: "true", label: t("filters.importantPriority") || "Pilne" },
+    { value: "false", label: t("filters.normalPriority") || "Zwykłe" },
+  ];
+
+  // Handler kliknięcia
   const handleProjectClick = (projectId) => {
     navigate(`/admin/projects/${projectId}`);
   };
@@ -216,52 +218,37 @@ const AdminProjects = () => {
           onClear={() => setFilters(initialFilters)}
           clearLabel={t("filters.clear")}
         >
-          <select
-            value={filters.species}
-            onChange={(e) => handleFilterChange("species", e.target.value)}
-          >
-            <option value="all">{t("filters.allSpecies")}</option>
-            <option value="rat">{t("form.fields.species.options.rat")}</option>
-            <option value="guineaPig">
-              {t("form.fields.species.options.guineaPig")}
-            </option>
-            <option value="other">
-              {t("form.fields.species.options.other")}
-            </option>
-          </select>
+          {/* --- ZAMIANA NATYWNYCH SELECTÓW NA NOWY KOMPONENT --- */}
 
-          <select
-            value={filters.applicantType}
-            onChange={(e) =>
-              handleFilterChange("applicantType", e.target.value)
-            }
-          >
-            <option value="all">{t("filters.allTypes")}</option>
-            <option value="person">
-              {t("form.fields.applicantType.options.person")}
-            </option>
-            <option value="organization">
-              {t("form.fields.applicantType.options.organization")}
-            </option>
-            <option value="vetClinic">
-              {t("form.fields.applicantType.options.vetClinic")}
-            </option>
-          </select>
+          {/* Gatunek */}
+          <div style={{ minWidth: "180px" }}>
+            <Select
+              value={filters.species}
+              onChange={(val) => handleFilterChange("species", val)}
+              options={speciesOptions}
+              placeholder={t("filters.allSpecies")}
+            />
+          </div>
 
-          <select
-            value={filters.isUrgent}
-            onChange={(e) => handleFilterChange("isUrgent", e.target.value)}
-          >
-            <option value="all">
-              {t("filters.allPriorities") || "Wszystkie priorytety"}
-            </option>
-            <option value="true">
-              {t("filters.importantPriority") || "Pilne"}
-            </option>
-            <option value="false">
-              {t("filters.normalPriority") || "Zwykłe"}
-            </option>
-          </select>
+          {/* Typ wnioskodawcy */}
+          <div style={{ minWidth: "180px" }}>
+            <Select
+              value={filters.applicantType}
+              onChange={(val) => handleFilterChange("applicantType", val)}
+              options={applicantTypeOptions}
+              placeholder={t("filters.allTypes")}
+            />
+          </div>
+
+          {/* Priorytet */}
+          <div style={{ minWidth: "180px" }}>
+            <Select
+              value={filters.isUrgent}
+              onChange={(val) => handleFilterChange("isUrgent", val)}
+              options={urgencyOptions}
+              placeholder={t("filters.allPriorities")}
+            />
+          </div>
         </FilterBar>
       </div>
 

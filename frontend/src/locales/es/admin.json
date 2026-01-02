@@ -167,6 +167,40 @@
       "viewOriginalRequest": "Ver solicitud original"
     }
   },
+  "foundationSupport": {
+    "title": "Donaciones internas",
+    "subtitle": "Gestiona los fondos depositados por la fundación para las recaudaciones.",
+    "add": "Añadir donación",
+    "cancelAdd": "Cancelar",
+    "newDonation": "Nueva donación",
+    "save": "Guardar donación",
+    "emptyState": "No hay donaciones internas registradas que cumplan con los criterios.",
+    "projectDeleted": "Proyecto eliminado",
+    "confirmDelete": "¿Estás seguro de que quieres eliminar esta donación? La cantidad se descontará del total recaudado.",
+    "fields": {
+      "project": "Proyecto",
+      "projectPlaceholder": "Selecciona una recaudación...",
+      "date": "Fecha",
+      "amount": "Importe y Moneda",
+      "note": "Nota (opcional)",
+      "notePlaceholder": "P.ej. cobertura de factura FV/123/2025"
+    },
+    "table": {
+      "date": "Fecha",
+      "project": "Proyecto",
+      "amount": "Importe",
+      "note": "Nota",
+      "actions": "Acciones"
+    },
+    "alerts": {
+      "validationError": "Selecciona un proyecto e introduce un importe.",
+      "addSuccess": "Donación añadida con éxito.",
+      "addError": "Error al guardar la donación.",
+      "deleteSuccess": "Donación eliminada.",
+      "deleteError": "No se pudo eliminar la donación.",
+      "fetchError": "No se pudo obtener la lista de donaciones o proyectos."
+    }
+  },
   "partnerships": {
     "subtitle": "Gestionar los socios que apoyan Elepepe's Sanctuary: la información sobre ellos aparecerá en el sitio web.",
     "current": "Socios actuales",
@@ -377,7 +411,11 @@
       "deadline": "Fecha límite",
       "amount": "Importe",
       "progress": "Porcentaje Completo"
-    }
+    },
+    "allProjects": "Todos los proyectos",
+    "filterByProject": "Filtrar por proyecto...",
+    "allCurrencies": "Todas las monedas",
+    "filterByCurrency": "Moneda"
   },
   "languages": {
     "pl": "Polaco",

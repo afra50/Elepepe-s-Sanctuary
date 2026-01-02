@@ -6,14 +6,15 @@
 const createInternalDonation = async (connection, data) => {
   const sql = `
     INSERT INTO internal_donations (
-      project_id, amount, currency, donation_date, note
-    ) VALUES (?, ?, ?, ?, ?)
+      project_id, amount, currency, converted_amount, donation_date, note
+    ) VALUES (?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
     data.project_id,
-    data.amount,
-    data.currency || "PLN",
+    data.amount, // Oryginalna kwota (np. 100)
+    data.currency || "PLN", // Oryginalna waluta (np. PLN)
+    data.convertedAmount, // NOWE: Kwota przeliczona (np. 23.50 EUR)
     data.donation_date,
     data.note || null,
   ];

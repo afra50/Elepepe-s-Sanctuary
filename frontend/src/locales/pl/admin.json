@@ -167,6 +167,42 @@
       "viewOriginalRequest": "Zobacz oryginał"
     }
   },
+  "foundationSupport": {
+    "title": "Wpłaty własne",
+    "subtitle": "Zarządzaj środkami wpłacanymi przez fundację na zbiórki.",
+    "add": "Dodaj wpłatę",
+    "cancelAdd": "Anuluj dodawanie",
+    "newDonation": "Nowa wpłata",
+    "save": "Zapisz wpłatę",
+    "emptyState": "Brak zarejestrowanych wpłat własnych spełniających kryteria.",
+    "projectDeleted": "Projekt usunięty",
+    "confirmDelete": "Czy na pewno chcesz usunąć tę wpłatę? Kwota zostanie odjęta od zebranej sumy w zbiórce.",
+    "fields": {
+      "project": "Projekt",
+      "projectPlaceholder": "Wybierz zbiórkę...",
+      "date": "Data wpłaty",
+      "amount": "Kwota i Waluta",
+      "note": "Notatka (opcjonalnie)",
+      "notePlaceholder": "Np. pokrycie faktury FV/123/2025"
+    },
+    "table": {
+      "date": "Data",
+      "project": "Projekt",
+      "amount": "Kwota",
+      "note": "Notatka",
+      "actions": "Akcje"
+    },
+    "alerts": {
+      "validationError": "Wybierz projekt i podaj kwotę.",
+      "amountPositive": "Kwota musi być liczbą dodatnią.",
+      "noteTooLong": "Notatka jest za długa (maksymalnie 1000 znaków).",
+      "addSuccess": "Wpłata została dodana pomyślnie.",
+      "addError": "Błąd podczas zapisywania wpłaty.",
+      "deleteSuccess": "Wpłata została usunięta.",
+      "deleteError": "Nie udało się usunąć wpłaty.",
+      "fetchError": "Nie udało się pobrać listy wpłat lub projektów."
+    }
+  },
   "partnerships": {
     "subtitle": "Zarządzaj partnerami wspierającymi Elepepe’s Sanctuary – informacje o nich pojawią się na stronie.",
     "current": "Aktualni partnerzy",
@@ -378,7 +414,11 @@
       "deadline": "Termin",
       "amount": "Kwota",
       "progress": "Procent ukończenia"
-    }
+    },
+    "allProjects": "Wszystkie projekty",
+    "filterByProject": "Filtruj po projekcie...",
+    "allCurrencies": "Wszystkie waluty",
+    "filterByCurrency": "Waluta"
   },
   "languages": {
     "pl": "Polski",

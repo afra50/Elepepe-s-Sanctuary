@@ -167,6 +167,40 @@
       "viewOriginalRequest": "View original request"
     }
   },
+  "foundationSupport": {
+    "title": "Internal Donations",
+    "subtitle": "Manage funds deposited by the foundation for fundraisers.",
+    "add": "Add Donation",
+    "cancelAdd": "Cancel",
+    "newDonation": "New Donation",
+    "save": "Save Donation",
+    "emptyState": "No internal donations found matching the criteria.",
+    "projectDeleted": "Project deleted",
+    "confirmDelete": "Are you sure you want to delete this donation? The amount will be deducted from the raised total.",
+    "fields": {
+      "project": "Project",
+      "projectPlaceholder": "Select project...",
+      "date": "Date",
+      "amount": "Amount & Currency",
+      "note": "Note (optional)",
+      "notePlaceholder": "E.g. invoice coverage FV/123/2025"
+    },
+    "table": {
+      "date": "Date",
+      "project": "Project",
+      "amount": "Amount",
+      "note": "Note",
+      "actions": "Actions"
+    },
+    "alerts": {
+      "validationError": "Please select a project and enter an amount.",
+      "addSuccess": "Donation added successfully.",
+      "addError": "Error saving donation.",
+      "deleteSuccess": "Donation deleted.",
+      "deleteError": "Failed to delete donation.",
+      "fetchError": "Failed to fetch donations or projects."
+    }
+  },
   "partnerships": {
     "subtitle": "Manage partners supporting Elepepe’s Sanctuary – information about them will appear on the website.",
     "current": "Current partners",
@@ -377,7 +411,11 @@
       "deadline": "Deadline",
       "amount": "Amount",
       "progress": "Percentage Complete"
-    }
+    },
+    "allProjects": "All Projects",
+    "filterByProject": "Filter by project...",
+    "allCurrencies": "All Currencies",
+    "filterByCurrency": "Currency"
   },
   "languages": {
     "pl": "Polish",
