@@ -1,0 +1,30 @@
+{
+  "urgent": "URGENT",
+
+  "sections": {
+    "about": "About the fundraiser",
+    "animal": "Who are you helping?",
+    "documents": "Documents and invoices",
+
+    "updates": "News",
+    "noUpdates": "No news."
+  },
+
+  "animal": {
+    "name": "Name",
+    "species": "Species",
+    "age": "Age"
+  },
+
+  "actions": {
+    "donate": "Donate now",
+    "share": "Share"
+  },
+
+  "target": "target",
+
+  "error": {
+    "title": "Unable to load fundraiser",
+    "message": "Please try again in a moment."
+  }
+}

@@ -38,6 +38,9 @@ import esProjects from "./locales/es/projects.json";
 import plPartners from "./locales/pl/partnerships.json";
 import enPartners from "./locales/en/partnerships.json";
 import esPartners from "./locales/es/partnerships.json";
+import plProjectDetails from "./locales/pl/projectDetails.json";
+import enProjectDetails from "./locales/en/projectDetails.json";
+import esProjectDetails from "./locales/es/projectDetails.json";
 
 i18n
   // Wykrywa język użytkownika (z localStorage, przeglądarki itp.)
@@ -58,6 +61,7 @@ i18n
         common: enCommon,
         projects: enProjects,
         partnerships: enPartners,
+        projectDetails: enProjectDetails,
       },
       pl: {
         header: plHeader,
@@ -72,6 +76,7 @@ i18n
         common: plCommon,
         projects: plProjects,
         partnerships: plPartners,
+        projectDetails: plProjectDetails,
       },
       es: {
         header: esHeader,
@@ -86,6 +91,7 @@ i18n
         common: esCommon,
         projects: esProjects,
         partnerships: esPartners,
+        projectDetails: esProjectDetails,
       },
     },
     fallbackLng: "en", // Język zapasowy zostaje (używany, gdy detekcja zawiedzie)

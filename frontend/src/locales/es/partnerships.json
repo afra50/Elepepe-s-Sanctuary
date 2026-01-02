@@ -3,8 +3,15 @@
   "title": "Nuestros colaboradores",
   "intro": "Gracias a ti y al apoyo de nuestros colaboradores, podemos seguir ayudando a los animales necesitados. Estas son personas y organizaciones que comprenden la importancia de la empatía, la paciencia y la responsabilidad hacia los más vulnerables.",
   "empty": "No hay colaboradores para mostrar.",
+
   "error": {
     "title": "Error al cargar los socios",
     "message": "Hubo un problema al conectar con el servidor. Inténtalo de nuevo."
+  },
+
+  "invite": {
+    "title": "Hazte nuestro colaborador",
+    "text": "La Fundación Santuario Elepepe trabaja para salvar, tratar y mejorar la calidad de vida de los animales. Colaboramos con personas y organizaciones que, como nosotros, desean genuinamente ayudar y apoyar nuestros esfuerzos. Las colaboraciones pueden incluir el apoyo a campañas de ayuda y recaudación de fondos, la participación en iniciativas de adopción, actividades educativas y proyectos conjuntos relacionados con los animales. Valoramos las relaciones basadas en la confianza, la empatía y un objetivo común. Si deseas obtener más información sobre nuestro trabajo o ver oportunidades de colaboración, contáctanos a través del formulario. Juntos, podemos hacer más por quienes lo necesitan.",
+    "cta": "¡Contáctanos!"
   }
 }

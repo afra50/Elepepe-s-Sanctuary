@@ -20,12 +20,14 @@ import ProgressBar from "../components/ui/ProgressBar";
 
 function ProjectDetailsPage() {
   const { slug } = useParams();
-  const { i18n, t } = useTranslation(); // Zakładam namespace 'projects' lub 'common'
+  const { i18n, t } = useTranslation("projectDetails");
   const lang = i18n.language || "pl";
 
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const [activeImage, setActiveImage] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -42,6 +44,12 @@ function ProjectDetailsPage() {
       })
       .finally(() => setLoading(false));
   }, [slug]);
+
+  useEffect(() => {
+    if (project?.gallery?.cover) {
+      setActiveImage(project.gallery.cover);
+    }
+  }, [project]);
 
   // --- Helpery ---
   const calculateProgress = (collected, target) => {
@@ -92,8 +100,8 @@ function ProjectDetailsPage() {
   if (error) {
     return (
       <ErrorState
-        title="Nie udało się załadować zbiórki"
-        message="Spróbuj ponownie za chwilę."
+        title={t("error.title")}
+        message={t("error.message")}
         onRetry={() => window.location.reload()}
       />
     );
@@ -128,7 +136,7 @@ function ProjectDetailsPage() {
             <div className="badges">
               {project.isUrgent && (
                 <span className="badge badge--urgent">
-                  <AlertTriangle size={14} /> PILNE
+                  <AlertTriangle size={14} /> {t("urgent")}
                 </span>
               )}
               <span className="badge badge--category">
@@ -155,7 +163,8 @@ function ProjectDetailsPage() {
           <div className="project-gallery">
             <div className="cover-image-wrapper">
               <img
-                src={project.gallery.cover}
+                key={activeImage}
+                src={activeImage}
                 alt={title}
                 className="cover-image"
               />
@@ -165,9 +174,10 @@ function ProjectDetailsPage() {
                 {project.gallery.photos.slice(0, 4).map((url, idx) => (
                   <div
                     key={idx}
-                    className="thumb"
+                    className={`thumb ${activeImage === url ? "active" : ""}`}
                     style={{ backgroundImage: `url(${url})` }}
-                  ></div>
+                    onClick={() => setActiveImage(url)}
+                  />
                 ))}
                 {project.gallery.photos.length > 4 && (
                   <div className="thumb more-count">
@@ -180,7 +190,7 @@ function ProjectDetailsPage() {
 
           {/* Opis */}
           <section className="project-section description-section">
-            <h2>O zbiórce</h2>
+            <h2>{t("sections.about")}</h2>
             <div className="description-content">
               {/* Proste renderowanie nowych linii */}
               {description.split("\n").map((line, i) => (
@@ -191,21 +201,21 @@ function ProjectDetailsPage() {
 
           {/* Dane podopiecznego (Tabela/Grid) */}
           <section className="project-section animal-info-section">
-            <h3>Komu pomagasz?</h3>
+            <h3>{t("sections.animal")}</h3>
             <div className="animal-card">
               <div className="info-row">
-                <span className="label">Imię:</span>
+                <span className="label">{t("animal.name")}:</span>
                 <span className="value">{animalName}</span>
               </div>
               <div className="info-row">
-                <span className="label">Gatunek:</span>
+                <span className="label">{t("animal.species")}:</span>
                 <span className="value">
                   {project.animal.speciesOther?.[lang] ||
                     project.animal.species}
                 </span>
               </div>
               <div className="info-row">
-                <span className="label">Wiek:</span>
+                <span className="label">{t("animal.age")}:</span>
                 <span className="value">
                   {project.animal.age?.[lang] || "-"}
                 </span>
@@ -216,7 +226,7 @@ function ProjectDetailsPage() {
           {/* Dokumenty */}
           {project.gallery.documents.length > 0 && (
             <section className="project-section documents-section">
-              <h3>Dokumenty i Faktury</h3>
+              <h3>{t("sections.documents")}</h3>
               <ul className="docs-list">
                 {project.gallery.documents.map((doc, idx) => (
                   <li key={idx}>
@@ -237,10 +247,12 @@ function ProjectDetailsPage() {
 
           {/* Aktualności */}
           <section className="project-section updates-section">
-            <h3>Aktualności ({project.updates.length})</h3>
+            <h3>
+              {t("sections.updates")} ({project.updates.length})
+            </h3>
             <div className="updates-timeline">
               {project.updates.length === 0 ? (
-                <p className="no-updates">Brak aktualności.</p>
+                <p className="no-updates">{t("sections.noUpdates")}</p>
               ) : (
                 project.updates.map((u) => (
                   <article key={u.id} className="update-card">
@@ -249,6 +261,48 @@ function ProjectDetailsPage() {
                     </div>
                     <h4 className="update-title">{u.title?.[lang]}</h4>
                     <p className="update-content">{u.content?.[lang]}</p>
+
+                    {u.files?.length > 0 && (
+                      <>
+                        {/* ZDJĘCIA */}
+                        {u.files.some((f) => f.type === "photo") && (
+                          <div className="update-images">
+                            {u.files
+                              .filter((f) => f.type === "photo")
+                              .map((file, idx) => (
+                                <img
+                                  key={idx}
+                                  src={file.url}
+                                  alt=""
+                                  className="update-image"
+                                  loading="lazy"
+                                />
+                              ))}
+                          </div>
+                        )}
+
+                        {/* DOKUMENTY (PDF itp.) */}
+                        {u.files.some((f) => f.type !== "photo") && (
+                          <ul className="update-docs">
+                            {u.files
+                              .filter((f) => f.type !== "photo")
+                              .map((file, idx) => (
+                                <li key={idx}>
+                                  <a
+                                    href={file.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="doc-link"
+                                  >
+                                    <FileText size={18} />
+                                    <span>{file.name}</span>
+                                  </a>
+                                </li>
+                              ))}
+                          </ul>
+                        )}
+                      </>
+                    )}
                   </article>
                 ))
               )}
@@ -275,7 +329,7 @@ function ProjectDetailsPage() {
               />
               <div className="progress-info">
                 <span>
-                  <strong>{progress}%</strong> celu
+                  <strong>{progress}%</strong> {t("target")}
                 </span>
                 {/* Opcjonalnie: liczba wpłat jeśli API zwraca */}
               </div>
@@ -289,7 +343,7 @@ function ProjectDetailsPage() {
                 onClick={handleDonate}
                 icon={<Heart size={20} fill="currentColor" />}
               >
-                Wesprzyj teraz
+                {t("actions.donate")}
               </Button>
 
               <Button
@@ -298,16 +352,27 @@ function ProjectDetailsPage() {
                 className="btn-share-full"
                 icon={<Share2 size={18} />}
               >
-                Udostępnij
+                {t("actions.share")}
               </Button>
             </div>
 
             <div className="organizer-mini">
-              <small>Organizator:</small>
+              <small>{project.applicant.label?.[lang]}:</small>
               <div className="organizer-name">{applicantName}</div>
             </div>
           </div>
         </div>
+      </div>
+      <div className="mobile-donate-bar">
+        <Button
+          variant="primary"
+          size="lg"
+          className="mobile-donate-btn"
+          onClick={handleDonate}
+          icon={<Heart size={20} fill="currentColor" />}
+        >
+          {t("actions.donate")}
+        </Button>
       </div>
     </main>
   );

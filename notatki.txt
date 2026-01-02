@@ -4,6 +4,8 @@
 - filtry pomiedzy tel i laptopem jak sa widoczne to przycisk "Filtry" jest widoczny i nie dziala
 
 PODSTRONA ZBIÓRKI
+- wplacanie
+- udostepnij ma cos robic
 
 O NAS
 - teksty poprawic jak wysle
@@ -12,6 +14,9 @@ KONTAKT
 - loader
 - zmiana danych na prawdziwe - mail
 - alert error jak backend nawali?
+
+PARTNERZY
+- teksty poprawic jak wysle
 
 ADMIN
 - czy robic liste darowizn?
