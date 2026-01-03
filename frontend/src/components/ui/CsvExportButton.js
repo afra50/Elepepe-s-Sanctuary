@@ -11,7 +11,11 @@ import DatePickerField from "./DatePickerField";
 import api from "../../utils/api";
 import Alert from "./Alert";
 
-const CsvExportButton = ({ filenamePrefix = "wyplaty" }) => {
+// DODANO PROP: exportUrl
+const CsvExportButton = ({
+  filenamePrefix = "export",
+  exportUrl = "/payouts/export", // Domyślna wartość (dla kompatybilności wstecznej)
+}) => {
   const { t } = useTranslation("common");
   const [isOpen, setIsOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -54,7 +58,8 @@ const CsvExportButton = ({ filenamePrefix = "wyplaty" }) => {
 
     setIsDownloading(true);
     try {
-      const response = await api.get("/payouts/export", {
+      // 👇 ZMIANA: Używamy propa exportUrl zamiast sztywnego stringa
+      const response = await api.get(exportUrl, {
         params: { startDate, endDate },
         responseType: "blob",
       });
@@ -86,29 +91,24 @@ const CsvExportButton = ({ filenamePrefix = "wyplaty" }) => {
 
       let errorMessage = t("export.error") || "Wystąpił błąd.";
 
-      // 👇 ZMIANA LOGIKI OBSŁUGI BŁĘDÓW
       if (error.response) {
-        // Jeśli status to 404, wyświetlamy przetłumaczony tekst "Brak danych"
         if (error.response.status === 404) {
           errorMessage = t("export.noData");
-        }
-        // Jeśli inny błąd jest w Blobie, próbujemy go odczytać (np. 500)
-        else if (error.response.data instanceof Blob) {
+        } else if (error.response.data instanceof Blob) {
           try {
             const errorText = await error.response.data.text();
             const errorJson = JSON.parse(errorText);
             if (errorJson.message) {
-              // Tu ewentualnie też można mapować inne kody błędów na tłumaczenia
               errorMessage = errorJson.message;
             }
           } catch (parseError) {
-            // Ignorujemy błąd parsowania, zostaje domyślny
+            // Ignoruj błąd parsowania
           }
         }
       }
 
       setLocalAlert({
-        variant: "error", // Można zmienić na "info" dla 404, jeśli wolisz łagodniejszy kolor
+        variant: "error",
         message: errorMessage,
       });
     } finally {

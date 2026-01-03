@@ -259,7 +259,10 @@ const AdminPayouts = () => {
         {/* Przycisk akcji widoczny tylko gdy nie ma błędu i nie ładujemy */}
         {!pageError && !loading && (
           <div className="header-actions">
-            <CsvExportButton filenamePrefix="payouts_export" />
+            <CsvExportButton
+              filenamePrefix="payouts_export"
+              exportUrl="/payouts/export"
+            />
 
             <Button
               variant={isFormVisible ? "secondary" : "primary"}

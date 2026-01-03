@@ -8,6 +8,13 @@ const { auth, adminOnly } = require("../middleware/authMiddleware");
 
 // Wszystkie operacje na wpłatach własnych są chronione (tylko dla admina)
 
+router.get(
+  "/export",
+  auth,
+  adminOnly,
+  internalDonationController.exportInternalDonationsCsv
+);
+
 // GET - Pobieranie listy wpłat
 router.get(
   "/",
