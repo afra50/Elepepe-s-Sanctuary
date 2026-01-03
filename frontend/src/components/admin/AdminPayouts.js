@@ -14,7 +14,7 @@ import api from "../../utils/api";
 import Button from "../ui/Button";
 import Loader from "../ui/Loader";
 import Alert from "../ui/Alert";
-import ErrorState from "../ui/ErrorState";
+import ErrorState from "../ui/ErrorState"; // Używamy tego komponentu
 import ConfirmDialog from "../ui/ConfirmDialog";
 import DatePickerField from "../ui/DatePickerField";
 import Pagination from "../ui/Pagination";
@@ -22,6 +22,7 @@ import FilterBar from "../ui/FilterBar";
 import SearchableSelect from "../ui/SearchableSelect";
 import Select from "../ui/Select";
 import ProgressBar from "../ui/ProgressBar";
+import CsvExportButton from "../ui/CsvExportButton";
 
 const AdminPayouts = () => {
   const { t, i18n } = useTranslation("admin");
@@ -255,8 +256,11 @@ const AdminPayouts = () => {
           <h1 className="page-title">{t("payouts.title")}</h1>
           <p className="page-subtitle">{t("payouts.subtitle")}</p>
         </div>
+        {/* Przycisk akcji widoczny tylko gdy nie ma błędu i nie ładujemy */}
         {!pageError && !loading && (
           <div className="header-actions">
+            <CsvExportButton filenamePrefix="payouts_export" />
+
             <Button
               variant={isFormVisible ? "secondary" : "primary"}
               icon={isFormVisible ? null : <Plus size={18} />}
@@ -280,320 +284,340 @@ const AdminPayouts = () => {
         </div>
       )}
 
-      {/* --- FORMULARZ --- */}
-      <div className={`form-collapsible ${isFormVisible ? "open" : ""}`}>
-        <div className="form-card">
-          <h3>{t("payouts.newPayout")}</h3>
-          <form onSubmit={handleSubmit}>
-            <div className="form-grid">
-              <div className="form-field form-full-width">
-                <label>{t("payouts.fields.project")}</label>
-                <SearchableSelect
-                  options={projectOptions}
-                  value={formData.project_id}
-                  onChange={(val) =>
-                    setFormData({ ...formData, project_id: val })
-                  }
-                  placeholder={t("payouts.fields.projectPlaceholder")}
-                />
-                {formProjectStats && (
-                  <div>
-                    {t("payouts.fields.availableFunds")}{" "}
-                    <strong className="available-funds">
-                      {formProjectStats.remaining.toFixed(2)}{" "}
-                      {formProjectStats.currency}
-                    </strong>
-                  </div>
-                )}
-              </div>
-              <div className="form-field">
-                <label>{t("payouts.fields.recipient")}</label>
-                <input
-                  type="text"
-                  maxLength={255}
-                  value={formData.recipient_name}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      recipient_name: e.target.value,
-                    })
-                  }
-                  placeholder={t("payouts.placeholders.recipient", {
-                    defaultValue: "Np. Jan Kowalski",
-                  })}
-                />
-              </div>
-              <div className="form-field">
-                <label>{t("payouts.fields.date")}</label>
-                <DatePickerField
-                  id="payout_date"
-                  name="payout_date"
-                  value={formData.payout_date}
-                  onChange={(date) =>
-                    setFormData({ ...formData, payout_date: date })
-                  }
-                  minDate={null}
-                />
-              </div>
-              <div className="form-field">
-                <label>{t("payouts.fields.amount")}</label>
-                <div className="amount-input-group">
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.amount}
-                    onChange={(e) =>
-                      setFormData({ ...formData, amount: e.target.value })
-                    }
-                    placeholder="0.00"
-                    className="input-number"
-                  />
-                  <div className="select-wrapper">
-                    <Select
-                      options={currencyOptions}
-                      value={formData.currency}
+      {/* --- GŁÓWNA ZAWARTOŚĆ --- */}
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "3rem",
+          }}
+        >
+          <Loader />
+        </div>
+      ) : pageError ? (
+        <ErrorState message={pageError} onRetry={fetchData} />
+      ) : (
+        <>
+          {/* --- FORMULARZ --- */}
+          <div className={`form-collapsible ${isFormVisible ? "open" : ""}`}>
+            <div className="form-card">
+              <h3>{t("payouts.newPayout")}</h3>
+              <form onSubmit={handleSubmit}>
+                <div className="form-grid">
+                  <div className="form-field form-full-width">
+                    <label>{t("payouts.fields.project")}</label>
+                    <SearchableSelect
+                      options={projectOptions}
+                      value={formData.project_id}
                       onChange={(val) =>
-                        setFormData({ ...formData, currency: val })
+                        setFormData({ ...formData, project_id: val })
                       }
+                      placeholder={t("payouts.fields.projectPlaceholder")}
+                    />
+                    {formProjectStats && (
+                      <div>
+                        {t("payouts.fields.availableFunds")}{" "}
+                        <strong className="available-funds">
+                          {formProjectStats.remaining.toFixed(2)}{" "}
+                          {formProjectStats.currency}
+                        </strong>
+                      </div>
+                    )}
+                  </div>
+                  <div className="form-field">
+                    <label>{t("payouts.fields.recipient")}</label>
+                    <input
+                      type="text"
+                      maxLength={255}
+                      value={formData.recipient_name}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          recipient_name: e.target.value,
+                        })
+                      }
+                      placeholder={t("payouts.placeholders.recipient", {
+                        defaultValue: "Np. Jan Kowalski",
+                      })}
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label>{t("payouts.fields.date")}</label>
+                    <DatePickerField
+                      id="payout_date"
+                      name="payout_date"
+                      value={formData.payout_date}
+                      onChange={(date) =>
+                        setFormData({ ...formData, payout_date: date })
+                      }
+                      minDate={null}
+                    />
+                  </div>
+                  <div className="form-field">
+                    <label>{t("payouts.fields.amount")}</label>
+                    <div className="amount-input-group">
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={formData.amount}
+                        onChange={(e) =>
+                          setFormData({ ...formData, amount: e.target.value })
+                        }
+                        placeholder="0.00"
+                        className="input-number"
+                      />
+                      <div className="select-wrapper">
+                        <Select
+                          options={currencyOptions}
+                          value={formData.currency}
+                          onChange={(val) =>
+                            setFormData({ ...formData, currency: val })
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="form-field">
+                    <label>{t("payouts.fields.note")}</label>
+                    <input
+                      type="text"
+                      maxLength={1000}
+                      value={formData.note}
+                      onChange={(e) =>
+                        setFormData({ ...formData, note: e.target.value })
+                      }
+                      placeholder={t("payouts.placeholders.note", {
+                        defaultValue: "Np. I rata za leczenie",
+                      })}
                     />
                   </div>
                 </div>
-              </div>
-              <div className="form-field">
-                <label>{t("payouts.fields.note")}</label>
-                <input
-                  type="text"
-                  maxLength={1000}
-                  value={formData.note}
-                  onChange={(e) =>
-                    setFormData({ ...formData, note: e.target.value })
-                  }
-                  placeholder={t("payouts.placeholders.note", {
-                    defaultValue: "Np. I rata za leczenie",
-                  })}
-                />
-              </div>
-            </div>
-            <div className="form-actions">
-              <Button type="submit" variant="success">
-                {t("payouts.save")}
-              </Button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      {/* --- PASEK FILTRÓW --- */}
-      <FilterBar
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        onSortChange={setSortBy}
-        onOrderToggle={() =>
-          setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
-        }
-        onClear={() => {
-          setFilterProjectId("");
-          setFilterCurrency("");
-          setSortBy("date");
-        }}
-        sortOptions={[
-          { value: "date", label: t("filters.sortOptions.date") },
-          { value: "amount", label: t("filters.sortOptions.amount") },
-        ]}
-      >
-        <div className="filter-project">
-          <SearchableSelect
-            options={[
-              { value: "", label: t("filters.allProjects") },
-              ...projectOptions,
-            ]}
-            value={filterProjectId ? parseInt(filterProjectId) : ""}
-            onChange={(val) => setFilterProjectId(val)}
-            placeholder={t("filters.filterByProject")}
-          />
-        </div>
-        <div className="filter-currency">
-          <Select
-            value={filterCurrency}
-            onChange={(val) => setFilterCurrency(val)}
-            options={[
-              { value: "", label: t("filters.allCurrencies") },
-              ...currencyOptions,
-            ]}
-            placeholder={t("filters.filterByCurrency")}
-          />
-        </div>
-      </FilterBar>
-
-      {/* --- DASHBOARD FINANSOWY --- */}
-      {filterProjectStats && (
-        <div className="financial-dashboard">
-          <div className="dashboard-header">
-            <h4>
-              {t("payouts.summary.title")}: {filterProjectStats.title}
-            </h4>
-          </div>
-          <div className="dashboard-cards">
-            {/* KARTA 1: ZEBRANO */}
-            <div className="dashboard-card green">
-              <div className="icon-wrapper">
-                <TrendingUp size={24} />
-              </div>
-              <div className="card-content">
-                <span className="card-label">
-                  {t("payouts.summary.collected")}
-                </span>
-                <span className="card-value">
-                  {filterProjectStats.collected.toFixed(2)}{" "}
-                  <small>{filterProjectStats.currency}</small>
-                </span>
-              </div>
-            </div>
-
-            {/* KARTA 2: WYPŁACONO */}
-            <div className="dashboard-card orange">
-              <div className="icon-wrapper">
-                <ArrowUpRight size={24} />
-              </div>
-              <div className="card-content">
-                <span className="card-label">{t("payouts.summary.paid")}</span>
-                <span className="card-value">
-                  {filterProjectStats.paid.toFixed(2)}{" "}
-                  <small>{filterProjectStats.currency}</small>
-                </span>
-              </div>
-            </div>
-
-            {/* KARTA 3: DO WYPŁATY */}
-            <div
-              className={`dashboard-card big ${
-                filterProjectStats.remaining < 0 ? "red" : "blue"
-              }`}
-            >
-              <div className="icon-wrapper">
-                <Wallet size={28} />
-              </div>
-              <div className="card-content">
-                <span className="card-label">
-                  {t("payouts.summary.remaining")}
-                </span>
-                <span className="card-value">
-                  {filterProjectStats.remaining.toFixed(2)}{" "}
-                  <small>{filterProjectStats.currency}</small>
-                </span>
-              </div>
+                <div className="form-actions">
+                  <Button type="submit" variant="success">
+                    {t("payouts.save")}
+                  </Button>
+                </div>
+              </form>
             </div>
           </div>
 
-          {/* DWA PASKI POSTĘPU */}
-          <div className="progress-section">
-            {/* 1. Postęp zbiórki */}
-            <div className="payout-progress-bar">
-              <div className="progress-label">
-                <span>
-                  {t("payouts.progress.collection")} (
-                  {t("payouts.progress.goal")}: {filterProjectStats.target}{" "}
-                  {filterProjectStats.currency})
-                </span>
-              </div>
-              <ProgressBar
-                current={filterProjectStats.collected}
-                goal={filterProjectStats.target}
+          {/* --- PASEK FILTRÓW --- */}
+          <FilterBar
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSortChange={setSortBy}
+            onOrderToggle={() =>
+              setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
+            }
+            onClear={() => {
+              setFilterProjectId("");
+              setFilterCurrency("");
+              setSortBy("date");
+            }}
+            sortOptions={[
+              { value: "date", label: t("filters.sortOptions.date") },
+              { value: "amount", label: t("filters.sortOptions.amount") },
+            ]}
+          >
+            <div className="filter-project">
+              <SearchableSelect
+                options={[
+                  { value: "", label: t("filters.allProjects") },
+                  ...projectOptions,
+                ]}
+                value={filterProjectId ? parseInt(filterProjectId) : ""}
+                onChange={(val) => setFilterProjectId(val)}
+                placeholder={t("filters.filterByProject")}
               />
             </div>
-
-            {/* 2. Wykorzystanie środków */}
-            <div className="payout-progress-bar">
-              <div className="progress-label">
-                <span>
-                  {t("payouts.progress.utilization")} (
-                  {t("payouts.summary.collected")}{" "}
-                  {filterProjectStats.collected} {filterProjectStats.currency})
-                </span>
-              </div>
-              <ProgressBar
-                current={filterProjectStats.paid}
-                goal={filterProjectStats.collected}
+            <div className="filter-currency">
+              <Select
+                value={filterCurrency}
+                onChange={(val) => setFilterCurrency(val)}
+                options={[
+                  { value: "", label: t("filters.allCurrencies") },
+                  ...currencyOptions,
+                ]}
+                placeholder={t("filters.filterByCurrency")}
               />
             </div>
-          </div>
-        </div>
-      )}
+          </FilterBar>
 
-      {/* --- TABELA DANYCH --- */}
-      <div className="table-wrapper">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>{t("payouts.table.date")}</th>
-              <th>{t("payouts.table.recipient")}</th>
-              {!filterProjectId && <th>{t("payouts.table.project")}</th>}
-              <th>{t("payouts.table.amount")}</th>
-              <th>{t("payouts.table.note")}</th>
-              <th className="align-right">
-                {t("foundationSupport.table.actions")}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedPayouts.length === 0 ? (
-              <tr className="empty-state-row">
-                <td colSpan="6">{t("payouts.emptyState")}</td>
-              </tr>
-            ) : (
-              paginatedPayouts.map((p) => (
-                <tr key={p.id}>
-                  <td>
-                    <div className="cell-date">
-                      <Calendar size={14} />
-                      {new Date(p.payout_date).toLocaleDateString()}
-                    </div>
-                  </td>
-                  <td>
-                    <strong className="recipient-name">
-                      {p.recipient_name}
-                    </strong>
-                  </td>
-                  {!filterProjectId && (
-                    <td>
-                      <span className="cell-highlight project-title">
-                        {p.project_title
-                          ? getProjectTitle({ title: p.project_title })
-                          : t("foundationSupport.projectDeleted")}
-                      </span>
-                    </td>
-                  )}
-                  <td className="col-amount-outflow">
-                    {p.amount} {p.currency}
-                  </td>
-                  <td>
-                    <div className="col-note">{p.note || "-"}</div>
-                  </td>
-                  <td>
-                    <div className="cell-actions">
-                      <button
-                        className="action-btn-icon danger"
-                        onClick={() => setConfirmDeleteId(p.id)}
-                        title={t("common.delete")}
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
+          {/* --- DASHBOARD FINANSOWY --- */}
+          {filterProjectStats && (
+            <div className="financial-dashboard">
+              <div className="dashboard-header">
+                <h4>
+                  {t("payouts.summary.title")}: {filterProjectStats.title}
+                </h4>
+              </div>
+              <div className="dashboard-cards">
+                {/* KARTA 1: ZEBRANO */}
+                <div className="dashboard-card green">
+                  <div className="icon-wrapper">
+                    <TrendingUp size={24} />
+                  </div>
+                  <div className="card-content">
+                    <span className="card-label">
+                      {t("payouts.summary.collected")}
+                    </span>
+                    <span className="card-value">
+                      {filterProjectStats.collected.toFixed(2)}{" "}
+                      <small>{filterProjectStats.currency}</small>
+                    </span>
+                  </div>
+                </div>
+
+                {/* KARTA 2: WYPŁACONO */}
+                <div className="dashboard-card orange">
+                  <div className="icon-wrapper">
+                    <ArrowUpRight size={24} />
+                  </div>
+                  <div className="card-content">
+                    <span className="card-label">
+                      {t("payouts.summary.paid")}
+                    </span>
+                    <span className="card-value">
+                      {filterProjectStats.paid.toFixed(2)}{" "}
+                      <small>{filterProjectStats.currency}</small>
+                    </span>
+                  </div>
+                </div>
+
+                {/* KARTA 3: DO WYPŁATY */}
+                <div
+                  className={`dashboard-card big ${
+                    filterProjectStats.remaining < 0 ? "red" : "blue"
+                  }`}
+                >
+                  <div className="icon-wrapper">
+                    <Wallet size={28} />
+                  </div>
+                  <div className="card-content">
+                    <span className="card-label">
+                      {t("payouts.summary.remaining")}
+                    </span>
+                    <span className="card-value">
+                      {filterProjectStats.remaining.toFixed(2)}{" "}
+                      <small>{filterProjectStats.currency}</small>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* DWA PASKI POSTĘPU */}
+              <div className="progress-section">
+                {/* 1. Postęp zbiórki */}
+                <div className="payout-progress-bar">
+                  <div className="progress-label">
+                    <span>
+                      {t("payouts.progress.collection")} (
+                      {t("payouts.progress.goal")}: {filterProjectStats.target}{" "}
+                      {filterProjectStats.currency})
+                    </span>
+                  </div>
+                  <ProgressBar
+                    current={filterProjectStats.collected}
+                    goal={filterProjectStats.target}
+                  />
+                </div>
+
+                {/* 2. Wykorzystanie środków */}
+                <div className="payout-progress-bar">
+                  <div className="progress-label">
+                    <span>
+                      {t("payouts.progress.utilization")} (
+                      {t("payouts.summary.collected")}{" "}
+                      {filterProjectStats.collected}{" "}
+                      {filterProjectStats.currency})
+                    </span>
+                  </div>
+                  <ProgressBar
+                    current={filterProjectStats.paid}
+                    goal={filterProjectStats.collected}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* --- TABELA DANYCH --- */}
+          <div className="table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>{t("payouts.table.date")}</th>
+                  <th>{t("payouts.table.recipient")}</th>
+                  {!filterProjectId && <th>{t("payouts.table.project")}</th>}
+                  <th>{t("payouts.table.amount")}</th>
+                  <th>{t("payouts.table.note")}</th>
+                  <th className="align-right">
+                    {t("foundationSupport.table.actions")}
+                  </th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {paginatedPayouts.length === 0 ? (
+                  <tr className="empty-state-row">
+                    <td colSpan="6">{t("payouts.emptyState")}</td>
+                  </tr>
+                ) : (
+                  paginatedPayouts.map((p) => (
+                    <tr key={p.id}>
+                      <td>
+                        <div className="cell-date">
+                          <Calendar size={14} />
+                          {new Date(p.payout_date).toLocaleDateString()}
+                        </div>
+                      </td>
+                      <td>
+                        <strong className="recipient-name">
+                          {p.recipient_name}
+                        </strong>
+                      </td>
+                      {!filterProjectId && (
+                        <td>
+                          <span className="cell-highlight project-title">
+                            {p.project_title
+                              ? getProjectTitle({ title: p.project_title })
+                              : t("foundationSupport.projectDeleted")}
+                          </span>
+                        </td>
+                      )}
+                      <td className="col-amount-outflow">
+                        {p.amount} {p.currency}
+                      </td>
+                      <td>
+                        <div className="col-note">{p.note || "-"}</div>
+                      </td>
+                      <td>
+                        <div className="cell-actions">
+                          <button
+                            className="action-btn-icon danger"
+                            onClick={() => setConfirmDeleteId(p.id)}
+                            title={t("common.delete")}
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
 
-      <div className="pagination-container">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+          <div className="pagination-container">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        </>
+      )}
 
       <ConfirmDialog
         isOpen={!!confirmDeleteId}

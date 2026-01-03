@@ -4,6 +4,7 @@ const payoutModel = require("../models/payoutModel");
 const projectModel = require("../models/projectModel");
 const { convertCurrency } = require("../utils/currencyService");
 const Joi = require("joi");
+const { Parser } = require("json2csv");
 
 const getPayouts = async (req, res) => {
   try {
@@ -118,4 +119,64 @@ const deletePayout = async (req, res) => {
   }
 };
 
-module.exports = { getPayouts, addPayout, deletePayout };
+const exportPayoutsCsv = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    // 1. Fetch data from DB (applying filters)
+    const payouts = await payoutModel.getPayoutsByDateRange(
+      db,
+      startDate,
+      endDate
+    );
+
+    if (!payouts.length) {
+      return res.status(404).json({
+        message: "No data to export for the selected period.",
+      });
+    }
+
+    // 2. CSV Columns definition (Mapping DB to nice English headers)
+    const fields = [
+      { label: "Transfer ID", value: "id" },
+      {
+        label: "Transfer Date",
+        value: (row) => new Date(row.payout_date).toISOString().split("T")[0],
+      }, // Format YYYY-MM-DD
+      { label: "Recipient", value: "recipient_name" },
+      { label: "Amount", value: "amount" },
+      { label: "Currency", value: "currency" },
+      { label: "Amount in Project Currency", value: "converted_amount" }, // optional
+      { label: "Project (Source)", value: "project_title" },
+      { label: "Note", value: "note" },
+      {
+        label: "Entry Created At",
+        // Changed locale to en-US for consistency, or use ISO
+        value: (row) => new Date(row.created_at).toLocaleString("en-US"),
+      },
+    ];
+
+    // 3. Parser configuration
+    const json2csvParser = new Parser({
+      fields,
+      delimiter: ";", // Excel usually works better with semicolons in some regions, but comma is standard for English CSV. You can keep ';' or change to ','
+      withBOM: true, // KEY: Adds BOM so special characters display correctly in Excel
+    });
+
+    const csv = json2csvParser.parse(payouts);
+
+    // 4. Set HTTP headers for file download
+    const filename = `payouts_${startDate || "start"}_${endDate || "end"}.csv`;
+
+    res.header("Content-Type", "text/csv");
+    res.header("Content-Disposition", `attachment; filename="${filename}"`);
+
+    // 5. Send data
+    res.status(200).send(csv);
+  } catch (error) {
+    console.error("CSV Export Error:", error);
+    res.status(500).json({ message: "Error generating CSV file." });
+  }
+};
+
+module.exports = { getPayouts, addPayout, deletePayout, exportPayoutsCsv };

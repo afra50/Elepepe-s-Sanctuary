@@ -37,5 +37,17 @@
     "searchPlaceholder": "Search...",
     "noResults": "No results found",
     "clear": "Clear selection"
+  },
+
+  "export": {
+    "buttonLabel": "Export CSV",
+    "title": "Export Data",
+    "from": "From:",
+    "to": "To:",
+    "download": "Download File",
+    "downloading": "Downloading...",
+    "error": "An error occurred while downloading.",
+    "dateError": "Start date cannot be later than end date.",
+    "noData": "No data to export for the selected period."
   }
 }

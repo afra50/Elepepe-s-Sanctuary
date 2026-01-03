@@ -62,10 +62,46 @@ const updateProjectPaidAmount = async (connection, projectId, amountChange) => {
   await connection.query(sql, [amountChange, projectId]);
 };
 
+const getPayoutsByDateRange = async (connection, startDate, endDate) => {
+  let sql = `
+    SELECT 
+      py.id,
+      py.payout_date,
+      py.recipient_name,
+      py.amount,
+      py.currency,
+      py.converted_amount,
+      p.title as project_title,
+      py.note,
+      py.created_at
+    FROM payouts py
+    LEFT JOIN projects p ON py.project_id = p.id
+    WHERE 1=1
+  `;
+
+  const values = [];
+
+  if (startDate) {
+    sql += ` AND py.payout_date >= ?`;
+    values.push(startDate);
+  }
+
+  if (endDate) {
+    sql += ` AND py.payout_date <= ?`;
+    values.push(endDate);
+  }
+
+  sql += ` ORDER BY py.payout_date DESC`;
+
+  const [rows] = await connection.query(sql, values);
+  return rows;
+};
+
 module.exports = {
   createPayout,
   getAllPayouts,
   getPayoutById,
   deletePayout,
   updateProjectPaidAmount,
+  getPayoutsByDateRange,
 };

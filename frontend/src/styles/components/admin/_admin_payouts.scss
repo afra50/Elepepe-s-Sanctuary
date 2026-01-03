@@ -39,6 +39,12 @@
             font-size: clamp(0.9rem, 2vw, 1rem);
             opacity: 0.9;
         }
+
+        .header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
     }
 
     // --- DASHBOARD FINANSOWY (Nowa sekcja) ---

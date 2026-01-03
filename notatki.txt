@@ -20,6 +20,8 @@ PARTNERZY
 
 ADMIN
 - ujednolicic filtry - albo wszedzie schowane na mobile albo widoczne, bo jest roznie
+1. DAROWIZNY
+    - csv
 
 BACKEND
 - Joi do walidacji requestów
