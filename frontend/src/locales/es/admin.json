@@ -203,42 +203,53 @@
   },
   "payouts": {
     "title": "Pagos a Beneficiarios",
-    "subtitle": "Registros de fondos transferidos a los organizadores de recaudaciones.",
-    "add": "Añadir pago",
+    "subtitle": "Registro de fondos transferidos a los organizadores de campañas.",
+    "add": "Registrar transferencia",
     "cancelAdd": "Cancelar",
     "newPayout": "Nueva transferencia saliente",
     "save": "Confirmar transferencia",
-    "emptyState": "No se encontraron pagos registrados.",
-    "confirmDelete": "¿Estás seguro de que quieres eliminar este pago? Esto reducirá el monto total pagado para el proyecto.",
+    "emptyState": "No hay pagos registrados.",
+    "confirmDelete": "¿Estás seguro de que deseas eliminar esta entrada? El sistema volverá a marcar esta cantidad como no pagada (pendiente de transferencia).",
     "fields": {
-      "project": "Recaudación de fondos",
-      "projectPlaceholder": "Seleccionar recaudación...",
-      "recipient": "Destinatario (Beneficiario)",
+      "project": "Campaña (Fuente de fondos)",
+      "projectPlaceholder": "Selecciona una campaña...",
+      "recipient": "Destinatario",
       "date": "Fecha de transferencia",
-      "amount": "Importe de transferencia",
-      "note": "Título / Nota"
+      "amount": "Importe enviado",
+      "note": "Concepto / Nota",
+      "availableFunds": "Restante por pagar:"
     },
     "summary": {
-      "target": "Objetivo:",
-      "collected": "Recaudado:",
-      "paid": "Pagado hasta ahora:",
-      "remaining": "Restante por pagar:"
+      "title": "Resumen financiero",
+      "target": "Meta de la campaña:",
+      "collected": "Total recaudado:",
+      "paid": "Ya pagado:",
+      "remaining": "Pendiente de transferir:"
     },
     "table": {
       "date": "Fecha",
       "recipient": "Destinatario",
-      "project": "Proyecto",
+      "project": "Campaña",
       "amount": "Importe",
-      "note": "Título"
+      "note": "Concepto"
+    },
+    "progress": {
+      "collection": "Progreso de la campaña",
+      "utilization": "Utilización de fondos",
+      "goal": "Meta"
+    },
+    "placeholders": {
+      "recipient": "Ej. Juan Pérez",
+      "note": "Ej. 1ª cuota del tratamiento"
     },
     "alerts": {
-      "fetchError": "Error al obtener datos.",
-      "validationError": "Por favor, complete todos los campos obligatorios.",
-      "amountPositive": "El importe debe ser positivo.",
-      "addSuccess": "Pago registrado con éxito.",
-      "addError": "Error al guardar el pago.",
-      "deleteSuccess": "Pago eliminado.",
-      "deleteError": "No se pudo eliminar el pago."
+      "fetchError": "Error al obtener datos financieros.",
+      "validationError": "Por favor, completa todos los campos obligatorios.",
+      "amountPositive": "El importe de la transferencia debe ser positivo.",
+      "addSuccess": "La transferencia ha sido registrada en el sistema.",
+      "addError": "Error al guardar la transferencia.",
+      "deleteSuccess": "Entrada eliminada. El importe ha vuelto al fondo 'pendiente de transferir'.",
+      "deleteError": "No se pudo eliminar la entrada."
     }
   },
   "partnerships": {

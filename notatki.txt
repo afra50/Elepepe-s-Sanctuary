@@ -19,15 +19,8 @@ PARTNERZY
 
 ADMIN
 - ujednolicic filtry - albo wszedzie schowane na mobile albo widoczne, bo jest roznie
-1. Payouts
-    - responsywnosc
-    - style
-    - testy
-    - tlumaczenia
-    - walidacja front i backend
-    - czy filtry ok 
-    - zle wylicza kwoty
-    - alert przy usuwaniu bledny, bo kwota sie nie zmieni
+1. DAROWIZNY
+    - csv
 
 BACKEND
 - Joi do walidacji requestów

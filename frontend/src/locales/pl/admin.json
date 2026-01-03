@@ -206,25 +206,27 @@
   "payouts": {
     "title": "Wypłaty dla Beneficjentów",
     "subtitle": "Ewidencja środków przekazanych organizatorom zbiórek.",
-    "add": "Dodaj przelew",
-    "cancelAdd": "Anuluj dodawanie",
+    "add": "Zarejestruj przelew",
+    "cancelAdd": "Anuluj",
     "newPayout": "Nowy przelew wychodzący",
     "save": "Zatwierdź przelew",
     "emptyState": "Brak zarejestrowanych wypłat.",
-    "confirmDelete": "Czy na pewno chcesz usunąć ten przelew? Zmniejszy to sumę wypłaconych środków w projekcie.",
+    "confirmDelete": "Czy na pewno chcesz usunąć ten wpis? System ponownie oznaczy tę kwotę jako niewypłaconą (wymagającą przelewu).",
     "fields": {
-      "project": "Zbiórka źródłowa",
+      "project": "Zbiórka (źródło środków)",
       "projectPlaceholder": "Wybierz zbiórkę...",
-      "recipient": "Odbiorca (Beneficjent)",
+      "recipient": "Odbiorca przelewu",
       "date": "Data przelewu",
-      "amount": "Kwota przelewu",
-      "note": "Tytuł przelewu / Notatka"
+      "amount": "Wysłana kwota",
+      "note": "Tytuł przelewu / Notatka",
+      "availableFunds": "Pozostało do wypłacenia:"
     },
     "summary": {
+      "title": "Podsumowanie finansowe",
       "target": "Cel zbiórki:",
-      "collected": "Zebrano:",
-      "paid": "Wypłacono dotąd:",
-      "remaining": "Do wypłaty:"
+      "collected": "Zgromadzono łącznie:",
+      "paid": "Już wypłacono:",
+      "remaining": "Pozostało do przelania:"
     },
     "table": {
       "date": "Data",
@@ -233,14 +235,23 @@
       "amount": "Kwota",
       "note": "Tytuł"
     },
+    "progress": {
+      "collection": "Postęp zbiórki",
+      "utilization": "Wykorzystanie zebranych środków",
+      "goal": "Cel"
+    },
+    "placeholders": {
+      "recipient": "Np. Jan Kowalski",
+      "note": "Np. I rata za leczenie"
+    },
     "alerts": {
-      "fetchError": "Błąd pobierania danych.",
-      "validationError": "Wypełnij wszystkie wymagane pola.",
-      "amountPositive": "Kwota musi być dodatnia.",
-      "addSuccess": "Przelew został zarejestrowany.",
-      "addError": "Błąd zapisu przelewu.",
-      "deleteSuccess": "Przelew usunięty.",
-      "deleteError": "Nie udało się usunąć przelewu."
+      "fetchError": "Błąd pobierania danych finansowych.",
+      "validationError": "Uzupełnij wszystkie wymagane pola.",
+      "amountPositive": "Kwota przelewu musi być dodatnia.",
+      "addSuccess": "Przelew został odnotowany w systemie.",
+      "addError": "Błąd podczas zapisywania przelewu.",
+      "deleteSuccess": "Wpis usunięty. Kwota wróciła do puli 'do przelania'.",
+      "deleteError": "Nie udało się usunąć wpisu."
     }
   },
   "partnerships": {

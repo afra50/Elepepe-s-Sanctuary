@@ -203,42 +203,53 @@
   },
   "payouts": {
     "title": "Beneficiary Payouts",
-    "subtitle": "Records of funds transferred to fundraiser organizers.",
-    "add": "Add Payout",
+    "subtitle": "Records of funds transferred to campaign organizers.",
+    "add": "Record Transfer",
     "cancelAdd": "Cancel",
     "newPayout": "New Outgoing Transfer",
     "save": "Confirm Transfer",
-    "emptyState": "No recorded payouts found.",
-    "confirmDelete": "Are you sure you want to delete this payout? This will reduce the total paid amount for the project.",
+    "emptyState": "No payouts recorded.",
+    "confirmDelete": "Are you sure you want to delete this entry? The system will mark this amount as unpaid (requiring transfer) again.",
     "fields": {
-      "project": "Source Fundraiser",
-      "projectPlaceholder": "Select fundraiser...",
-      "recipient": "Recipient (Beneficiary)",
+      "project": "Campaign (Source of Funds)",
+      "projectPlaceholder": "Select a campaign...",
+      "recipient": "Recipient",
       "date": "Transfer Date",
-      "amount": "Transfer Amount",
-      "note": "Title / Note"
+      "amount": "Sent Amount",
+      "note": "Transfer Title / Note",
+      "availableFunds": "Remaining to pay out:"
     },
     "summary": {
-      "target": "Target:",
-      "collected": "Raised:",
-      "paid": "Paid so far:",
-      "remaining": "Remaining to pay:"
+      "title": "Financial Summary",
+      "target": "Campaign Goal:",
+      "collected": "Total Collected:",
+      "paid": "Already Paid Out:",
+      "remaining": "Remaining to Transfer:"
     },
     "table": {
       "date": "Date",
       "recipient": "Recipient",
-      "project": "Project",
+      "project": "Campaign",
       "amount": "Amount",
-      "note": "Title"
+      "note": "Title/Note"
+    },
+    "progress": {
+      "collection": "Campaign Progress",
+      "utilization": "Funds Utilization",
+      "goal": "Goal"
+    },
+    "placeholders": {
+      "recipient": "E.g. John Doe",
+      "note": "E.g. 1st installment for treatment"
     },
     "alerts": {
-      "fetchError": "Error fetching data.",
+      "fetchError": "Error fetching financial data.",
       "validationError": "Please fill in all required fields.",
-      "amountPositive": "Amount must be positive.",
-      "addSuccess": "Payout registered successfully.",
-      "addError": "Error saving payout.",
-      "deleteSuccess": "Payout deleted.",
-      "deleteError": "Failed to delete payout."
+      "amountPositive": "The transfer amount must be positive.",
+      "addSuccess": "The transfer has been recorded in the system.",
+      "addError": "Error saving the transfer.",
+      "deleteSuccess": "Entry deleted. The amount has returned to the 'to be transferred' pool.",
+      "deleteError": "Failed to delete the entry."
     }
   },
   "partnerships": {

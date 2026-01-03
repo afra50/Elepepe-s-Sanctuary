@@ -8,6 +8,8 @@ const { auth, adminOnly } = require("../middleware/authMiddleware");
 
 // Wszystkie operacje na wypłatach są chronione (tylko dla admina)
 
+router.get("/export", auth, adminOnly, payoutController.exportPayoutsCsv);
+
 // GET - Pobieranie listy wypłat (przelewów wychodzących)
 router.get("/", auth, adminOnly, payoutController.getPayouts);
 
