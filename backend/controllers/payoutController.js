@@ -20,9 +20,11 @@ const addPayout = async (req, res) => {
     // 1. Walidacja Joi
     const schema = Joi.object({
       project_id: Joi.number().integer().required(),
-      amount: Joi.number().positive().precision(2).required(),
+      // Dodano .max() dla amount, aby pasowało do DECIMAL(10,2)
+      amount: Joi.number().positive().precision(2).max(99999999.99).required(),
       currency: Joi.string().length(3).uppercase().default("PLN"),
-      recipient_name: Joi.string().required(),
+      // Dodano .max(255) dla recipient_name, aby pasowało do VARCHAR(255)
+      recipient_name: Joi.string().max(255).required(),
       payout_date: Joi.date().iso().required(),
       note: Joi.string().max(1000).allow("", null),
     });

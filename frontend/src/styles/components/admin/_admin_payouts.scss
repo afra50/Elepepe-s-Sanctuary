@@ -8,6 +8,10 @@
         margin-bottom: 1.5rem;
     }
 
+    .pagination-container {
+        margin-top: 1.5rem;
+    }
+
     .page-header {
         display: flex;
         justify-content: space-between;
@@ -155,7 +159,6 @@
             }
 
             &.red {
-                // Dla ujemnego salda
                 background-color: #fef2f2;
                 border-color: #fecaca;
 
@@ -172,18 +175,27 @@
             &.big {
                 grid-column: span 1;
 
-                @media(min-width: 992px) {
+                @media (min-width: 992px) {
                     transform: scale(1.05);
                     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
                 }
             }
         }
 
+        // Nowa klasa zastępująca inline style
+        .progress-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
         // Pasek postępu
         .payout-progress-bar {
             .progress-label {
-                font-size: 0.85rem;
-                color: $secondary-muted;
+                // Zaktualizowane style (po usunięciu inline)
+                font-size: 0.9rem;
+                color: #666;
                 margin-bottom: 0.5rem;
                 font-weight: 600;
                 display: flex;
@@ -219,7 +231,7 @@
         }
     }
 
-    // --- FORMULARZ (Reszta styli bez większych zmian) ---
+    // --- FORMULARZ ---
     .form-collapsible {
         overflow: hidden;
         transition: max-height 0.4s ease-in-out, opacity 0.4s, margin-bottom 0.4s;
@@ -294,6 +306,11 @@
             }
         }
 
+        .available-funds {
+            font-size: 0.85rem;
+            color: #2563eb;
+        }
+
         .amount-input-group {
             display: flex;
             gap: 0.5rem;
@@ -338,6 +355,10 @@
     .admin-table {
         width: 100%;
         border-collapse: collapse;
+
+        th.align-right {
+            text-align: right;
+        }
 
         .cell-date {
             display: flex;

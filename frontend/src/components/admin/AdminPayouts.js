@@ -21,7 +21,7 @@ import Pagination from "../ui/Pagination";
 import FilterBar from "../ui/FilterBar";
 import SearchableSelect from "../ui/SearchableSelect";
 import Select from "../ui/Select";
-import ProgressBar from "../ui/ProgressBar"; // <--- IMPORT TWOJEGO PROGRESS BARA
+import ProgressBar from "../ui/ProgressBar";
 
 const AdminPayouts = () => {
   const { t, i18n } = useTranslation("admin");
@@ -83,7 +83,7 @@ const AdminPayouts = () => {
     try {
       const titleObj =
         typeof p.title === "string" ? JSON.parse(p.title) : p.title;
-      return titleObj[lang] || titleObj["pl"] || "Bez tytułu";
+      return titleObj[lang] || titleObj["pl"] || t("common.untitled");
     } catch (e) {
       return p.title || "";
     }
@@ -110,9 +110,17 @@ const AdminPayouts = () => {
     const collected = parseFloat(
       proj.amountCollected || proj.amount_collected || 0
     );
-    const paid = parseFloat(proj.amountPaid || proj.amount_paid || 0);
     const target = parseFloat(proj.amountTarget || proj.amount_target || 0);
+
+    // LICZYMY WYPŁACONE ŚRODKI RĘCZNIE Z LISTY PRZELEWÓW
+    const projectPayouts = payouts.filter((p) => p.project_id === proj.id);
+    const paid = projectPayouts.reduce((sum, p) => {
+      const val = parseFloat(p.converted_amount || p.amount || 0);
+      return sum + val;
+    }, 0);
+
     const remaining = collected - paid;
+    const percentUsed = collected > 0 ? (paid / collected) * 100 : 0;
 
     return {
       title: getProjectTitle(proj),
@@ -120,22 +128,31 @@ const AdminPayouts = () => {
       paid,
       target,
       remaining,
+      percentUsed,
       currency: proj.currency || "PLN",
     };
-  }, [filterProjectId, projects, lang]);
+  }, [filterProjectId, projects, payouts, lang]);
 
   // --- STATYSTYKI FORMULARZA ---
   const formProjectStats = useMemo(() => {
     if (!formData.project_id) return null;
     const proj = projects.find((p) => p.id === formData.project_id);
     if (!proj) return null;
+
     const collected = parseFloat(
       proj.amountCollected || proj.amount_collected || 0
     );
-    const paid = parseFloat(proj.amountPaid || proj.amount_paid || 0);
+
+    // Tutaj też liczymy ręcznie z payouts
+    const projectPayouts = payouts.filter((p) => p.project_id === proj.id);
+    const paid = projectPayouts.reduce(
+      (sum, p) => sum + parseFloat(p.converted_amount || p.amount || 0),
+      0
+    );
+
     const remaining = collected - paid;
     return { remaining, currency: proj.currency || "PLN" };
-  }, [formData.project_id, projects]);
+  }, [formData.project_id, projects, payouts]);
 
   // --- FILTROWANIE TABELI ---
   const processedPayouts = useMemo(() => {
@@ -280,15 +297,9 @@ const AdminPayouts = () => {
                   placeholder={t("payouts.fields.projectPlaceholder")}
                 />
                 {formProjectStats && (
-                  <div
-                    style={{
-                      fontSize: "0.85rem",
-                      marginTop: "5px",
-                      color: "#666",
-                    }}
-                  >
-                    Dostępne środki w tej zbiórce:{" "}
-                    <strong>
+                  <div>
+                    {t("payouts.fields.availableFunds")}{" "}
+                    <strong className="available-funds">
                       {formProjectStats.remaining.toFixed(2)}{" "}
                       {formProjectStats.currency}
                     </strong>
@@ -299,11 +310,17 @@ const AdminPayouts = () => {
                 <label>{t("payouts.fields.recipient")}</label>
                 <input
                   type="text"
+                  maxLength={255}
                   value={formData.recipient_name}
                   onChange={(e) =>
-                    setFormData({ ...formData, recipient_name: e.target.value })
+                    setFormData({
+                      ...formData,
+                      recipient_name: e.target.value,
+                    })
                   }
-                  placeholder="Np. Jan Kowalski"
+                  placeholder={t("payouts.placeholders.recipient", {
+                    defaultValue: "Np. Jan Kowalski",
+                  })}
                 />
               </div>
               <div className="form-field">
@@ -346,11 +363,14 @@ const AdminPayouts = () => {
                 <label>{t("payouts.fields.note")}</label>
                 <input
                   type="text"
+                  maxLength={1000}
                   value={formData.note}
                   onChange={(e) =>
                     setFormData({ ...formData, note: e.target.value })
                   }
-                  placeholder="Np. I rata za leczenie"
+                  placeholder={t("payouts.placeholders.note", {
+                    defaultValue: "Np. I rata za leczenie",
+                  })}
                 />
               </div>
             </div>
@@ -409,7 +429,9 @@ const AdminPayouts = () => {
       {filterProjectStats && (
         <div className="financial-dashboard">
           <div className="dashboard-header">
-            <h4>Podsumowanie finansowe: {filterProjectStats.title}</h4>
+            <h4>
+              {t("payouts.summary.title")}: {filterProjectStats.title}
+            </h4>
           </div>
           <div className="dashboard-cards">
             {/* KARTA 1: ZEBRANO */}
@@ -464,29 +486,13 @@ const AdminPayouts = () => {
           </div>
 
           {/* DWA PASKI POSTĘPU */}
-          <div
-            className="progress-section"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "1.5rem",
-              marginTop: "1rem",
-            }}
-          >
-            {/* 1. Postęp zbiórki (Current: Collected, Goal: Target) */}
+          <div className="progress-section">
+            {/* 1. Postęp zbiórki */}
             <div className="payout-progress-bar">
-              <div
-                className="progress-label"
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "0.5rem",
-                  fontSize: "0.9rem",
-                  color: "#666",
-                }}
-              >
+              <div className="progress-label">
                 <span>
-                  Postęp zbiórki (Cel: {filterProjectStats.target}{" "}
+                  {t("payouts.progress.collection")} (
+                  {t("payouts.progress.goal")}: {filterProjectStats.target}{" "}
                   {filterProjectStats.currency})
                 </span>
               </div>
@@ -496,24 +502,15 @@ const AdminPayouts = () => {
               />
             </div>
 
-            {/* 2. Wykorzystanie środków (Current: Paid, Goal: Collected) */}
+            {/* 2. Wykorzystanie środków */}
             <div className="payout-progress-bar">
-              <div
-                className="progress-label"
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "0.5rem",
-                  fontSize: "0.9rem",
-                  color: "#666",
-                }}
-              >
+              <div className="progress-label">
                 <span>
-                  Wykorzystanie zebranych środków (Zebrano:{" "}
+                  {t("payouts.progress.utilization")} (
+                  {t("payouts.summary.collected")}{" "}
                   {filterProjectStats.collected} {filterProjectStats.currency})
                 </span>
               </div>
-              {/* Używamy Twojego ProgressBar, ale goal to collected amount */}
               <ProgressBar
                 current={filterProjectStats.paid}
                 goal={filterProjectStats.collected}
@@ -533,7 +530,7 @@ const AdminPayouts = () => {
               {!filterProjectId && <th>{t("payouts.table.project")}</th>}
               <th>{t("payouts.table.amount")}</th>
               <th>{t("payouts.table.note")}</th>
-              <th style={{ textAlign: "right" }}>
+              <th className="align-right">
                 {t("foundationSupport.table.actions")}
               </th>
             </tr>
@@ -590,7 +587,7 @@ const AdminPayouts = () => {
         </table>
       </div>
 
-      <div style={{ marginTop: "1.5rem" }}>
+      <div className="pagination-container">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
