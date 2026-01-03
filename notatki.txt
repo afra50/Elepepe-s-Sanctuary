@@ -13,6 +13,7 @@ O NAS
 
 KONTAKT
 - zmiana danych na prawdziwe - mail
+- loader + alert po podlaczeniu skrzynki
 
 PARTNERZY
 - teksty poprawic jak wysle
@@ -21,9 +22,8 @@ ADMIN
 - ujednolicic filtry - albo wszedzie schowane na mobile albo widoczne, bo jest roznie
 1. DAROWIZNY
     - csv
-
-BACKEND
-- Joi do walidacji requestów
+2. PARTNERZY
+    - zweryfikowac walidacje - ma byc zgodna z backendem
 
 NA KONIEC
 - polityka i regulamin - jak bedzie lista darowizn u admina to dopisac?

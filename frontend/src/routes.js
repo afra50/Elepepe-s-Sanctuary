@@ -10,6 +10,10 @@ import CompletedProjectsPage from "./pages/CompletedProjectsPage";
 import PartnershipsPage from "./pages/PartnershipsPage";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
 
+import PaymentSuccess from "./pages/payment/PaymentSuccess";
+import PaymentFailure from "./pages/payment/PaymentFailure";
+import PaymentCancel from "./pages/payment/PaymentCancel";
+
 // Importy Admina
 import LoginPage from "./pages/LoginPage";
 import AdminLayout from "./components/admin/AdminLayout";
@@ -34,6 +38,9 @@ const routes = [
   { path: "/success-stories", element: <CompletedProjectsPage /> },
   { path: "/partnerships", element: <PartnershipsPage /> },
   { path: "/projects/:slug", element: <ProjectDetailsPage /> },
+  { path: "/payment/success", element: <PaymentSuccess /> },
+  { path: "/payment/failure", element: <PaymentFailure /> },
+  { path: "/payment/cancel", element: <PaymentCancel /> },
 
   // --- LOGOWANIE ADMINA (Dostępne publicznie) ---
   { path: "/admin/login", element: <LoginPage /> },
