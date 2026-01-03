@@ -103,6 +103,34 @@ const getActiveProjects = async (req, res) => {
 };
 
 /**
+ * GET /api/projects/completed
+ * Public – zakończone projekty
+ */
+const getCompletedProjects = async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+    const rows = await ProjectModel.getCompletedProjects(connection);
+    const formatted = rows.map((row) => ({
+      id: row.id,
+      slug: row.slug,
+      title: JSON.parse(row.title),
+      amountTarget: Number(row.amount_target),
+      amountCollected: Number(row.amount_collected),
+      currency: row.currency,
+      deadline: row.deadline,
+      image: row.cover_image
+        ? `${req.protocol}://${req.get("host")}${row.cover_image}`
+        : null,
+    }));
+    res.status(200).json(formatted);
+  } catch (e) {
+    res.status(500).json({ error: "Server error" });
+  } finally {
+    connection.release();
+  }
+};
+
+/**
  * GET /api/projects/admin
  * Admin Only – wszystkie projekty
  */
@@ -845,6 +873,7 @@ const getPublicProjectBySlug = async (req, res) => {
 
 module.exports = {
   getActiveProjects,
+  getCompletedProjects,
   getAdminProjects,
   getProjectDetails,
   addProjectUpdate,

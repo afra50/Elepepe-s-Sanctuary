@@ -6,6 +6,7 @@ import AboutPage from "./pages/AboutPage";
 import RequestSupportPage from "./pages/RequestSupportPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ActiveProjectsPage from "./pages/ActiveProjectsPage";
+import CompletedProjectsPage from "./pages/CompletedProjectsPage";
 import PartnershipsPage from "./pages/PartnershipsPage";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
 
@@ -30,6 +31,7 @@ const routes = [
   { path: "/about", element: <AboutPage /> },
   { path: "/request-support", element: <RequestSupportPage /> },
   { path: "/projects", element: <ActiveProjectsPage /> },
+  { path: "/success-stories", element: <CompletedProjectsPage /> },
   { path: "/partnerships", element: <PartnershipsPage /> },
   { path: "/projects/:slug", element: <ProjectDetailsPage /> },
 

@@ -1,4 +1,4 @@
-// src/pages/projects/ActiveProjectsPage.jsx
+// src/pages/ActiveProjectsPage.jsx
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -26,7 +26,7 @@ const getCompletionPercent = (current, goal) => {
   return Math.round((current / goal) * 100);
 };
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 10;
 
 function ActiveProjectsPage() {
   const { t, i18n } = useTranslation("projects");

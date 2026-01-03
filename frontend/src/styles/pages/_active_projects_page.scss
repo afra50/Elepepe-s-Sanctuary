@@ -18,6 +18,23 @@
   }
 }
 
+/* === SEARCHBAR NA ZAKOŃCZONYCH ZBIÓRKACH === */
+.active-projects-filters--completed {
+  margin-bottom: 2rem; // 🔹 większy odstęp od kafli
+
+  .search-bar {
+    max-width: 400px; // 🔹 taka sama szerokość jak na aktywnych
+
+    .search-input {
+      height: 3rem;
+    }
+  }
+
+  .search-bar__icon {
+    font-size: 1.1rem;
+  }
+}
+
 /* === EMPTY STATE === */
 .active-projects-empty {
   text-align: center;
@@ -36,6 +53,12 @@
     color: $secondary-muted;
     line-height: 1.6;
     font-size: 0.95rem;
+  }
+
+  svg {
+    margin-bottom: 1rem;
+    color: $color-accent;
+    opacity: 0.9;
   }
 }
 
@@ -85,6 +108,51 @@
         90deg,
         $color-error,
         lighten($color-error, 12%)
+      );
+    }
+  }
+}
+
+/* === OZNACZENIE ZAKOŃCZONEJ ZBIÓRKI === */
+.completed-project-wrapper {
+  position: relative;
+
+  .completed-badge {
+    position: absolute;
+    top: 0.9rem;
+    left: 0.9rem;
+    z-index: 3;
+
+    font-family: $font-accent;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+
+    background-color: $color-success; // 🔹 zielony
+    color: $color-white;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+
+    transform: rotate(-1.5deg);
+    box-shadow: $shadow-sm;
+  }
+
+  .fundraiser-card {
+    border: 2px solid rgba($color-success, 0.45);
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(
+        90deg,
+        $color-success,
+        lighten($color-success, 14%)
       );
     }
   }

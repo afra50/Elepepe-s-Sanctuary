@@ -27,8 +27,25 @@
     "label": "URGENTE"
   },
 
+  "completedBadge": "Completado",
+
   "error": {
     "title": "No se pudieron cargar las campañas",
     "message": "Hubo un problema al conectar con el servidor. Por favor, inténtalo de nuevo."
+  },
+
+  "completedTitle": "Recaudaciones finalizadas",
+  "completedSubtitle": "Descubre las historias de los animales que lograron recibir ayuda gracias al apoyo conjunto.",
+
+  "completedEmpty": {
+    "title": "Todavía no hay nada aquí",
+    "message": "Aún no hay recaudaciones finalizadas. Vuelve más tarde para conocer las historias de ayuda."
+  },
+
+  "searchCompleted": "Buscar una recaudación de fondos completada...",
+
+  "completedEmptySearch": {
+    "title": "No se encontraron recaudaciones de fondos",
+    "message": "No hay recaudaciones de fondos completadas que coincidan con tu búsqueda."
   }
 }

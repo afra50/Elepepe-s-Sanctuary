@@ -4,6 +4,8 @@
 
   "search": "Szukaj zbiórki...",
 
+  "searchCompleted": "Szukaj zakończonej zbiórki...",
+
   "clear": "Wyczyść",
 
   "sort": {
@@ -23,12 +25,27 @@
     "message": "Nie ma zbiórek pasujących do Twojego wyszukiwania. Spróbuj zmienić frazę lub wyczyścić filtry."
   },
 
+  "completedEmptySearch": {
+    "title": "Nie znaleziono zbiórek",
+    "message": "Nie ma zakończonych zbiórek pasujących do Twojego wyszukiwania."
+  },
+
   "urgent": {
     "label": "PILNE"
   },
 
+  "completedBadge": "Zakończona",
+
   "error": {
     "title": "Nie udało się pobrać zbiórek",
     "message": "Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie."
+  },
+
+  "completedTitle": "Zakończone zbiórki",
+  "completedSubtitle": "Poznaj historie zwierząt, którym wspólnie udało się pomóc.",
+
+  "completedEmpty": {
+    "title": "Jeszcze tu cicho…",
+    "message": "Nie ma jeszcze zakończonych zbiórek. Wróć później, aby poznać historie pomocy."
   }
 }

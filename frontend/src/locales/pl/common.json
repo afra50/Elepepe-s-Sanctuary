@@ -10,7 +10,8 @@
     "goal": "Cel:",
     "support": "Wesprzyj",
     "daysLeft": "{{count}} dni do końca",
-    "daysLeftFinished": "Termin zbiórki minął"
+    "daysLeftFinished": "Termin zbiórki minął",
+    "seeStory": "Zobacz historię"
   },
 
   "pagination": {

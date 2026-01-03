@@ -10,7 +10,8 @@
     "goal": "Meta:",
     "support": "Ayudar",
     "daysLeft": "{{count}} días restantes",
-    "daysLeftFinished": "La fecha límite ha pasado"
+    "daysLeftFinished": "La fecha límite ha pasado",
+    "seeStory": "Ver historia"
   },
 
   "pagination": {

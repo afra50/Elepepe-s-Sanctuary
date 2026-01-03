@@ -150,9 +150,11 @@ function ProjectDetailsPage() {
               <span className="meta-item">
                 <User size={16} /> {applicantName}
               </span>
-              <span className="meta-item">
-                <MapPin size={16} /> {project.location.city}
-              </span>
+              {project.location?.city && (
+                <span className="meta-item">
+                  <MapPin size={16} /> {project.location.city}
+                </span>
+              )}
               <span className="meta-item">
                 <Clock size={16} /> {formatDate(project.finance.deadline)}
               </span>

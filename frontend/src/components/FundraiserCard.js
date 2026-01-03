@@ -22,6 +22,7 @@ function getDaysLeft(endDate) {
 }
 
 function FundraiserCard({ project, onCardClick, onDonateClick }) {
+  const isCompleted = project.isCompleted;
   const { t } = useTranslation("common");
   const { id, title, image, current, goal, endDate } = project;
 
@@ -49,7 +50,7 @@ function FundraiserCard({ project, onCardClick, onDonateClick }) {
 
       <div className="fundraiser-card__content">
         {/* Meta / dni do końca */}
-        {typeof daysLeft === "number" && (
+        {!isCompleted && typeof daysLeft === "number" && (
           <div className="fundraiser-card__meta">
             <span className="fundraiser-card__days-left">
               <Calendar size={14} strokeWidth={2} />
@@ -76,13 +77,26 @@ function FundraiserCard({ project, onCardClick, onDonateClick }) {
           <ProgressBar current={current} goal={goal} />
         </div>
 
-        <Button
-          variant="primary"
-          className="full-width"
-          onClick={handleDonateClick}
-        >
-          {t("fundraiser.support")}
-        </Button>
+        {isCompleted ? (
+          <Button
+            variant="outline"
+            className="full-width"
+            onClick={(e) => {
+              e.stopPropagation();
+              onCardClick && onCardClick(project.id);
+            }}
+          >
+            {t("fundraiser.seeStory", "Zobacz historię")}
+          </Button>
+        ) : (
+          <Button
+            variant="primary"
+            className="full-width"
+            onClick={handleDonateClick}
+          >
+            {t("fundraiser.support")}
+          </Button>
+        )}
       </div>
     </div>
   );

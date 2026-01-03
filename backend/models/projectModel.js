@@ -74,6 +74,27 @@ const getActiveProjects = async (connection) => {
   return rows;
 };
 
+const getCompletedProjects = async (connection) => {
+  const sql = `
+    SELECT 
+      p.id,
+      p.slug,
+      p.title,
+      p.amount_target,
+      p.amount_collected,
+      p.currency,
+      p.deadline,
+      pf.file_path AS cover_image
+    FROM projects p
+    LEFT JOIN project_files pf 
+      ON pf.project_id = p.id AND pf.is_cover = 1
+    WHERE p.status = 'completed'
+    ORDER BY p.deadline DESC
+  `;
+  const [rows] = await connection.query(sql);
+  return rows;
+};
+
 const getAllProjects = async (connection) => {
   const sql = `
     SELECT 
@@ -345,7 +366,7 @@ const getPublicProjectBySlug = async (connection, slug) => {
     FROM projects p
     LEFT JOIN project_files pf ON pf.project_id = p.id
     WHERE p.slug = ?
-      AND p.status = 'active'
+      AND p.status IN ('active', 'completed')
   `;
   const [rows] = await connection.query(sql, [slug]);
   return rows;
@@ -355,6 +376,7 @@ module.exports = {
   createProject,
   addProjectFiles,
   getActiveProjects,
+  getCompletedProjects,
   getAllProjects,
   getProjectFiles,
   getProjectById,

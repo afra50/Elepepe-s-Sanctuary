@@ -27,8 +27,25 @@
     "label": "URGENT"
   },
 
+  "completedBadge": "Completed",
+
   "error": {
     "title": "Failed to load fundraisers",
     "message": "There was a problem connecting to the server. Please try again."
+  },
+
+  "completedTitle": "Completed fundraisers",
+  "completedSubtitle": "Discover the stories of animals that were helped thanks to joint support.",
+
+  "completedEmpty": {
+    "title": "Nothing here yet",
+    "message": "There are no completed fundraisers yet. Please check back later to see the stories of help."
+  },
+
+  "searchCompleted": "Search for a completed fundraiser...",
+
+  "completedEmptySearch": {
+    "title": "No fundraisers found",
+    "message": "There are no completed fundraisers matching your search."
   }
 }

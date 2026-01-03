@@ -10,7 +10,8 @@
     "goal": "Goal:",
     "support": "Support",
     "daysLeft": "{{count}} days left",
-    "daysLeftFinished": "The deadline has passed"
+    "daysLeftFinished": "The deadline has passed",
+    "seeStory": "See Story"
   },
 
   "pagination": {

@@ -51,6 +51,7 @@ router.delete(
 
 // === 3. TRASY PUBLICZNE (Ogólne na końcu) ===
 router.get("/", projectController.getActiveProjects);
+router.get("/completed", projectController.getCompletedProjects);
 
 // WAŻNE: Ta trasa musi być na samym dole, bo :slug łapie wszystko
 router.get("/:slug", projectController.getPublicProjectBySlug);
