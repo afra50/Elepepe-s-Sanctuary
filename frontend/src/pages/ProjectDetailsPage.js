@@ -10,6 +10,7 @@ import {
   AlertTriangle,
   Clock,
   Share2,
+  Sparkles,
 } from "lucide-react";
 
 import api from "../utils/api";
@@ -28,6 +29,8 @@ function ProjectDetailsPage() {
   const [error, setError] = useState(false);
 
   const [activeImage, setActiveImage] = useState(null);
+
+  const isCompleted = project?.status === "completed";
 
   useEffect(() => {
     setLoading(true);
@@ -145,6 +148,13 @@ function ProjectDetailsPage() {
             </div>
 
             <h1 className="project-title">{title}</h1>
+
+            {isCompleted && (
+              <div className="completed-banner">
+                <Heart size={18} />
+                <span>{t("completed.banner")}</span>
+              </div>
+            )}
 
             <div className="project-meta">
               <span className="meta-item">
@@ -315,67 +325,120 @@ function ProjectDetailsPage() {
         {/* === PRAWA KOLUMNA: SIDEBAR (Sticky) === */}
         <div className="right-column">
           <div className="donation-card sticky-card">
-            {/* Pasek postępu */}
-            <div className="progress-container">
-              <div className="progress-labels">
-                <span className="collected">
-                  {project.finance.collected} {project.finance.currency}
-                </span>
-                <span className="target">
-                  z {project.finance.target} {project.finance.currency}
-                </span>
+            {isCompleted ? (
+              <div className="completed-sidebar">
+                <div className="completed-icon">
+                  <Heart size={28} />
+                </div>
+
+                <h3>{t("completed.title")}</h3>
+                <p>{t("completed.description")}</p>
+
+                {/* NOWA SEKCJA */}
+                <div className="completed-progress">
+                  <div className="completed-amounts">
+                    <strong>
+                      {project.finance.collected} {project.finance.currency}
+                    </strong>
+                    <span>
+                      {t("completed.of")} {project.finance.target}{" "}
+                      {project.finance.currency}
+                    </span>
+                  </div>
+
+                  <ProgressBar
+                    current={project.finance.collected}
+                    goal={project.finance.target}
+                  />
+
+                  {project.finance.collected >= project.finance.target ? (
+                    <div className="completed-note completed-note--success">
+                      <Sparkles size={14} />
+                      <span>{t("completed.goalReached")}</span>
+                    </div>
+                  ) : (
+                    <div className="completed-note">
+                      {t("completed.endedBeforeGoal")}
+                    </div>
+                  )}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="md"
+                  className="btn-share-full"
+                  icon={<Share2 size={18} />}
+                >
+                  {t("actions.share")}
+                </Button>
               </div>
-              <ProgressBar
-                current={project.finance.collected}
-                goal={project.finance.target}
-              />
-              <div className="progress-info">
-                <span>
-                  <strong>{progress}%</strong> {t("target")}
-                </span>
-                {/* Opcjonalnie: liczba wpłat jeśli API zwraca */}
-              </div>
-            </div>
+            ) : (
+              <>
+                {/* Pasek postępu */}
+                <div className="progress-container">
+                  <div className="progress-labels">
+                    <span className="collected">
+                      {project.finance.collected} {project.finance.currency}
+                    </span>
+                    <span className="target">
+                      z {project.finance.target} {project.finance.currency}
+                    </span>
+                  </div>
+                  <ProgressBar
+                    current={project.finance.collected}
+                    goal={project.finance.target}
+                  />
+                  <div className="progress-info">
+                    <span>
+                      <strong>{progress}%</strong> {t("target")}
+                    </span>
+                    {/* Opcjonalnie: liczba wpłat jeśli API zwraca */}
+                  </div>
+                </div>
 
-            <div className="actions">
-              <Button
-                variant="primary"
-                size="lg"
-                className="btn-donate-full"
-                onClick={handleDonate}
-                icon={<Heart size={20} fill="currentColor" />}
-              >
-                {t("actions.donate")}
-              </Button>
+                <div className="actions">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="btn-donate-full"
+                    onClick={handleDonate}
+                    icon={<Heart size={20} fill="currentColor" />}
+                  >
+                    {t("actions.donate")}
+                  </Button>
 
-              <Button
-                variant="outline"
-                size="md"
-                className="btn-share-full"
-                icon={<Share2 size={18} />}
-              >
-                {t("actions.share")}
-              </Button>
-            </div>
+                  <Button
+                    variant="outline"
+                    size="md"
+                    className="btn-share-full"
+                    icon={<Share2 size={18} />}
+                  >
+                    {t("actions.share")}
+                  </Button>
+                </div>
 
-            <div className="organizer-mini">
-              <small>{project.applicant.label?.[lang]}:</small>
-              <div className="organizer-name">{applicantName}</div>
-            </div>
+                <div className="organizer-mini">
+                  <small>{project.applicant.label?.[lang]}:</small>
+                  <div className="organizer-name">{applicantName}</div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
-      <div className="mobile-donate-bar">
-        <Button
-          variant="primary"
-          size="lg"
-          className="mobile-donate-btn"
-          onClick={handleDonate}
-          icon={<Heart size={20} fill="currentColor" />}
-        >
-          {t("actions.donate")}
-        </Button>
-      </div>
+      {!isCompleted && (
+        <div className="mobile-donate-bar">
+          <Button
+            variant="primary"
+            size="lg"
+            className="mobile-donate-btn"
+            onClick={handleDonate}
+            icon={<Heart size={20} fill="currentColor" />}
+          >
+            {t("actions.donate")}
+          </Button>
+        </div>
+      )}
     </main>
   );
 }

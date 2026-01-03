@@ -25,5 +25,14 @@
   "error": {
     "title": "Nie udało się załadować zbiórki",
     "message": "Spróbuj ponownie za chwilę."
+  },
+
+  "completed": {
+    "title": "Zbiórka zakończona",
+    "description": "Ta zbiórka została zakończona. Dziękujemy za każdą formę wsparcia – poniżej możesz poznać pełną historię.",
+    "of": "z",
+    "goalReached": "Cel został osiągnięty",
+    "endedBeforeGoal": "Zbiórka zakończona przed osiągnięciem celu",
+    "banner": "Zbiórka została zakończona"
   }
 }

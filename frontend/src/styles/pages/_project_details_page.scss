@@ -82,6 +82,19 @@
       line-height: 1.2;
     }
 
+    .completed-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: $primary-light;
+      color: $color-primary;
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
     .project-meta {
       display: flex;
       flex-wrap: wrap;
@@ -437,6 +450,108 @@
           font-weight: 700;
           color: $color-secondary;
           margin-top: 2px;
+        }
+      }
+
+      .completed-sidebar {
+        text-align: center;
+
+        .completed-icon {
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          background: rgba($color-accent, 0.15);
+          color: $accent-darken;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 1rem;
+        }
+
+        .completed-progress {
+          margin: 1.5rem 0 2rem;
+
+          .completed-amounts {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.6rem;
+
+            strong {
+              font-size: 1.4rem;
+              font-weight: 800;
+              color: $color-primary;
+            }
+
+            span {
+              font-size: 0.85rem;
+              font-weight: 600;
+              color: $secondary-muted;
+            }
+          }
+
+          .progress {
+            margin: 0.4rem 0;
+
+            &__label {
+              display: none; // spokojniej wizualnie
+            }
+
+            &__track {
+              background-color: rgba($color-primary, 0.15);
+            }
+
+            &__fill {
+              background-color: $color-accent;
+            }
+          }
+
+          .completed-note {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: $secondary-muted;
+
+            &--success {
+              display: inline-flex;
+              align-items: center;
+              gap: 0.4rem;
+              color: $accent-darken;
+
+              svg {
+                opacity: 0.85;
+              }
+            }
+          }
+        }
+
+        h3 {
+          font-family: $font-heading;
+          font-size: 1.25rem;
+          color: $color-secondary;
+          margin-bottom: 0.5rem;
+        }
+
+        p {
+          font-size: 0.95rem;
+          color: $secondary-muted;
+          line-height: 1.6;
+          margin-bottom: 1.5rem;
+        }
+
+        .completed-summary {
+          font-size: 1.15rem;
+          font-weight: 800;
+          color: $color-primary;
+          margin-bottom: 1.5rem;
+
+          span {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: $secondary-muted;
+            margin-top: 0.2rem;
+          }
         }
       }
     }

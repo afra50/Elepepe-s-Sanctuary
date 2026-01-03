@@ -26,5 +26,13 @@
   "error": {
     "title": "Unable to load fundraiser",
     "message": "Please try again in a moment."
+  },
+  "completed": {
+    "title": "Fundraiser Completed",
+    "description": "This fundraiser has ended. Thank you for all your support – you can read the full story below.",
+    "of": "z",
+    "goalReached": "Goal reached",
+    "endedBeforeGoal": "Fundraiser ended before goal reached",
+    "banner": "Fundraiser has ended"
   }
 }

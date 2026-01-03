@@ -6,8 +6,8 @@
     "animal": "¿A quién ayudas?",
     "documents": "Documentos y facturas",
 
-    "updates": "Noticias",
-    "noUpdates": "Sin noticias"
+    "updates": "Novedades",
+    "noUpdates": "Sin novedades"
   },
 
   "animal": {
@@ -26,5 +26,14 @@
   "error": {
     "title": "No se puede cargar la recaudación de fondos",
     "message": "Inténtalo de nuevo en un momento"
+  },
+
+  "completed": {
+    "title": "Recaudación de fondos completada",
+    "description": "Esta recaudación de fondos ha finalizado. Gracias por todo su apoyo. Pueden leer la historia completa a continuación.",
+    "of": "z",
+    "goalReached": "Objetivo alcanzado",
+    "endedBeforeGoal": "La recaudación de fondos finalizó antes de alcanzar el objetivo",
+    "banner": "La recaudación de fondos ha finalizado"
   }
 }
