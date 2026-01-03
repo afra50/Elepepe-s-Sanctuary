@@ -1,5 +1,4 @@
 - min vh sprawdzic wszedzie
-- dodac wszedzie error state
 - wesprzyj na zbiórkach ma coś robić
 - filtry pomiedzy tel i laptopem jak sa widoczne to przycisk "Filtry" jest widoczny i nie dziala
 
@@ -7,13 +6,13 @@ PODSTRONA ZBIÓRKI
 - wplacanie
 - udostepnij ma cos robic
 
+ZAKOŃCZONE ZBIÓRKI
+
 O NAS
 - teksty poprawic jak wysle
 
 KONTAKT
-- loader
 - zmiana danych na prawdziwe - mail
-- alert error jak backend nawali?
 
 PARTNERZY
 - teksty poprawic jak wysle
