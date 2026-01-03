@@ -1,0 +1,408 @@
+.admin-payouts {
+    width: 100%;
+    font-family: $font-body;
+    color: $color-secondary;
+
+    // --- GLOBALNE ---
+    .alert-wrapper {
+        margin-bottom: 1.5rem;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+        gap: 1rem;
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .page-title {
+            font-family: $font-heading;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            color: $color-secondary;
+        }
+
+        .page-subtitle {
+            color: $brown-700;
+            margin: 0;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            opacity: 0.9;
+        }
+    }
+
+    // --- DASHBOARD FINANSOWY (Nowa sekcja) ---
+    .financial-dashboard {
+        background-color: $color-white;
+        border: 1px solid rgba($color-border, 0.8);
+        border-radius: $radius-md;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: $shadow-sm;
+        animation: fadeIn 0.3s ease-in-out;
+
+        .dashboard-header {
+            margin-bottom: 1.5rem;
+
+            h4 {
+                margin: 0;
+                font-size: 1.1rem;
+                color: $secondary-muted;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            background: #f8fafc;
+
+            .icon-wrapper {
+                width: 48px;
+                height: 48px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .card-content {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .card-label {
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: #64748b;
+                margin-bottom: 0.2rem;
+            }
+
+            .card-value {
+                font-family: $font-heading;
+                font-size: 1.5rem;
+                font-weight: 800;
+                line-height: 1;
+
+                small {
+                    font-size: 0.6em;
+                    margin-left: 4px;
+                    font-weight: 600;
+                }
+            }
+
+            // Warianty kolorystyczne
+            &.green {
+                background-color: $primary-light;
+                border-color: $color-border;
+
+                .icon-wrapper {
+                    background-color: $primary-light;
+                    color: $color-primary;
+                }
+
+                .card-value {
+                    color: $primary-600;
+                }
+            }
+
+            &.orange {
+                background-color: $accent-lighten;
+                border-color: $color-border;
+
+                .icon-wrapper {
+                    background-color: $accent-lighten;
+                    color: $color-accent;
+                }
+
+                .card-value {
+                    color: $accent-darken;
+                }
+            }
+
+            &.blue {
+                background-color: #eff6ff;
+                border-color: #bfdbfe;
+
+                .icon-wrapper {
+                    background-color: #dbeafe;
+                    color: #2563eb;
+                }
+
+                .card-value {
+                    color: #2563eb;
+                }
+            }
+
+            &.red {
+                // Dla ujemnego salda
+                background-color: #fef2f2;
+                border-color: #fecaca;
+
+                .icon-wrapper {
+                    background-color: #fee2e2;
+                    color: #dc2626;
+                }
+
+                .card-value {
+                    color: #dc2626;
+                }
+            }
+
+            &.big {
+                grid-column: span 1;
+
+                @media(min-width: 992px) {
+                    transform: scale(1.05);
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+                }
+            }
+        }
+
+        // Pasek postępu
+        .payout-progress-bar {
+            .progress-label {
+                font-size: 0.85rem;
+                color: $secondary-muted;
+                margin-bottom: 0.5rem;
+                font-weight: 600;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .progress-track {
+                width: 100%;
+                height: 8px;
+                background-color: #e2e8f0;
+                border-radius: 4px;
+                overflow: hidden;
+            }
+
+            .progress-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #fbbf24 0%, #ea580c 100%);
+                border-radius: 4px;
+                transition: width 0.5s ease;
+            }
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    // --- FORMULARZ (Reszta styli bez większych zmian) ---
+    .form-collapsible {
+        overflow: hidden;
+        transition: max-height 0.4s ease-in-out, opacity 0.4s, margin-bottom 0.4s;
+        max-height: 0;
+        opacity: 0;
+        margin-bottom: 0;
+
+        &.open {
+            max-height: 1500px;
+            opacity: 1;
+            margin-bottom: 2rem;
+            overflow: visible;
+        }
+    }
+
+    .form-card {
+        background-color: $color-white;
+        border-radius: $radius-md;
+        border: 1px solid rgba($color-border, 0.6);
+        padding: clamp(1.5rem, 3vw, 2rem);
+        box-shadow: $shadow-sm;
+
+        h3 {
+            font-family: $font-heading;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba($color-border, 0.4);
+            color: $color-secondary;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+
+            @media (max-width: 768px) {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            label {
+                font-weight: 600;
+                font-size: 0.9rem;
+                color: $color-secondary;
+            }
+
+            input[type="text"],
+            input[type="number"] {
+                padding: 0.7rem 0.85rem;
+                border: 1px solid $color-border;
+                border-radius: $radius-md;
+                font-family: $font-body;
+                font-size: 0.95rem;
+                transition: border-color 0.2s;
+
+                &:focus {
+                    outline: none;
+                    border-color: $primary-600;
+                    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+                }
+            }
+        }
+
+        .amount-input-group {
+            display: flex;
+            gap: 0.5rem;
+
+            .input-number {
+                flex: 2;
+            }
+
+            .select-wrapper {
+                flex: 1;
+                min-width: 90px;
+            }
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba($color-border, 0.4);
+        }
+    }
+
+    // --- FILTRY ---
+    .filter-project {
+        min-width: 250px;
+
+        @media (max-width: 768px) {
+            width: 100%;
+        }
+    }
+
+    .filter-currency {
+        min-width: 140px;
+
+        @media (max-width: 768px) {
+            width: 100%;
+        }
+    }
+
+    // --- TABELA ---
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+
+        .cell-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: $secondary-muted;
+        }
+
+        .recipient-name {
+            font-weight: 600;
+            color: $color-secondary;
+        }
+
+        .project-title {
+            font-size: 0.85rem;
+            display: inline-block;
+            max-width: 280px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+            background-color: rgba($color-background, 0.5);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .col-amount-outflow {
+            font-weight: 700;
+            color: $accent-darken;
+            white-space: nowrap;
+            font-family: $font-heading;
+        }
+
+        .col-note {
+            font-size: 0.85rem;
+            color: lighten($color-secondary, 20%);
+            font-style: italic;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cell-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+
+            .action-btn-icon {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0.4rem;
+                border-radius: 6px;
+                transition: background-color 0.2s, color 0.2s;
+
+                &.danger {
+                    color: #ef4444;
+
+                    &:hover {
+                        background-color: #fee2e2;
+                    }
+                }
+            }
+        }
+    }
+}

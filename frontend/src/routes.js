@@ -18,6 +18,7 @@ import AdminPartnerships from "./components/admin/AdminPartnerships";
 import AdminProjects from "./components/admin/AdminProjects";
 import AdminProjectDetails from "./components/admin/AdminProjectDetails";
 import AdminInternalSupport from "./components/admin/AdminInternalSupport";
+import AdminPayouts from "./components/admin/AdminPayouts";
 
 // Import ochrony
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -50,6 +51,7 @@ const routes = [
       { path: "projects", element: <AdminProjects /> },
       { path: "projects/:id", element: <AdminProjectDetails /> },
       { path: "internal-support", element: <AdminInternalSupport /> },
+      { path: "payouts", element: <AdminPayouts /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

@@ -201,6 +201,46 @@
       "fetchError": "Failed to fetch donations or projects."
     }
   },
+  "payouts": {
+    "title": "Beneficiary Payouts",
+    "subtitle": "Records of funds transferred to fundraiser organizers.",
+    "add": "Add Payout",
+    "cancelAdd": "Cancel",
+    "newPayout": "New Outgoing Transfer",
+    "save": "Confirm Transfer",
+    "emptyState": "No recorded payouts found.",
+    "confirmDelete": "Are you sure you want to delete this payout? This will reduce the total paid amount for the project.",
+    "fields": {
+      "project": "Source Fundraiser",
+      "projectPlaceholder": "Select fundraiser...",
+      "recipient": "Recipient (Beneficiary)",
+      "date": "Transfer Date",
+      "amount": "Transfer Amount",
+      "note": "Title / Note"
+    },
+    "summary": {
+      "target": "Target:",
+      "collected": "Raised:",
+      "paid": "Paid so far:",
+      "remaining": "Remaining to pay:"
+    },
+    "table": {
+      "date": "Date",
+      "recipient": "Recipient",
+      "project": "Project",
+      "amount": "Amount",
+      "note": "Title"
+    },
+    "alerts": {
+      "fetchError": "Error fetching data.",
+      "validationError": "Please fill in all required fields.",
+      "amountPositive": "Amount must be positive.",
+      "addSuccess": "Payout registered successfully.",
+      "addError": "Error saving payout.",
+      "deleteSuccess": "Payout deleted.",
+      "deleteError": "Failed to delete payout."
+    }
+  },
   "partnerships": {
     "subtitle": "Manage partners supporting Elepepe’s Sanctuary – information about them will appear on the website.",
     "current": "Current partners",
