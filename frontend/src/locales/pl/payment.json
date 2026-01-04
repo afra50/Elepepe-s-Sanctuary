@@ -1,0 +1,22 @@
+{
+  "success": {
+    "title": "Płatność udana",
+    "description": "Dziękujemy za dokonanie płatności. Twoje wsparcie realnie pomaga. Możesz wrócić do zbiórki lub przejść na stronę główną.",
+    "primary": "Zobacz zbiórkę",
+    "secondary": "Strona główna"
+  },
+
+  "failure": {
+    "title": "Płatność nieudana",
+    "description": "Podczas przetwarzania płatności wystąpił nieoczekiwany błąd. Jeśli środki zostały pobrane, zostaną zwrócone na to samo konto w ciągu 3 dni roboczych.",
+    "primary": "Skontaktuj się z nami",
+    "secondary": "Wróć do strony głównej"
+  },
+
+  "cancel": {
+    "title": "Płatność anulowana",
+    "description": "Płatność została anulowana. Jeśli to nie Ty ją przerwałeś, skontaktuj się z nami — chętnie pomożemy.",
+    "primary": "Skontaktuj się z nami",
+    "secondary": "Wróć do strony głównej"
+  }
+}
