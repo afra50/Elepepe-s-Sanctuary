@@ -104,8 +104,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // --- 4. PLIKI STATYCZNE ---
-// Umieszczone PRZED trasami API, żeby działały szybko
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
 
 // --- 5. TRASY (Routes) ---
 app.use("/api/auth", authRoutes);
