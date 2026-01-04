@@ -1,4 +1,5 @@
 - partnerzy - wysrodkowac brak wynikow, poprawic min height
+- podstrony platnosci - poprawic style, dodac tlumaczenia, min height
 - wesprzyj na zbiórkach ma coś robić
 
 PODSTRONA ZBIÓRKI
