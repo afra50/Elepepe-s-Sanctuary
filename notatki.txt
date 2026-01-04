@@ -17,5 +17,5 @@ ADMIN
     - zweryfikowac walidacje - ma byc zgodna z backendem
 
 NA KONIEC
-- index.html + html lang - tak jak na zebrane
-- seo - robots + google search console + sitemap + og img
+- seo - robots + google search console + sitemap
+- poprawa wyswietlania zdjec WSZEDZIE
