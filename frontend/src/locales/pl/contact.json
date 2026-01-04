@@ -65,7 +65,8 @@
     },
     "alerts": {
       "validation": "Popraw zaznaczone pola formularza.",
-      "success": "Wiadomość została wysłana."
+      "success": "Wiadomość została wysłana.",
+      "error": "Wystąpił błąd podczas wysyłania wiadomości. Spróbuj ponownie później."
     },
     "submit": "Wyślij wiadomość"
   }

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Blokada panelu admina i backendu
+Disallow: /admin/
+Disallow: /api/
+
+# Mapa strony
+Sitemap: https://elepepes-sanctuary.org/sitemap.xml

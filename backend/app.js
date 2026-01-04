@@ -18,6 +18,7 @@ const partnerRoutes = require("./routes/partnerRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const internalDonationRoutes = require("./routes/internalDonationRoutes");
 const payoutRoutes = require("./routes/payoutRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 
 // --- KONFIGURACJA LOGGERA (Winston) ---
 // Winston zastąpi console.error i będzie zapisywał błędy do pliku oraz konsoli
@@ -113,6 +114,7 @@ app.use("/api/partners", partnerRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/internal-donations", internalDonationRoutes);
 app.use("/api/payouts", payoutRoutes);
+app.use("/api/contact", contactRoutes);
 
 // 404
 app.use((req, res, next) => {

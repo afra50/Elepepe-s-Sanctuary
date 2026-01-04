@@ -65,7 +65,8 @@
     },
     "alerts": {
       "validation": "Corrija los campos de formulario seleccionados.",
-      "success": "El mensaje ha sido enviado."
+      "success": "El mensaje ha sido enviado.",
+      "error": "Se produjo un error al enviar el mensaje. Inténtelo de nuevo más tarde."
     },
     "submit": "Enviar un mensaje"
   }

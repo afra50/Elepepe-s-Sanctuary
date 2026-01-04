@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import Button from "../ui/Button";
 import Checkbox from "../ui/Checkbox";
+import Loader from "../ui/Loader"; // <--- 1. Importujemy Twój Loader
+import api from "../../utils/api";
 
 const initialForm = {
   fullName: "",
@@ -15,14 +17,13 @@ const MAX_EMAIL_LENGTH = 120;
 const MAX_MESSAGE_LENGTH = 1500;
 
 function ContactForm({ onShowAlert }) {
-  // 1. Pobieramy i18n
   const { t, i18n } = useTranslation("contact");
 
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Stan ładowania
 
-  // 2. Logika wyboru pliku PDF (taka sama jak w Footer)
   const currentLang = (i18n.language || "pl").split("-")[0];
 
   const getPrivacyLink = () => {
@@ -41,15 +42,13 @@ function ContactForm({ onShowAlert }) {
     const trimmed = typeof value === "string" ? value.trim() : value;
 
     switch (name) {
-      case "fullName": {
+      case "fullName":
         if (!trimmed) return t("form.errors.fullName.required");
         if (trimmed.length < 3) return t("form.errors.fullName.min");
         if (trimmed.length > MAX_NAME_LENGTH)
           return t("form.errors.fullName.max", { max: MAX_NAME_LENGTH });
         return "";
-      }
-
-      case "email": {
+      case "email":
         if (!trimmed) return t("form.errors.email.required");
         if (trimmed.length < 5) return t("form.errors.email.min");
         if (trimmed.length > MAX_EMAIL_LENGTH)
@@ -57,21 +56,15 @@ function ContactForm({ onShowAlert }) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(trimmed)) return t("form.errors.email.format");
         return "";
-      }
-
-      case "message": {
+      case "message":
         if (!trimmed) return t("form.errors.message.required");
         if (trimmed.length < 10) return t("form.errors.message.min");
         if (trimmed.length > MAX_MESSAGE_LENGTH)
           return t("form.errors.message.max", { max: MAX_MESSAGE_LENGTH });
         return "";
-      }
-
-      case "consentPrivacy": {
+      case "consentPrivacy":
         if (!value) return t("form.errors.consentPrivacy.required");
         return "";
-      }
-
       default:
         return "";
     }
@@ -91,15 +84,12 @@ function ContactForm({ onShowAlert }) {
     let newValue = type === "checkbox" ? checked : value;
 
     if (type !== "checkbox") {
-      if (name === "fullName" && newValue.length > MAX_NAME_LENGTH) {
+      if (name === "fullName" && newValue.length > MAX_NAME_LENGTH)
         newValue = newValue.slice(0, MAX_NAME_LENGTH);
-      }
-      if (name === "email" && newValue.length > MAX_EMAIL_LENGTH) {
+      if (name === "email" && newValue.length > MAX_EMAIL_LENGTH)
         newValue = newValue.slice(0, MAX_EMAIL_LENGTH);
-      }
-      if (name === "message" && newValue.length > MAX_MESSAGE_LENGTH) {
+      if (name === "message" && newValue.length > MAX_MESSAGE_LENGTH)
         newValue = newValue.slice(0, MAX_MESSAGE_LENGTH);
-      }
     }
 
     setForm((prev) => ({ ...prev, [name]: newValue }));
@@ -122,7 +112,7 @@ function ContactForm({ onShowAlert }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setHasSubmitted(true);
 
@@ -130,6 +120,7 @@ function ContactForm({ onShowAlert }) {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
+      // Wywołujemy Alert z ContactPage (rodzica)
       onShowAlert?.({
         variant: "error",
         message: t("form.alerts.validation"),
@@ -137,22 +128,46 @@ function ContactForm({ onShowAlert }) {
       return;
     }
 
-    console.log("Contact form data:", form);
+    setIsSubmitting(true);
 
-    onShowAlert?.({
-      variant: "success",
-      message: t("form.alerts.success"),
-    });
+    try {
+      const payload = {
+        name: form.fullName,
+        email: form.email,
+        phone: "",
+        subject: "Message from Website Form",
+        message: form.message,
+        consent: form.consentPrivacy,
+      };
 
-    setForm(initialForm);
-    setHasSubmitted(false);
-    setErrors({});
+      await api.post("/contact", payload);
+
+      // Sukces: Wywołujemy Twój Alert (zielony)
+      onShowAlert?.({
+        variant: "success",
+        message: t("form.alerts.success"),
+      });
+
+      setForm(initialForm);
+      setHasSubmitted(false);
+      setErrors({});
+    } catch (error) {
+      console.error("Contact form error:", error);
+      // Błąd: Wywołujemy Twój Alert (czerwony)
+      onShowAlert?.({
+        variant: "error",
+        message: t("form.alerts.error") || "Failed to send message.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getError = (field) => (hasSubmitted ? errors[field] : "");
 
   return (
     <form className="contact-form" onSubmit={handleSubmit} noValidate>
+      {/* ... (pola input bez zmian) ... */}
       <div className={`form-field ${getError("fullName") ? "is-error" : ""}`}>
         <label htmlFor="fullName">{t("form.fields.fullName.label")}</label>
         <input
@@ -164,6 +179,7 @@ function ContactForm({ onShowAlert }) {
           placeholder={t("form.fields.fullName.placeholder")}
           maxLength={MAX_NAME_LENGTH}
           required
+          disabled={isSubmitting}
         />
         <p className="field-error">{getError("fullName") || "\u00A0"}</p>
       </div>
@@ -179,6 +195,7 @@ function ContactForm({ onShowAlert }) {
           placeholder={t("form.fields.email.placeholder")}
           maxLength={MAX_EMAIL_LENGTH}
           required
+          disabled={isSubmitting}
         />
         <p className="field-error">{getError("email") || "\u00A0"}</p>
       </div>
@@ -194,11 +211,11 @@ function ContactForm({ onShowAlert }) {
           placeholder={t("form.fields.message.placeholder")}
           maxLength={MAX_MESSAGE_LENGTH}
           required
+          disabled={isSubmitting}
         />
         <p className="field-error">{getError("message") || "\u00A0"}</p>
       </div>
 
-      {/* --- ZGODA NA PRZETWARZANIE DANYCH --- */}
       <div
         className={`form-field checkbox-field ${
           getError("consentPrivacy") ? "is-error" : ""
@@ -208,20 +225,18 @@ function ContactForm({ onShowAlert }) {
           name="consentPrivacy"
           checked={form.consentPrivacy}
           onChange={handleCheckboxChange}
+          disabled={isSubmitting}
         >
-          {/* ZMIANA TUTAJ: Używamy propsa 'components' */}
           <Trans
             i18nKey="form.fields.consentPrivacy.label"
             ns="contact"
             components={[
-              /* To jest element pod indeksem 0 w tablicy, czyli <0> w JSONie */
               <a
                 key="privacy-link"
-                href={getPrivacyLink()} // Twój dynamiczny link do PDF
+                href={getPrivacyLink()}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {/* Treść tutaj nie ma znaczenia, zostanie nadpisana przez tekst z JSON wewnątrz tagów <0>...</0> */}
                 x
               </a>,
             ]}
@@ -231,8 +246,19 @@ function ContactForm({ onShowAlert }) {
       </div>
 
       <div className="form-actions">
-        <Button type="submit" variant="primary" size="md">
-          {t("form.submit")}
+        {/* --- 2. Użycie Loadera wewnątrz przycisku --- */}
+        <Button
+          type="submit"
+          variant="primary"
+          size="md"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            // Wyświetlamy Twój Loader (mały, inline) zamiast tekstu
+            <Loader size="sm" variant="inline" />
+          ) : (
+            t("form.submit")
+          )}
         </Button>
       </div>
     </form>

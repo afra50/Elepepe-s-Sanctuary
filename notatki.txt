@@ -7,14 +7,8 @@ PODSTRONA ZBIÓRKI
 O NAS + PARTNERZY
 - teksty poprawic jak wysle
 
-KONTAKT
-- loader + alert po podlaczeniu skrzynki
-
 ADMIN
 1. DAROWIZNY
     - csv
 2. PARTNERZY
     - zweryfikowac walidacje - ma byc zgodna z backendem
-
-NA KONIEC
-- seo - robots + google search console + sitemap + manifest.json
