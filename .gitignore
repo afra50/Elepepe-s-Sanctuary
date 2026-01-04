@@ -82,7 +82,7 @@ web_modules/
 out
 
 # production
-/build
+/frontend/build
 
 # Nuxt.js build / generate output
 .nuxt

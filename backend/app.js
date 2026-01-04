@@ -13,10 +13,19 @@ const payoutRoutes = require("./routes/payoutRoutes");
 
 const app = express();
 
+// --- ZMIANA 1: KLUCZOWA DLA HTTPS NA MSERWIS ---
+// Bez tego Express nie zobaczy kłódki i nie wyśle bezpiecznych ciasteczek!
+app.set("trust proxy", 1);
+
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    // --- ZMIANA 2: DODAJ SWOJĄ DOMENĘ ---
+    origin: [
+      "http://localhost:3000", // Do testów lokalnych
+      "https://elepepes-sanctuary.org", // Twój frontend na produkcji
+      "https://www.elepepes-sanctuary.org", // Wersja z www
+    ],
     credentials: true,
   })
 );
@@ -24,7 +33,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 // --- 2. Serve Static Files ---
-// This allows the frontend to access files via: http://localhost:5000/uploads/requests/123/photos/image.webp
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // TRASY (Routes)
@@ -40,11 +48,10 @@ app.use((req, res, next) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// --- 2. GLOBAL ERROR HANDLER (DODAJ TO TUTAJ NA DOLE) ---
+// --- GLOBAL ERROR HANDLER ---
 app.use((err, req, res, next) => {
-  console.error("Global Error:", err); // Logowanie błędu w konsoli serwera
+  console.error("Global Error:", err);
 
-  // A. Obsługa błędów Multera (pliki - limity)
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
       return res
@@ -62,8 +69,6 @@ app.use((err, req, res, next) => {
     return res.status(400).json({ code: "UPLOAD_ERROR", error: err.message });
   }
 
-  // B. Obsługa błędu złego typu pliku (rzucanego przez fileFilter)
-  // Sprawdzamy treść komunikatu, którą ustawiłeś w uploadMiddleware.js
   if (
     err.message === "Only images and PDF files are allowed!" ||
     err.message === "Only image files are allowed!"
@@ -73,7 +78,6 @@ app.use((err, req, res, next) => {
       .json({ code: "INVALID_FILE_TYPE", error: err.message });
   }
 
-  // C. Inne błędy (np. JSON parse error, błędy bazy danych)
   res.status(500).json({
     message: "Internal Server Error",
     error: process.env.NODE_ENV === "development" ? err.message : undefined,
@@ -81,5 +85,4 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
-
-module.exports = app;
+// Usunąłem zduplikowane module.exports = app; z końca

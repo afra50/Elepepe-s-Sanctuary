@@ -1,16 +1,19 @@
 .active-projects-page {
   padding: clamp(1.5rem, 4vw, 3rem);
   background-color: $color-background;
+  min-height: 60vh;
 }
 
 .active-projects-header {
   max-width: 720px;
   margin-bottom: 2.5rem;
+
   h1 {
     font-family: $font-heading;
     font-size: clamp(1.9rem, 3vw, 2.4rem);
     color: $color-secondary;
   }
+
   p {
     margin-top: 0.75rem;
     color: $secondary-muted;
@@ -104,11 +107,9 @@
       left: 0;
       right: 0;
       height: 4px;
-      background: linear-gradient(
-        90deg,
-        $color-error,
-        lighten($color-error, 12%)
-      );
+      background: linear-gradient(90deg,
+          $color-error,
+          lighten($color-error, 12%));
     }
   }
 }
@@ -149,11 +150,9 @@
       left: 0;
       right: 0;
       height: 4px;
-      background: linear-gradient(
-        90deg,
-        $color-success,
-        lighten($color-success, 14%)
-      );
+      background: linear-gradient(90deg,
+          $color-success,
+          lighten($color-success, 14%));
     }
   }
 }
