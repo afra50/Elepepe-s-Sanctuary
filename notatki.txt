@@ -5,6 +5,7 @@
 PODSTRONA ZBIÓRKI
 - wplacanie
 - udostepnij ma cos robic
+- aktywny link "aktywne zbiorki za kazdym razem"
 
 O NAS
 - teksty poprawic jak wysle
