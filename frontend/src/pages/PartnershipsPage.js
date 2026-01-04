@@ -69,81 +69,83 @@ function PartnershipsPage() {
 
   return (
     <main className="page-partners">
-      <div className="p-container">
-        <header className="p-hero">
-          <p className="p-hero_icon">{t("badge")}</p>
-
-          <h1 className="p-hero_title">{t("title")}</h1>
-
-          <p className="p-hero_intro">{t("intro")}</p>
-        </header>
-      </div>
-
-      {/* ===== LOADING ===== */}
-      {loading && (
-        <div style={{ padding: "3rem 0" }}>
-          <Loader variant="center" size="md" />
+      {/* ================= GÓRNA SEKCJA (KREMOWA) ================= */}
+      <section className="partners-top">
+        {/* HERO */}
+        <div className="p-container">
+          <header className="p-hero">
+            <p className="p-hero_icon">{t("badge")}</p>
+            <h1 className="p-hero_title">{t("title")}</h1>
+            <p className="p-hero_intro">{t("intro")}</p>
+          </header>
         </div>
-      )}
 
-      {/* ===== ERROR ===== */}
-      {!loading && error && (
-        <ErrorState
-          title={t("error.title")}
-          message={t("error.message")}
-          onRetry={fetchPartners}
-        />
-      )}
-
-      {/* ===== EMPTY ===== */}
-      {!loading && !error && partners.length === 0 && (
-        <div className="partners-empty">
-          <p>{t("empty")}</p>
-        </div>
-      )}
-
-      {/* ===== LISTA PARTNERÓW ===== */}
-      {!loading && !error && partners.length > 0 && (
-        <section className="partners-list">
-          <div className="list-container">
-            <ul className="full-list">
-              {partners.map((partner) => {
-                const ui = mapPartnerToUi(partner, lang);
-
-                return (
-                  <li key={ui.id} className="partner">
-                    <div className="partners-logo-wrapper">
-                      {ui.logoUrl ? (
-                        <img
-                          className="partners-logo"
-                          src={ui.logoUrl}
-                          alt={ui.name}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="partners-logo placeholder">
-                          {ui.name?.charAt(0) || "?"}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* 👇 TYLKO DOLNA CZĘŚĆ MA PADDING */}
-                    <div className="partner-body">
-                      <h3 className="partner-name">{ui.name}</h3>
-
-                      <p className="text-container">{ui.description}</p>
-
-                      {ui.country && (
-                        <span className="partner-country">{ui.country}</span>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+        {/* ===== LOADING ===== */}
+        {loading && (
+          <div style={{ padding: "3rem 0" }}>
+            <Loader variant="center" size="md" />
           </div>
-        </section>
-      )}
+        )}
+
+        {/* ===== ERROR ===== */}
+        {!loading && error && (
+          <ErrorState
+            title={t("error.title")}
+            message={t("error.message")}
+            onRetry={fetchPartners}
+          />
+        )}
+
+        {/* ===== EMPTY ===== */}
+        {!loading && !error && partners.length === 0 && (
+          <div className="partners-empty">
+            <p>{t("empty")}</p>
+          </div>
+        )}
+
+        {/* ===== LISTA PARTNERÓW ===== */}
+        {!loading && !error && partners.length > 0 && (
+          <section className="partners-list">
+            <div className="list-container">
+              <ul className="full-list">
+                {partners.map((partner) => {
+                  const ui = mapPartnerToUi(partner, lang);
+
+                  return (
+                    <li key={ui.id} className="partner">
+                      <div className="partners-logo-wrapper">
+                        {ui.logoUrl ? (
+                          <img
+                            className="partners-logo"
+                            src={ui.logoUrl}
+                            alt={ui.name}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="partners-logo placeholder">
+                            {ui.name?.charAt(0) || "?"}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* 👇 TYLKO DOLNA CZĘŚĆ MA PADDING */}
+                      <div className="partner-body">
+                        <h3 className="partner-name">{ui.name}</h3>
+
+                        <p className="text-container">{ui.description}</p>
+
+                        {ui.country && (
+                          <span className="partner-country">{ui.country}</span>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </section>
+        )}
+      </section>
       <section className="invitation-bg">
         <div className="invitation">
           <div className="invitation-text">

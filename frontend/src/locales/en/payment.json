@@ -1,0 +1,22 @@
+{
+  "success": {
+    "title": "Payment successful",
+    "description": "Thank you for making the payment. Your support really helps. You can return to the fundraiser or go to the home page.",
+    "primary": "View fundraiser",
+    "secondary": "Home"
+  },
+
+  "failure": {
+    "title": "Payment failed",
+    "description": "An unexpected error occurred while processing your payment. If the funds were debited, they will be refunded to the same account within 3 business days.",
+    "primary": "Contact us",
+    "secondary": "Return to the home page"
+  },
+
+  "cancel": {
+    "title": "Payment canceled",
+    "description": "The payment has been canceled. If you didn't cancel it, please contact us—we'd be happy to help. We'll help.",
+    "primary": "Contact us",
+    "secondary": "Return to the main page"
+  }
+}

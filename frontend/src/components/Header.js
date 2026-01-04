@@ -52,7 +52,7 @@ function Header() {
             </NavLink>
           </li>
           <li className="nav__item">
-            <NavLink to="/projects" onClick={() => setMenuOpen(false)}>
+            <NavLink to="/projects" end onClick={() => setMenuOpen(false)}>
               {t("nav.projects")}
             </NavLink>
           </li>

@@ -1,0 +1,22 @@
+{
+  "success": {
+    "title": "Pago exitoso",
+    "description": "Gracias por realizar el pago. Su apoyo es de gran ayuda. Puede volver a la campaña o ir a la página de inicio.",
+    "primary": "Ver campaña",
+    "secondary": "Inicio"
+  },
+
+  "failure": {
+    "title": "Pago fallido",
+    "description": "Se produjo un error inesperado al procesar su pago. Si se debitaron los fondos, se reembolsarán a la misma cuenta en un plazo de 3 días hábiles.",
+    "primary": "Contáctenos",
+    "secondary": "Volver a la página de inicio"
+  },
+
+  "cancel": {
+    "title": "Pago cancelado",
+    "description": "El pago ha sido cancelado. Si no lo canceló, contáctenos; con gusto le ayudaremos.",
+    "primary": "Contáctenos",
+    "secondary": "Volver a la página principal"
+  }
+}

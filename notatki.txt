@@ -1,15 +1,10 @@
-- partnerzy - wysrodkowac brak wynikow, poprawic min height
-- podstrony platnosci - poprawic style, dodac tlumaczenia, min height
-- wesprzyj na zbiórkach ma coś robić
+- wesprzyj na kartach zbiorki ma coś robić
 
 PODSTRONA ZBIÓRKI
 - wplacanie
 - udostepnij ma cos robic
 
-O NAS
-- teksty poprawic jak wysle
-
-PARTNERZY
+O NAS + PARTNERZY
 - teksty poprawic jak wysle
 
 KONTAKT
