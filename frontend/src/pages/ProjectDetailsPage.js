@@ -112,16 +112,16 @@ function ProjectDetailsPage() {
 
   if (!project) return null;
 
-  // Obliczenia
-  const progress = calculateProgress(
-    project.finance.collected,
-    project.finance.target
-  );
   const title = project.title?.[lang] || project.title?.["pl"];
   const description =
     project.description?.[lang] || project.description?.["pl"];
   const animalName = project.animal.name;
   const applicantName = project.applicant?.name;
+
+  const rawProgress =
+    project.finance.target > 0
+      ? Math.round((project.finance.collected / project.finance.target) * 100)
+      : 0;
 
   return (
     <main className="project-details-page">
@@ -390,7 +390,7 @@ function ProjectDetailsPage() {
                   />
                   <div className="progress-info">
                     <span>
-                      <strong>{progress}%</strong> {t("target")}
+                      <strong>{rawProgress}%</strong> {t("target")}
                     </span>
                     {/* Opcjonalnie: liczba wpłat jeśli API zwraca */}
                   </div>

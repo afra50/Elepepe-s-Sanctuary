@@ -1,21 +1,14 @@
-- partnerzy - wysrodkowac brak wynikow, poprawic min height
-- podstrony platnosci - poprawic style, dodac tlumaczenia, min height
-- wesprzyj na zbiórkach ma coś robić
+- wesprzyj na kartach zbiorki ma coś robić
 
 PODSTRONA ZBIÓRKI
 - wplacanie
 - udostepnij ma cos robic
-- aktywny link "aktywne zbiorki za kazdym razem"
 
-O NAS
+O NAS + PARTNERZY
 - teksty poprawic jak wysle
 
 KONTAKT
-- zmiana danych na prawdziwe - mail
 - loader + alert po podlaczeniu skrzynki
-
-PARTNERZY
-- teksty poprawic jak wysle
 
 ADMIN
 - ujednolicic filtry - albo wszedzie schowane na mobile albo widoczne, bo jest roznie
