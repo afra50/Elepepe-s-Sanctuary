@@ -74,10 +74,49 @@ const updateProjectFunds = async (connection, projectId, amountChange) => {
   await connection.query(sql, [amountChange, projectId]);
 };
 
+const getInternalDonationsByDateRange = async (
+  connection,
+  startDate,
+  endDate
+) => {
+  let sql = `
+    SELECT 
+      id.id,
+      id.donation_date,
+      id.amount,
+      id.currency,
+      id.converted_amount,
+      p.title as project_title,
+      id.note,
+      id.created_at
+    FROM internal_donations id
+    LEFT JOIN projects p ON id.project_id = p.id
+    WHERE 1=1
+  `;
+
+  const values = [];
+
+  if (startDate) {
+    sql += ` AND id.donation_date >= ?`;
+    values.push(startDate);
+  }
+
+  if (endDate) {
+    sql += ` AND id.donation_date <= ?`;
+    values.push(endDate);
+  }
+
+  sql += ` ORDER BY id.donation_date DESC`;
+
+  const [rows] = await connection.query(sql, values);
+  return rows;
+};
+
 module.exports = {
   createInternalDonation,
   getAllInternalDonations,
   getInternalDonationById,
   deleteInternalDonation,
   updateProjectFunds,
+  getInternalDonationsByDateRange,
 };

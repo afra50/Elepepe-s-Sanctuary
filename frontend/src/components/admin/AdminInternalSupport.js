@@ -14,6 +14,7 @@ import Pagination from "../ui/Pagination";
 import FilterBar from "../ui/FilterBar";
 import SearchableSelect from "../ui/SearchableSelect";
 import Select from "../ui/Select";
+import CsvExportButton from "../ui/CsvExportButton";
 
 const AdminInternalSupport = () => {
   const { t, i18n } = useTranslation("admin");
@@ -236,6 +237,10 @@ const AdminInternalSupport = () => {
         </div>
         {!pageError && !loading && (
           <div className="header-actions">
+            <CsvExportButton
+              filenamePrefix="internal_donations"
+              exportUrl="/internal-donations/export"
+            />
             <Button
               variant={isFormVisible ? "secondary" : "primary"}
               icon={isFormVisible ? null : <Plus size={18} />}

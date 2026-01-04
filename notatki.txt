@@ -1,6 +1,5 @@
 - min vh sprawdzic wszedzie
 - wesprzyj na zbiórkach ma coś robić
-- filtry pomiedzy tel i laptopem jak sa widoczne to przycisk "Filtry" jest widoczny i nie dziala
 
 PODSTRONA ZBIÓRKI
 - wplacanie
@@ -25,7 +24,7 @@ ADMIN
     - zweryfikowac walidacje - ma byc zgodna z backendem
 
 NA KONIEC
-- polityka i regulamin - jak bedzie lista darowizn u admina to dopisac?
+- polityka i regulamin - jak bedzie lista darowizn u admina to dopisac? + mail
 - index.html + html lang - tak jak na zebrane
 - seo - robots + google search console + sitemap + og img
 - cors, wyl x-powered-by, ratelimiter, slow-down, logi (winston? logger?), helmet, cookies http only, samesite:strict, secure, compression, morgan, proxy, ssl

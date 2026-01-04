@@ -4,6 +4,7 @@ const internalDonationModel = require("../models/internalDonationModel");
 const projectModel = require("../models/projectModel");
 const { convertCurrency } = require("../utils/currencyService");
 const Joi = require("joi"); // <--- Import Joi
+const { Parser } = require("json2csv");
 
 // GET /internal-donations
 const getInternalDonations = async (req, res) => {
@@ -153,8 +154,63 @@ const deleteInternalDonation = async (req, res) => {
   }
 };
 
+const exportInternalDonationsCsv = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    const donations =
+      await internalDonationModel.getInternalDonationsByDateRange(
+        db,
+        startDate,
+        endDate
+      );
+
+    if (!donations.length) {
+      return res.status(404).json({
+        message: "No data to export for the selected period.",
+      });
+    }
+
+    const fields = [
+      { label: "ID", value: "id" },
+      {
+        label: "Date",
+        value: (row) => new Date(row.donation_date).toISOString().split("T")[0],
+      },
+      { label: "Amount", value: "amount" },
+      { label: "Currency", value: "currency" },
+      { label: "Amount in Project Currency", value: "converted_amount" },
+      { label: "Project", value: "project_title" },
+      { label: "Note", value: "note" },
+      {
+        label: "Entry Created At",
+        value: (row) => new Date(row.created_at).toLocaleString("en-US"),
+      },
+    ];
+
+    const json2csvParser = new Parser({
+      fields,
+      delimiter: ";",
+      withBOM: true,
+    });
+
+    const csv = json2csvParser.parse(donations);
+    const filename = `donations_internal_${startDate || "start"}_${
+      endDate || "end"
+    }.csv`;
+
+    res.header("Content-Type", "text/csv");
+    res.header("Content-Disposition", `attachment; filename="${filename}"`);
+    res.status(200).send(csv);
+  } catch (error) {
+    console.error("CSV Export Error:", error);
+    res.status(500).json({ message: "Error generating CSV file." });
+  }
+};
+
 module.exports = {
   getInternalDonations,
   addInternalDonation,
   deleteInternalDonation,
+  exportInternalDonationsCsv,
 };
