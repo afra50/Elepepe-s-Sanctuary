@@ -4,6 +4,7 @@ import { AlertTriangle } from "lucide-react";
 import Button from "../../ui/Button";
 import Checkbox from "../../ui/Checkbox";
 import DatePickerField from "../../ui/DatePickerField";
+import Select from "../../ui/Select"; // <--- Import Twojego Selecta
 
 const ProjectSidebar = ({
   formData,
@@ -16,6 +17,11 @@ const ProjectSidebar = ({
 
   const deadlineValue = formData.deadline || "";
 
+  // Helper do zmiany wartości z Selecta (Select zwraca samą wartość, nie event)
+  const handleSelectChange = (name, val) => {
+    onChange({ target: { name, value: val } });
+  };
+
   const handleDateChange = (val) => {
     onChange({ target: { name: "deadline", value: val } });
   };
@@ -25,6 +31,33 @@ const ProjectSidebar = ({
       target: { name: "isUrgent", type: "checkbox", checked: checked },
     });
   };
+
+  // --- OPCJE DLA SELECTÓW ---
+
+  const statusOptions = [
+    { value: "draft", label: t("projects.fields.statusOptions.draft") },
+    { value: "active", label: t("projects.fields.statusOptions.active") },
+    { value: "completed", label: t("projects.fields.statusOptions.completed") },
+    { value: "cancelled", label: t("projects.fields.statusOptions.cancelled") },
+  ];
+
+  const speciesOptions = [
+    { value: "rat", label: t("form.fields.species.options.rat") },
+    { value: "guineaPig", label: t("form.fields.species.options.guineaPig") },
+    { value: "other", label: t("form.fields.species.options.other") },
+  ];
+
+  const applicantTypeOptions = [
+    { value: "person", label: t("form.fields.applicantType.options.person") },
+    {
+      value: "organization",
+      label: t("form.fields.applicantType.options.organization"),
+    },
+    {
+      value: "vetClinic",
+      label: t("form.fields.applicantType.options.vetClinic"),
+    },
+  ];
 
   return (
     <>
@@ -36,20 +69,12 @@ const ProjectSidebar = ({
 
         <div className="form-field">
           <label>{t("projects.fields.status")}</label>
-          <select name="status" value={formData.status} onChange={onChange}>
-            <option value="draft">
-              {t("projects.fields.statusOptions.draft")}
-            </option>
-            <option value="active">
-              {t("projects.fields.statusOptions.active")}
-            </option>
-            <option value="completed">
-              {t("projects.fields.statusOptions.completed")}
-            </option>
-            <option value="cancelled">
-              {t("projects.fields.statusOptions.cancelled")}
-            </option>
-          </select>
+          {/* Użycie Twojego Selecta */}
+          <Select
+            options={statusOptions}
+            value={formData.status}
+            onChange={(val) => handleSelectChange("status", val)}
+          />
         </div>
 
         {/* --- STYLIZOWANY CHECKBOX PILNE --- */}
@@ -105,22 +130,12 @@ const ProjectSidebar = ({
           <div className="form-row form-row--sm">
             <div className="form-field half">
               <label>{t("projects.fields.species")}</label>
-              <select
-                name="species"
+              {/* Użycie Twojego Selecta */}
+              <Select
+                options={speciesOptions}
                 value={formData.species}
-                onChange={onChange}
-              >
-                {/* Używamy kluczy z sekcji 'form', które już masz w JSON */}
-                <option value="rat">
-                  {t("form.fields.species.options.rat")}
-                </option>
-                <option value="guineaPig">
-                  {t("form.fields.species.options.guineaPig")}
-                </option>
-                <option value="other">
-                  {t("form.fields.species.options.other")}
-                </option>
-              </select>
+                onChange={(val) => handleSelectChange("species", val)}
+              />
             </div>
             <div className="form-field half">
               <label>{t("projects.fields.animalsCount")}</label>
@@ -186,21 +201,12 @@ const ProjectSidebar = ({
 
           <div className="form-field">
             <label>{t("form.fields.applicantType.label")}</label>
-            <select
-              name="applicantType"
+            {/* Użycie Twojego Selecta */}
+            <Select
+              options={applicantTypeOptions}
               value={formData.applicantType}
-              onChange={onChange}
-            >
-              <option value="person">
-                {t("form.fields.applicantType.options.person")}
-              </option>
-              <option value="organization">
-                {t("form.fields.applicantType.options.organization")}
-              </option>
-              <option value="vetClinic">
-                {t("form.fields.applicantType.options.vetClinic")}
-              </option>
-            </select>
+              onChange={(val) => handleSelectChange("applicantType", val)}
+            />
           </div>
 
           <div className="applicant-details">

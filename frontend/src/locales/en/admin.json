@@ -59,7 +59,7 @@
       "slug": "Link (Slug)",
       "slugHint": "https://elepepes-sanctuary.org/projects/{{slug}}",
       "isUrgent": "Mark as URGENT",
-      "status": "Initial Status",
+      "status": "Status",
       "statusOptions": {
         "draft": "Draft (Private)",
         "active": "Active (Public)",

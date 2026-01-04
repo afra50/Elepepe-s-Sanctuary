@@ -823,6 +823,7 @@ const getPublicProjectBySlug = async (req, res) => {
     res.status(200).json({
       id: project.id,
       slug: project.slug,
+      status: project.status,
       isUrgent: !!project.is_urgent,
 
       title: JSON.parse(project.title),
