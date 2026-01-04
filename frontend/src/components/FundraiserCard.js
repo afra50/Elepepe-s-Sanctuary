@@ -27,8 +27,6 @@ function FundraiserCard({ project, onCardClick, onDonateClick }) {
   const { id, title, image, current, goal, endDate } = project;
 
   const daysLeft = getDaysLeft(endDate);
-  const percentage =
-    goal > 0 ? Math.min(Math.round((current / goal) * 100), 100) : 0;
 
   const handleCardClick = () => {
     if (onCardClick) onCardClick(id);

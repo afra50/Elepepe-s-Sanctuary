@@ -55,11 +55,6 @@ function ProjectDetailsPage() {
   }, [project]);
 
   // --- Helpery ---
-  const calculateProgress = (collected, target) => {
-    if (!target || target <= 0) return 0;
-    const percent = (collected / target) * 100;
-    return Math.min(Math.round(percent), 100);
-  };
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
