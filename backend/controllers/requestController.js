@@ -5,10 +5,10 @@ const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 const fs = require("fs").promises;
-const fsSync = require("fs"); // Dodane do sprawdzania istnienia katalogow
+const fsSync = require("fs");
 const Joi = require("joi");
 
-// --- 1. Validation Schemas ---
+// --- 1. Validation Schemas (BEZ ZMIAN) ---
 
 const requestSchema = Joi.object({
   applicantType: Joi.string()
@@ -229,6 +229,7 @@ const getRequests = async (req, res) => {
   }
 };
 
+// --- TUTAJ JEST GŁÓWNA ZMIANA ---
 const getRequestDetails = async (req, res) => {
   const connection = await db.getConnection();
   try {
@@ -238,9 +239,13 @@ const getRequestDetails = async (req, res) => {
       return res.status(404).json({ message: "Request not found" });
 
     const files = await RequestModel.getFilesByRequestId(connection, id);
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+    // ZMIANA: Dodano /api na końcu baseUrl
+    const baseUrl = `${req.protocol}://${req.get("host")}/api`;
+
     const formatFile = (f) => ({
       id: f.id,
+      // Teraz url będzie np. http://localhost:5000/api/uploads/...
       url: `${baseUrl}${f.file_path}`,
       originalName: f.original_name,
       type: f.file_type,
@@ -516,7 +521,6 @@ const updateRequestStatus = async (req, res) => {
     await connection.rollback();
     console.error("Error updating request status:", error);
 
-    // --- KLUCZOWA ZMIANA: Obsługa błędu duplikatu slugu ---
     if (error.code === "ER_DUP_ENTRY") {
       return res.status(409).json({
         code: "SLUG_EXISTS",

@@ -89,8 +89,9 @@ const getActiveProjects = async (req, res) => {
       amountCollected: Number(row.amount_collected),
       currency: row.currency,
       deadline: row.deadline,
+      // --- FIX: Dodano /api ---
       image: row.cover_image
-        ? `${req.protocol}://${req.get("host")}${row.cover_image}`
+        ? `${req.protocol}://${req.get("host")}/api${row.cover_image}`
         : null,
     }));
     res.status(200).json(formattedProjects);
@@ -118,8 +119,9 @@ const getCompletedProjects = async (req, res) => {
       amountCollected: Number(row.amount_collected),
       currency: row.currency,
       deadline: row.deadline,
+      // --- FIX: Dodano /api ---
       image: row.cover_image
-        ? `${req.protocol}://${req.get("host")}${row.cover_image}`
+        ? `${req.protocol}://${req.get("host")}/api${row.cover_image}`
         : null,
     }));
     res.status(200).json(formatted);
@@ -164,7 +166,8 @@ const getAdminProjects = async (req, res) => {
         ? [
             {
               id: "cover",
-              url: `${req.protocol}://${req.get("host")}${row.cover_image}`,
+              // --- FIX: Dodano /api ---
+              url: `${req.protocol}://${req.get("host")}/api${row.cover_image}`,
               isCover: 1,
               type: "photo",
             },
@@ -199,6 +202,9 @@ const getProjectDetails = async (req, res) => {
     const files = await ProjectModel.getProjectFiles(connection, id);
     const updatesRaw = await ProjectModel.getProjectUpdates(connection, id);
 
+    // --- FIX: BAZOWY URL Z /api ---
+    const baseUrl = `${req.protocol}://${req.get("host")}/api`;
+
     const formattedUpdates = updatesRaw.map((u) => ({
       id: u.id,
       title: typeof u.title === "string" ? JSON.parse(u.title) : u.title,
@@ -209,7 +215,8 @@ const getProjectDetails = async (req, res) => {
       createdAt: u.created_at,
       files: u.files.map((f) => ({
         id: f.id,
-        url: `${req.protocol}://${req.get("host")}${f.file_path}`,
+        // --- FIX: Użycie baseUrl z /api ---
+        url: `${baseUrl}${f.file_path}`,
         type: f.file_type,
         originalName: f.original_name,
       })),
@@ -239,7 +246,8 @@ const getProjectDetails = async (req, res) => {
       description: project.description, // raw JSON string
       files: files.map((f) => ({
         id: f.id,
-        url: `${req.protocol}://${req.get("host")}${f.file_path}`,
+        // --- FIX: Użycie baseUrl z /api ---
+        url: `${baseUrl}${f.file_path}`,
         isCover: !!f.is_cover,
         type: f.file_type,
         originalName: f.original_name,
@@ -281,8 +289,6 @@ const addProjectUpdate = async (req, res) => {
     await connection.beginTransaction();
 
     // 2. Zapisz tekst aktualności
-    // UWAGA: data.title jest stringiem JSON otrzymanym z frontendu.
-    // Nie robimy tu ponownego JSON.stringify, bo zrobilibyśmy podwójne kodowanie.
     const newUpdateId = await ProjectModel.createProjectUpdate(connection, {
       projectId: id,
       title: data.title,
@@ -329,7 +335,6 @@ const addProjectUpdate = async (req, res) => {
           fileType = "document";
         }
 
-        // Dekodowanie nazwy pliku (jeśli przyszła zakodowana, choć multer zazwyczaj radzi sobie w utf8)
         const originalName = Buffer.from(file.originalname, "latin1").toString(
           "utf8"
         );
@@ -405,7 +410,6 @@ const editProjectUpdate = async (req, res) => {
         for (const file of filesRows) {
           try {
             const fullPath = path.join(process.cwd(), file.file_path);
-            // Sprawdzenie czy plik istnieje przed usunięciem
             if (fsSync.existsSync(fullPath)) {
               await fs.unlink(fullPath);
             }
@@ -762,10 +766,14 @@ const getPublicProjectBySlug = async (req, res) => {
     const documents = [];
     let cover = null;
 
+    // --- FIX: BAZOWY URL Z /api ---
+    const baseUrl = `${req.protocol}://${req.get("host")}/api`;
+
     rows.forEach((row) => {
       if (!row.file_path) return;
 
-      const fileUrl = `${req.protocol}://${req.get("host")}${row.file_path}`;
+      // --- FIX: Użycie baseUrl ---
+      const fileUrl = `${baseUrl}${row.file_path}`;
 
       if (row.file_type === "photo") {
         if (row.is_cover) cover = fileUrl;
@@ -814,7 +822,8 @@ const getPublicProjectBySlug = async (req, res) => {
         publishedAt: u.published_at,
         files: u.files.map((f) => ({
           name: f.original_name,
-          url: `${req.protocol}://${req.get("host")}${f.file_path}`,
+          // --- FIX: Użycie baseUrl ---
+          url: `${baseUrl}${f.file_path}`,
           type: f.file_type,
         })),
       }));

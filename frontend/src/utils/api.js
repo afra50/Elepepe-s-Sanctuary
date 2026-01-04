@@ -91,11 +91,11 @@ api.interceptors.response.use(
  * (formularze będą wysyłać FormData z polem "logo")
  */
 
-// wyciągamy origin z BASE_URL (czyli bez końcówki /api)
-const API_ORIGIN = BASE_URL.replace(/\/api\/?$/, "");
+// Używamy BASE_URL (który ma końcówkę /api), usuwając tylko ewentualny slash na końcu
+export const FILES_BASE_URL = BASE_URL.replace(/\/$/, "");
 
-// Zwracam też stałą do ewentualnego użycia przy obrazkach w innych miejscach
-export const FILES_BASE_URL = API_ORIGIN;
+// A API_ORIGIN (bez /api) zostawiamy tylko, jeśli go gdzieś indziej potrzebujesz
+const API_ORIGIN = BASE_URL.replace(/\/api\/?$/, "");
 
 // ---- PARTNERS API ----
 export const partnersApi = {

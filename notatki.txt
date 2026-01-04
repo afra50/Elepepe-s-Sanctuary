@@ -17,5 +17,4 @@ ADMIN
     - zweryfikowac walidacje - ma byc zgodna z backendem
 
 NA KONIEC
-- seo - robots + google search console + sitemap
-- poprawa wyswietlania zdjec WSZEDZIE
+- seo - robots + google search console + sitemap + manifest.json
