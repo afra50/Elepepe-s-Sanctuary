@@ -55,7 +55,7 @@ function ContactPage() {
               <p>
                 <strong>{t("sections.contactInfo.labels.email")}</strong>
                 <br />
-                info@elepepesanctuary.org
+                contact@elepepes-sanctuary.org
               </p>
             </div>
 
