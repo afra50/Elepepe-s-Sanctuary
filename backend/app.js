@@ -4,6 +4,14 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const multer = require("multer");
 
+// Nowe biblioteki
+const helmet = require("helmet");
+const compression = require("compression");
+const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
+const slowDown = require("express-slow-down");
+const winston = require("winston");
+
 const authRoutes = require("./routes/authRoutes");
 const requestRoutes = require("./routes/requestRoutes");
 const partnerRoutes = require("./routes/partnerRoutes");
@@ -11,20 +19,83 @@ const projectRoutes = require("./routes/projectRoutes");
 const internalDonationRoutes = require("./routes/internalDonationRoutes");
 const payoutRoutes = require("./routes/payoutRoutes");
 
+// --- KONFIGURACJA LOGGERA (Winston) ---
+// Winston zastąpi console.error i będzie zapisywał błędy do pliku oraz konsoli
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    // Zapisuj błędy do pliku error.log (przydatne na produkcji!)
+    new winston.transports.File({ filename: "error.log", level: "error" }),
+    // Na produkcji też chcemy widzieć logi w konsoli (mSerwis zbiera logi konsoli)
+    new winston.transports.Console({
+      format: winston.format.simple(),
+    }),
+  ],
+});
+
 const app = express();
 
-// --- ZMIANA 1: KLUCZOWA DLA HTTPS NA MSERWIS ---
-// Bez tego Express nie zobaczy kłódki i nie wyśle bezpiecznych ciasteczek!
+// --- 1. PROXY & BEZPIECZEŃSTWO (Najważniejsze na górze) ---
+
+// Niezbędne na mSerwis (Nginx), aby widzieć prawdziwe IP klienta
 app.set("trust proxy", 1);
 
-// Middleware
+// HELMET: Zabezpiecza nagłówki HTTP
+// crossOriginResourcePolicy: "cross-origin" jest WAŻNE, aby frontend (inny adres)
+// mógł ładować obrazki z Twojego folderu /uploads
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+
+// Ukrywa informację, że używasz Expressa (dodatkowe zabezpieczenie, choć Helmet też to robi)
+app.disable("x-powered-by");
+
+// COMPRESSION: Kompresuje odpowiedzi (Gzip), strona ładuje się szybciej
+app.use(compression());
+
+// MORGAN: Logowanie zapytań HTTP w konsoli (kto, kiedy, jaki status)
+// "common" to standardowy format logów serwerowych
+app.use(morgan("common"));
+
+// --- 2. KONTROLA RUCHU (Rate Limiting) ---
+// Stosujemy tylko do API, żeby nie blokować ładowania obrazków z /uploads
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minut
+  max: 200, // Limit: 200 zapytań na IP w ciągu 15 minut
+  standardHeaders: true, // Zwraca info o limicie w nagłówkach `RateLimit-*`
+  legacyHeaders: false, // Wyłącza stare nagłówki `X-RateLimit-*`
+  message: { error: "Too many requests, please try again in 15 minutes." },
+});
+
+const speedLimiter = slowDown({
+  windowMs: 15 * 60 * 1000, // 15 minut
+  delayAfter: 100, // Pozwól na 100 szybkich zapytań...
+  // ZMIANA: delayMs musi być teraz funkcją obliczającą opóźnienie
+  delayMs: (used, req) => {
+    const delayAfter = req.slowDown.limit;
+    return (used - delayAfter) * 500; // ...każde kolejne powyżej limitu dodaje 500ms opóźnienia
+  },
+});
+
+// Aplikujemy limitery TYLKO do ścieżek /api/
+app.use("/api/", limiter);
+app.use("/api/", speedLimiter);
+
+// --- 3. MIDDLEWARE APLIKACJI ---
+
 app.use(
   cors({
-    // --- ZMIANA 2: DODAJ SWOJĄ DOMENĘ ---
     origin: [
-      "http://localhost:3000", // Do testów lokalnych
-      "https://elepepes-sanctuary.org", // Twój frontend na produkcji
-      "https://www.elepepes-sanctuary.org", // Wersja z www
+      "http://localhost:3000",
+      "https://elepepes-sanctuary.org",
+      "https://www.elepepes-sanctuary.org",
     ],
     credentials: true,
   })
@@ -32,10 +103,11 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// --- 2. Serve Static Files ---
+// --- 4. PLIKI STATYCZNE ---
+// Umieszczone PRZED trasami API, żeby działały szybko
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// TRASY (Routes)
+// --- 5. TRASY (Routes) ---
 app.use("/api/auth", authRoutes);
 app.use("/api/requests", requestRoutes);
 app.use("/api/partners", partnerRoutes);
@@ -43,14 +115,19 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/internal-donations", internalDonationRoutes);
 app.use("/api/payouts", payoutRoutes);
 
-// 404 (Dla nieznanych tras)
+// 404
 app.use((req, res, next) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// --- GLOBAL ERROR HANDLER ---
+// --- 6. GLOBAL ERROR HANDLER ---
 app.use((err, req, res, next) => {
-  console.error("Global Error:", err);
+  // Używamy Winstona zamiast console.error
+  logger.error(err.message, {
+    stack: err.stack,
+    path: req.path,
+    method: req.method,
+  });
 
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
@@ -80,9 +157,12 @@ app.use((err, req, res, next) => {
 
   res.status(500).json({
     message: "Internal Server Error",
-    error: process.env.NODE_ENV === "development" ? err.message : undefined,
+    // Na produkcji ukrywamy dokładny stack błędu dla bezpieczeństwa
+    error:
+      process.env.NODE_ENV === "development"
+        ? err.message
+        : "Something went wrong",
   });
 });
 
 module.exports = app;
-// Usunąłem zduplikowane module.exports = app; z końca

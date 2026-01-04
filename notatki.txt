@@ -9,15 +9,13 @@ PODSTRONA ZBIÓRKI
 O NAS
 - teksty poprawic jak wysle
 
-KONTAKT
-- zmiana danych na prawdziwe - mail
-- loader + alert po podlaczeniu skrzynki
-
 PARTNERZY
 - teksty poprawic jak wysle
 
+KONTAKT
+- loader + alert po podlaczeniu skrzynki
+
 ADMIN
-- ujednolicic filtry - albo wszedzie schowane na mobile albo widoczne, bo jest roznie
 1. DAROWIZNY
     - csv
 2. PARTNERZY
@@ -26,4 +24,3 @@ ADMIN
 NA KONIEC
 - index.html + html lang - tak jak na zebrane
 - seo - robots + google search console + sitemap + og img
-- cors, wyl x-powered-by, ratelimiter, slow-down, logi (winston? logger?), helmet, cookies http only, samesite:strict, secure, compression, morgan, proxy,
