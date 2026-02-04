@@ -18,6 +18,7 @@ import Loader from "../components/ui/Loader";
 import ErrorState from "../components/ui/ErrorState";
 import Button from "../components/ui/Button"; // Zakładam, że masz ten komponent
 import ProgressBar from "../components/ui/ProgressBar";
+import DonateModal from "../components/ui/DonateModal";
 
 function ProjectDetailsPage() {
   const { slug } = useParams();
@@ -29,6 +30,8 @@ function ProjectDetailsPage() {
   const [error, setError] = useState(false);
 
   const [activeImage, setActiveImage] = useState(null);
+
+  const [donateOpen, setDonateOpen] = useState(false);
 
   const isCompleted = project?.status === "completed";
 
@@ -88,10 +91,7 @@ function ProjectDetailsPage() {
     return map[animal.species]?.[lang] || map[animal.species]?.pl || "";
   };
 
-  const handleDonate = () => {
-    // Tu logika przekierowania do płatności lub scroll do formularza
-    console.log("Donate clicked for", project?.id);
-  };
+  const handleDonate = () => setDonateOpen(true);
 
   if (loading) return <Loader variant="center" size="lg" />;
 
@@ -434,6 +434,29 @@ function ProjectDetailsPage() {
           </Button>
         </div>
       )}
+
+      <DonateModal
+        open={donateOpen}
+        onClose={() => setDonateOpen(false)}
+        projectTitle={title}
+        defaultCurrency="PLN"
+        bankAccounts={{
+          PLN: {
+            recipient: "Elepepe’s Sanctuary",
+            iban: "12 3456 7890 1234 5678 9012 3456",
+            swift: "BPKOPLPW", // przykładowy BIC — wstaw swój prawdziwy
+            bankName: "Bank w PL",
+            title: `Darowizna – ${title}`,
+          },
+          EUR: {
+            recipient: "Elepepe’s Sanctuary",
+            iban: "DE12 3456 7890 1234 5678 90",
+            swift: "DEUTDEFF",
+            bankName: "Bank in EU",
+            title: `Donation – ${title}`,
+          },
+        }}
+      />
     </main>
   );
 }

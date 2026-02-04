@@ -2,45 +2,45 @@
 
 /* ==== NUNITO ==== */
 @font-face {
-	font-family: "Nunito";
-	src: url("../../public/fonts/Nunito/Nunito-VariableFont_wght.ttf")
-		format("truetype");
-	font-weight: 100 900;
-	font-style: normal;
+  font-family: "Nunito";
+  src: url("../../public/fonts/Nunito/Nunito-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
 }
 
 @font-face {
-	font-family: "Nunito";
-	src: url("../../public/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf")
-		format("truetype");
-	font-weight: 100 900;
-	font-style: italic;
+  font-family: "Nunito";
+  src: url("../../public/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
 }
 
 /* ==== MERRIWEATHER ==== */
 @font-face {
-	font-family: "Merriweather";
-	src: url("../../public/fonts/Merriweather/Merriweather-VariableFont_opsz\,wdth\,wght.ttf")
-		format("truetype");
-	font-weight: 100 900;
-	font-style: normal;
+  font-family: "Merriweather";
+  src: url("../../public/fonts/Merriweather/Merriweather-VariableFont_opsz\,wdth\,wght.ttf")
+    format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
 }
 
 @font-face {
-	font-family: "Merriweather";
-	src: url("../../public/fonts/Merriweather/Merriweather-Italic-VariableFont_opsz\,wdth\,wght.ttf")
-		format("truetype");
-	font-weight: 100 900;
-	font-style: italic;
+  font-family: "Merriweather";
+  src: url("../../public/fonts/Merriweather/Merriweather-Italic-VariableFont_opsz\,wdth\,wght.ttf")
+    format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
 }
 
 /* ==== CAVEAT ==== */
 @font-face {
-	font-family: "Caveat";
-	src: url("../../public/fonts/Caveat/Caveat-VariableFont_wght.ttf")
-		format("truetype");
-	font-weight: 100 900;
-	font-style: normal;
+  font-family: "Caveat";
+  src: url("../../public/fonts/Caveat/Caveat-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
 }
 
 // ========== IMPORTY ==========
@@ -65,6 +65,7 @@
 @import "./components/ui/pagination";
 @import "./components/ui/select";
 @import "./components/ui/csv_export_button";
+@import "./components/ui/donate_modal";
 
 @import "./pages/home_page";
 @import "./pages/not_found_page";
@@ -102,20 +103,20 @@
 @import "slick-carousel/slick/slick-theme.css";
 
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 h1,
 h2,
 h3,
 h4 {
-	font-family: $font-heading;
+  font-family: $font-heading;
 }
 
 p,
 a,
 li {
-	font-family: $font-body;
+  font-family: $font-body;
 }
