@@ -1,4 +1,5 @@
 - wesprzyj na kartach zbiorki ma coś robić
+- poprawic parralax na zdjeciach, bo na iphone nie dzialaja zdjecia
 
 PODSTRONA ZBIÓRKI
 - wplacanie

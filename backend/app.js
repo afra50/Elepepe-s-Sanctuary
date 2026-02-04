@@ -19,6 +19,7 @@ const projectRoutes = require("./routes/projectRoutes");
 const internalDonationRoutes = require("./routes/internalDonationRoutes");
 const payoutRoutes = require("./routes/payoutRoutes");
 const contactRoutes = require("./routes/contactRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 // --- KONFIGURACJA LOGGERA (Winston) ---
 // Winston zastąpi console.error i będzie zapisywał błędy do pliku oraz konsoli
@@ -26,7 +27,7 @@ const logger = winston.createLogger({
   level: "info",
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.json()
+    winston.format.json(),
   ),
   transports: [
     // Zapisuj błędy do pliku error.log (przydatne na produkcji!)
@@ -51,7 +52,7 @@ app.set("trust proxy", 1);
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
-  })
+  }),
 );
 
 // Ukrywa informację, że używasz Expressa (dodatkowe zabezpieczenie, choć Helmet też to robi)
@@ -99,7 +100,7 @@ app.use(
       "https://www.elepepes-sanctuary.org",
     ],
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 app.use(cookieParser());
@@ -115,6 +116,7 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/internal-donations", internalDonationRoutes);
 app.use("/api/payouts", payoutRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // 404
 app.use((req, res, next) => {
